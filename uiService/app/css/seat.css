@@ -1,0 +1,59 @@
+.seat_top{
+    background-color: var(--secondary-sub-color);
+}
+
+.show_time_list{
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 10px;
+    background-color:rgb(248, 248, 248);
+  }
+
+  .seat_show_time{
+    color: rgb(64, 216, 64);
+    border: 2px solid rgb(64, 216, 64);
+    border-radius: 10px;
+    padding: 5px 20px;
+  }
+
+  .show_seat{
+    width: 50%;
+    margin: auto;
+  }
+
+  .seat{
+    height: 30px;
+    width: 30px;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    color:rgb(64, 216, 64);
+    border: 1px solid rgb(64, 216, 64);
+    margin: 5px 7px;
+  }
+
+  .seat_row{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .hrLineSeat{
+    box-shadow: 0 3px 3px -2px lightgrey;
+    height: 1px;
+    background-color: lightgray;
+  }
+  
+  .seatCategory{
+    color: lightgray;
+  }
+
+  .row_label{
+    width: 10%;
+    color: lightgray;
+  }
+
+  .row_seat{
+    width: 90%;
+  }

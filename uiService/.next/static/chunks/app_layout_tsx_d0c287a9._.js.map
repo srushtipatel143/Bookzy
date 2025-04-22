@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/Srushti/Desktop/booking%20system/uiService/app/layout.tsx"],"sourcesContent":["'use client'\r\nimport \"./globals.css\";\r\nimport \"bootstrap/dist/css/bootstrap.min.css\";\r\n// import type { Metadata } from \"next\";\r\n\r\n// export const metadata: Metadata = {\r\n//   title: \"Bookzy\",\r\n//   description:\"Booking made easy\",\r\n//   icons: {\r\n//     icon: '/booking_logo.png',\r\n//   },\r\n// };\r\n\r\nexport default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {\r\n  return (\r\n    <html lang=\"en\">\r\n      <head>\r\n        <meta charSet=\"UTF-8\" />\r\n        <link rel=\"icon\" type=\"image/svg+xml\" href=\"/booking_logo.png\" />\r\n        <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\r\n        <title>Bookzy</title>\r\n      </head>\r\n      <body>\r\n        {children}\r\n      </body>\r\n    </html>\r\n  );\r\n}\r\n"],"names":[],"mappings":";;;;AAAA;;;;AAae,SAAS,WAAW,EAAE,QAAQ,EAA2C;IACtF,qBACE,6LAAC;QAAK,MAAK;;0BACT,6LAAC;;kCACC,6LAAC;wBAAK,SAAQ;;;;;;kCACd,6LAAC;wBAAK,KAAI;wBAAO,MAAK;wBAAgB,MAAK;;;;;;kCAC3C,6LAAC;wBAAK,MAAK;wBAAW,SAAQ;;;;;;kCAC9B,6LAAC;kCAAM;;;;;;;;;;;;0BAET,6LAAC;0BACE;;;;;;;;;;;;AAIT;KAdwB","debugId":null}}]
+}

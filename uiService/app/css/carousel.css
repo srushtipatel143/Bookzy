@@ -1,0 +1,178 @@
+/* ================================= carousel css ======================================= */
+.carousel-container {
+  width: 100%;
+  height: 45vh;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+}
+
+.swiper {
+  width: 90%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: opacity 0.5s ease;
+}
+
+.carousel-slide {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background-color: #f0f0f0;
+  overflow: hidden;
+}
+
+/* Pagination Dots */
+.swiper-pagination-bullet {
+  background: gray;
+  opacity: 0.7;
+}
+
+.swiper-pagination-bullet-active {
+  background: black;
+  opacity: 1;
+}
+
+/* ================================= carousel css ======================================= */
+
+
+/* ================================= carousel slide 1 =================================== */
+
+.carousel-slide1 {
+  background: linear-gradient(to right, var(--primary-sub-color), var(--primary-main-color));
+}
+
+.left_carousel1 {
+  display: flex;
+  margin-left: 20px;
+  flex-direction: column;
+  width: 50%;
+}
+
+.right_carousel1 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+}
+
+.left_carousel1_text {
+  color: var(--secondary-sub-color);
+  font-weight: 600;
+}
+
+.left_carousel1_btn {
+  cursor: pointer;
+  background-color: var(--primary-main-color);
+  padding: 10px;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--secondary-sub-color);
+  border-radius: 5px;
+  font-weight: 600;
+}
+
+/* ================================= carousel slide 1 =================================== */
+
+/* ================================= carousel slide 2 =================================== */
+
+
+.carousel-slide2 {
+  display: flex;
+  align-items: stretch;
+  position: relative;
+  overflow: hidden;
+}
+
+.left_carousel2 {
+  background-color: var(--primary-sub-color);
+  flex: 1;
+  position: relative;
+}
+
+.left_carousel2::after {
+  content: none;
+}
+
+@media (min-width: 768px) {
+  .left_carousel2::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -15px;
+    width: 25px;
+    height: 100%;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 18px,
+      #470012 20px,
+      #470012 25px
+    );
+  }
+}
+
+
+.right_carousel2 {
+  background: linear-gradient(to left,#470012,#030f03);
+  flex: 1;
+  position: relative;
+}
+
+/* .right_carousel2::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -16px;
+  width: 25px;
+  height: 100%;
+  background: repeating-linear-gradient(to bottom,
+      #640019,
+      #640019 10px,
+      transparent 10px,
+      transparent 20px);
+} */
+
+.carousel_slide2_text{
+  font-weight:600 !important;
+  text-align: center;
+  color:whitesmoke;
+}
+
+.carousel_slide2_btn{
+  text-decoration: none;
+  border: none;
+  padding: 10px 40px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+
+/* ================================= carousel slide 2 =================================== */
+
+.carousel-slide3{
+  background: radial-gradient(circle at center,rgb(0, 4, 53,0.8), rgb(1, 1, 1));
+}
+
+.center_slide3{
+  height: 70%;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding:0 10px;
+  background: radial-gradient(circle at center,rgb(0, 4, 53,0.6), rgb(1, 1, 1));
+  color: whitesmoke;
+}

@@ -1,0 +1,54 @@
+.edit_profile {
+    --bs-gutter-x:0 !important;
+}
+
+.edit_detail {
+    width: 50%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.acc_detail1 {
+    border-radius: 10px 10px 0 0;
+    background: linear-gradient(to right, var(--primary-sub-color), var(--primary-main-color));
+}
+
+.edit_image {
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    margin: 0 30px;
+    top: 20px
+}
+
+.per_detail {
+    border-radius: 10px;
+    background-color: var(--secondary-sub-color);
+}
+
+.acc_detail {
+    border-radius: 10px;
+    background-color: var(--secondary-sub-color);
+}
+
+.lable_name{
+    width: 30%;
+}
+
+.input_name{
+    width: 70%;
+}
+.edit_pro_header{
+    font-weight: 600;
+}
+
+.phone_number::placeholder {
+    color: var(--primary-main-color) !important;
+}
+
+.phone_number{
+    background-color: rgb(255, 228, 155);
+    padding: 15px 0;
+    border: none;
+}

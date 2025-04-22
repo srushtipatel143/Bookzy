@@ -1,0 +1,38 @@
+.footer_part{
+    background-color: var( --primary-sub-color);
+}
+
+.footer_content {
+  width: 75%;
+  color: darkgrey;
+  margin: auto;
+  text-align: center;
+}
+
+.icon-style {
+  color: darkgrey;
+  font-size: 40px;
+  padding: 0 5px;
+}
+
+.ar_line {
+  flex: 1;
+  height: 0.5px;
+  background-color: darkgrey;
+  margin: 0 2rem;
+}
+
+.movie_links_tag {
+  color: rgb(109, 109, 109);
+  font-size: 0.8rem;
+}
+
+.movie_link,.movie_sep {
+  color: rgb(109, 109, 109);
+  font-size: 0.8rem;
+}
+
+.movie_link:hover {
+  cursor: pointer;
+  color: var(--secondary-sub-color);
+}

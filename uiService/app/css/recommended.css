@@ -1,0 +1,73 @@
+.recommend_movie {
+  background-color: var(--secondary-sub-color);
+}
+
+.movie_wrapper {
+  width: 90%;
+  overflow: hidden;
+}
+
+.movie_scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  display: flex;
+  gap: 10px;
+  scrollbar-width: none;
+  padding-bottom: 10px;
+}
+
+.movie_scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-card {
+  width: 268px;
+  position: relative;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.card {
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.rating_card {
+  position: absolute;
+  bottom: 0;
+  background-color: var(--primary-sub-color);
+  border-radius: 0 0 10px 10px;
+  opacity: 0.8;
+  color: var(--secondary-sub-color) !important;
+  width: 95%;
+  padding: 3px;
+}
+
+.add_box {
+  background: radial-gradient(circle at center, rgb(215, 25, 33), rgb(1, 1, 1));
+  border-radius: 10px;
+  width: 80%;
+  margin: auto;
+  height: 100px;
+}
+
+.ad_text {
+  color: whitesmoke;
+}
+
+.latestMovie_wrapper {
+  position: relative;
+  width: 95%;     
+  height: 100%;
+}
+
+.latestMovie_image,.recommendedAllMovie_image {
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.recommendedAllMovie_wrapper {
+  position: relative;
+  width: 100%;     
+  height: 80%;
+}

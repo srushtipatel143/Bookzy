@@ -1,0 +1,145 @@
+/* [project]/app/css/carousel.css [app-client] (css) */
+.carousel-container {
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 45vh;
+  display: flex;
+  overflow: hidden;
+}
+
+.swiper {
+  border-radius: 10px;
+  width: 90%;
+  height: 100%;
+}
+
+.swiper-slide {
+  justify-content: center;
+  align-items: center;
+  transition: opacity .5s;
+  display: flex;
+}
+
+.carousel-slide {
+  background-color: #f0f0f0;
+  border-radius: 10px;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  overflow: hidden;
+}
+
+.swiper-pagination-bullet {
+  opacity: .7;
+  background: gray;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1;
+  background: #000;
+}
+
+.carousel-slide1 {
+  background: linear-gradient(to right, var(--primary-sub-color), var(--primary-main-color));
+}
+
+.left_carousel1 {
+  flex-direction: column;
+  width: 50%;
+  margin-left: 20px;
+  display: flex;
+}
+
+.right_carousel1 {
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  display: flex;
+}
+
+.left_carousel1_text {
+  color: var(--secondary-sub-color);
+  font-weight: 600;
+}
+
+.left_carousel1_btn {
+  cursor: pointer;
+  background-color: var(--primary-main-color);
+  color: var(--secondary-sub-color);
+  border: none;
+  border-radius: 5px;
+  padding: 10px;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.carousel-slide2 {
+  align-items: stretch;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.left_carousel2 {
+  background-color: var(--primary-sub-color);
+  flex: 1;
+  position: relative;
+}
+
+.left_carousel2:after {
+  content: none;
+}
+
+@media (width >= 768px) {
+  .left_carousel2:after {
+    content: "";
+    background: repeating-linear-gradient(#0000, #0000 18px, #470012 20px 25px);
+    width: 25px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: -15px;
+  }
+}
+
+.right_carousel2 {
+  background: linear-gradient(to left, #470012, #030f03);
+  flex: 1;
+  position: relative;
+}
+
+.carousel_slide2_text {
+  text-align: center;
+  color: #f5f5f5;
+  font-weight: 600 !important;
+}
+
+.carousel_slide2_btn {
+  border: none;
+  border-radius: 10px;
+  padding: 10px 40px;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.carousel-slide3 {
+  background: radial-gradient(circle, #000435cc, #010101);
+}
+
+.center_slide3 {
+  text-align: center;
+  color: #f5f5f5;
+  background: radial-gradient(circle, #00043599, #010101);
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 70%;
+  padding: 0 10px;
+  display: flex;
+}
+
+/*# sourceMappingURL=app_css_carousel_css_f9ee138c._.single.css.map*/

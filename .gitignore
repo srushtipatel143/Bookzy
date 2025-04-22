@@ -1,0 +1,10 @@
+# Ignore node_modules in all services
+authService/node_modules
+movieService/node_modules
+notificationService/node_modules
+uiService/node_modules
+
+# Ignore environment files
+authService/.env
+movieService/.env
+notificationService/.env

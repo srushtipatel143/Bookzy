@@ -1,0 +1,75 @@
+/* [project]/app/css/recommended.css [app-client] (css) */
+.recommend_movie {
+  background-color: var(--secondary-sub-color);
+}
+
+.movie_wrapper {
+  width: 90%;
+  overflow: hidden;
+}
+
+.movie_scroll {
+  scrollbar-width: none;
+  gap: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  overflow: auto hidden;
+}
+
+.movie_scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.movie-card {
+  flex-shrink: 0;
+  width: 268px;
+  position: relative;
+  overflow: hidden;
+}
+
+.card {
+  border: none !important;
+  border-radius: 10px !important;
+}
+
+.rating_card {
+  background-color: var(--primary-sub-color);
+  opacity: .8;
+  border-radius: 0 0 10px 10px;
+  width: 95%;
+  padding: 3px;
+  position: absolute;
+  bottom: 0;
+  color: var(--secondary-sub-color) !important;
+}
+
+.add_box {
+  background: radial-gradient(circle, #d71921, #010101);
+  border-radius: 10px;
+  width: 80%;
+  height: 100px;
+  margin: auto;
+}
+
+.ad_text {
+  color: #f5f5f5;
+}
+
+.latestMovie_wrapper {
+  width: 95%;
+  height: 100%;
+  position: relative;
+}
+
+.latestMovie_image, .recommendedAllMovie_image {
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+.recommendedAllMovie_wrapper {
+  width: 100%;
+  height: 80%;
+  position: relative;
+}
+
+/*# sourceMappingURL=app_css_recommended_css_f9ee138c._.single.css.map*/
