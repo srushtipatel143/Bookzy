@@ -1,10 +1,13 @@
 const express=require("express");
 const app=express();
+const cors=require("cors");
 const errorHandler = require("./helpers/errors/errorHandler")
 app.use(express.json());
 const adminRouter=require("./routes/adminRoute");
 const ownerRouter=require("./routes/ownerRoute");
 const userRouter=require("./routes/userRoute");
+
+app.use(cors());
 app.use("/movie/admin",adminRouter);
 app.use("/movie/owner",ownerRouter);
 app.use("/movie/user",userRouter);

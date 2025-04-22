@@ -8,3 +8,4 @@ uiService/node_modules
 authService/.env
 movieService/.env
 notificationService/.env
+uiService/.env.local

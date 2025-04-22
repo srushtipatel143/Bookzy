@@ -2,7 +2,7 @@
 
 import { IoIosArrowDown } from "react-icons/io";
 import { IoSearch } from "react-icons/io5";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoMenu } from "react-icons/io5";
 import { useRouter } from 'next/navigation';
 import "../../css/userlogin.css";
@@ -10,12 +10,20 @@ import Searchfield from "./search";
 import RightBar from "./rightBar";
 import Citymodal from "./citymodal";
 import Image from 'next/image';
+import Cookies from "js-cookie";
 
 const Navbar = () => {
   const [canvasshow, setCanvasShow] = useState(false);
   const [topCanvas, setTopCanvas] = useState(false)
-  const [showSearch, setShowSearch] = useState(false)
+  const [showSearch, setShowSearch] = useState(false);
+  const [selectedCity,setSelectedCity]=useState<string>("");
   const router = useRouter();
+
+  useEffect(()=>{
+    const selectedCity = Cookies.get("selected_city");
+    const city = selectedCity ? JSON.parse(selectedCity) : null;
+    setSelectedCity(city.city);
+  },[topCanvas]);
   return (
     <div className="container-fluid p-0 navbar_bg">
       {!showSearch ? (
@@ -51,7 +59,7 @@ const Navbar = () => {
             </div>
             <div className="d-flex align-items-center gap-4">
               <div className="d-flex align-items-center gap-1">
-                <p className="m-0">Ahmedabad</p>
+                <p className="m-0">{selectedCity}</p>
                 <IoIosArrowDown style={{ cursor: "pointer" }} onClick={() => setTopCanvas(true)} size={18} />
               </div>
               <Citymodal topCanvas={topCanvas} setTopCanvas={setTopCanvas} />
