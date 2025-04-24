@@ -93,4 +93,18 @@
   background: var(--secondary-sub-color);
 }
 
+.city_modal:hover {
+  background-color: var(--primary-main-color);
+  color: var(--secondary-sub-color);
+}
+
+.selected_city {
+  background-color: var(--primary-main-color);
+  color: var(--secondary-sub-color);
+  cursor: pointer;
+  border: 1px solid var(--primary-main-color);
+  border-radius: 20px;
+  padding: 8px 10px;
+}
+
 /*# sourceMappingURL=app_css_userlogin_css_f9ee138c._.single.css.map*/

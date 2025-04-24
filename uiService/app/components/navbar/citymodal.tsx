@@ -19,24 +19,32 @@ interface CityType {
 
 const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
   const [city, setCity] = useState<CityType[]>([]);
+  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchCities = async () => {
       try {
         const getCityRes = await axios.get(`${API_USER_URL}/getallcity`);
-        console.log(getCityRes?.data?.data)
         setCity(getCityRes?.data?.data)
+        const selectedCity = Cookies.get("selected_city");
+        if(selectedCity){
+          const cityData=JSON.parse(selectedCity);
+          setSelectedCityId(cityData.id);
+        }
       } catch (error) {
         console.error("Error fetching cities:", error);
       }
     };
+
     fetchCities();
+
   }, []);
 
-  const selectCity =(cityName:object)=>{
-    Cookies.set("selected_city",JSON.stringify(cityName));
+  const selectCity = (cityObj: CityType) => {
+    Cookies.set("selected_city", JSON.stringify(cityObj), { expires: 3650 });
+    setSelectedCityId(cityObj.id);
     setTopCanvas(false);
-  }
+  };
 
   return (
     <Modal show={topCanvas} onHide={() => setTopCanvas(false)} backdrop={true} contentClassName="custom_modal">
@@ -61,7 +69,7 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
       <Modal.Body>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
           {city.map((item) => (
-            <span key={item.id} className="city_modal" onClick={()=>selectCity(item)} >
+            <span key={item.id} className={`${item.id === selectedCityId ? "selected_city" : "city_modal"}`}  onClick={() => selectCity(item)} >
               {item.city}
             </span>
           ))}

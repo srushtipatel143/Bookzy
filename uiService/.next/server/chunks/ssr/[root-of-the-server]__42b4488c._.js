@@ -574,20 +574,28 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie
 ;
 const Citymodal = ({ topCanvas, setTopCanvas })=>{
     const [city, setCity] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])([]);
+    const [selectedCityId, setSelectedCityId] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const fetchCities = async ()=>{
             try {
                 const getCityRes = await __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$axios$2f$lib$2f$axios$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get(`${__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$utils$2f$config$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["API_USER_URL"]}/getallcity`);
-                console.log(getCityRes?.data?.data);
                 setCity(getCityRes?.data?.data);
+                const selectedCity = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get("selected_city");
+                if (selectedCity) {
+                    const cityData = JSON.parse(selectedCity);
+                    setSelectedCityId(cityData.id);
+                }
             } catch (error) {
                 console.error("Error fetching cities:", error);
             }
         };
         fetchCities();
     }, []);
-    const selectCity = (cityName)=>{
-        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].set("selected_city", JSON.stringify(cityName));
+    const selectCity = (cityObj)=>{
+        __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].set("selected_city", JSON.stringify(cityObj), {
+            expires: 3650
+        });
+        setSelectedCityId(cityObj.id);
         setTopCanvas(false);
     };
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$bootstrap$2f$esm$2f$Modal$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Modal$3e$__["Modal"], {
@@ -617,22 +625,22 @@ const Citymodal = ({ topCanvas, setTopCanvas })=>{
                             }
                         }, void 0, false, {
                             fileName: "[project]/app/components/navbar/citymodal.tsx",
-                            lineNumber: 46,
+                            lineNumber: 54,
                             columnNumber: 13
                         }, this)
                     }, void 0, false, {
                         fileName: "[project]/app/components/navbar/citymodal.tsx",
-                        lineNumber: 45,
+                        lineNumber: 53,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
                     fileName: "[project]/app/components/navbar/citymodal.tsx",
-                    lineNumber: 44,
+                    lineNumber: 52,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/components/navbar/citymodal.tsx",
-                lineNumber: 43,
+                lineNumber: 51,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$bootstrap$2f$esm$2f$Modal$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__Modal$3e$__["Modal"].Body, {
@@ -643,28 +651,28 @@ const Citymodal = ({ topCanvas, setTopCanvas })=>{
                         gap: "10px"
                     },
                     children: city.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
-                            className: "city_modal",
+                            className: `${item.id === selectedCityId ? "selected_city" : "city_modal"}`,
                             onClick: ()=>selectCity(item),
                             children: item.city
                         }, item.id, false, {
                             fileName: "[project]/app/components/navbar/citymodal.tsx",
-                            lineNumber: 64,
+                            lineNumber: 72,
                             columnNumber: 13
                         }, this))
                 }, void 0, false, {
                     fileName: "[project]/app/components/navbar/citymodal.tsx",
-                    lineNumber: 62,
+                    lineNumber: 70,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/components/navbar/citymodal.tsx",
-                lineNumber: 61,
+                lineNumber: 69,
                 columnNumber: 7
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/components/navbar/citymodal.tsx",
-        lineNumber: 42,
+        lineNumber: 50,
         columnNumber: 5
     }, this);
 };
@@ -709,8 +717,12 @@ const Navbar = ()=>{
     const router = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$navigation$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useRouter"])();
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         const selectedCity = __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$js$2d$cookie$2f$dist$2f$js$2e$cookie$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].get("selected_city");
-        const city = selectedCity ? JSON.parse(selectedCity) : null;
-        setSelectedCity(city.city);
+        if (selectedCity) {
+            const city = selectedCity ? JSON.parse(selectedCity) : null;
+            setSelectedCity(city.city);
+        } else {
+            setTopCanvas(true);
+        }
     }, [
         topCanvas
     ]);
@@ -738,7 +750,7 @@ const Navbar = ()=>{
                                         height: 45
                                     }, void 0, false, {
                                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                                        lineNumber: 34,
+                                        lineNumber: 39,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -751,13 +763,13 @@ const Navbar = ()=>{
                                         children: "Bookzy"
                                     }, void 0, false, {
                                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                                        lineNumber: 35,
+                                        lineNumber: 40,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/components/navbar/navbar.tsx",
-                                lineNumber: 33,
+                                lineNumber: 38,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -771,12 +783,12 @@ const Navbar = ()=>{
                                                 size: 18
                                             }, void 0, false, {
                                                 fileName: "[project]/app/components/navbar/navbar.tsx",
-                                                lineNumber: 46,
+                                                lineNumber: 51,
                                                 columnNumber: 21
                                             }, this)
                                         }, void 0, false, {
                                             fileName: "[project]/app/components/navbar/navbar.tsx",
-                                            lineNumber: 45,
+                                            lineNumber: 50,
                                             columnNumber: 19
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -792,24 +804,24 @@ const Navbar = ()=>{
                                             }
                                         }, void 0, false, {
                                             fileName: "[project]/app/components/navbar/navbar.tsx",
-                                            lineNumber: 48,
+                                            lineNumber: 53,
                                             columnNumber: 19
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/app/components/navbar/navbar.tsx",
-                                    lineNumber: 44,
+                                    lineNumber: 49,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
                                 fileName: "[project]/app/components/navbar/navbar.tsx",
-                                lineNumber: 43,
+                                lineNumber: 48,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                        lineNumber: 32,
+                        lineNumber: 37,
                         columnNumber: 13
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -823,7 +835,7 @@ const Navbar = ()=>{
                                         children: selectedCity
                                     }, void 0, false, {
                                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                                        lineNumber: 62,
+                                        lineNumber: 67,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$io$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["IoIosArrowDown"], {
@@ -834,13 +846,13 @@ const Navbar = ()=>{
                                         size: 18
                                     }, void 0, false, {
                                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                                        lineNumber: 63,
+                                        lineNumber: 68,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/components/navbar/navbar.tsx",
-                                lineNumber: 61,
+                                lineNumber: 66,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$navbar$2f$citymodal$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -848,7 +860,7 @@ const Navbar = ()=>{
                                 setTopCanvas: setTopCanvas
                             }, void 0, false, {
                                 fileName: "[project]/app/components/navbar/navbar.tsx",
-                                lineNumber: 65,
+                                lineNumber: 70,
                                 columnNumber: 15
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -860,7 +872,7 @@ const Navbar = ()=>{
                                         children: "Sign in"
                                     }, void 0, false, {
                                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                                        lineNumber: 80,
+                                        lineNumber: 85,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$react$2d$icons$2f$io5$2f$index$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["IoMenu"], {
@@ -871,7 +883,7 @@ const Navbar = ()=>{
                                         onClick: ()=>setCanvasShow(true)
                                     }, void 0, false, {
                                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                                        lineNumber: 81,
+                                        lineNumber: 86,
                                         columnNumber: 17
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$navbar$2f$rightBar$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -879,41 +891,41 @@ const Navbar = ()=>{
                                         setCanvasShow: setCanvasShow
                                     }, void 0, false, {
                                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                                        lineNumber: 82,
+                                        lineNumber: 87,
                                         columnNumber: 17
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/components/navbar/navbar.tsx",
-                                lineNumber: 79,
+                                lineNumber: 84,
                                 columnNumber: 15
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/components/navbar/navbar.tsx",
-                        lineNumber: 60,
+                        lineNumber: 65,
                         columnNumber: 13
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/components/navbar/navbar.tsx",
-                lineNumber: 31,
+                lineNumber: 36,
                 columnNumber: 11
             }, this)
         }, void 0, false, {
             fileName: "[project]/app/components/navbar/navbar.tsx",
-            lineNumber: 30,
+            lineNumber: 35,
             columnNumber: 9
         }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$app$2f$components$2f$navbar$2f$search$2e$tsx__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
             setShowSearch: setShowSearch
         }, void 0, false, {
             fileName: "[project]/app/components/navbar/navbar.tsx",
-            lineNumber: 88,
+            lineNumber: 93,
             columnNumber: 9
         }, this)
     }, void 0, false, {
         fileName: "[project]/app/components/navbar/navbar.tsx",
-        lineNumber: 28,
+        lineNumber: 33,
         columnNumber: 5
     }, this);
 };

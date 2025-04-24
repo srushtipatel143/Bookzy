@@ -1,0 +1,109 @@
+/* [project]/app/css/movie.css [app-client] (css) */
+.movie_detail {
+  background-color: var(--secondary-main-color);
+  flex-wrap: wrap;
+}
+
+.movie_left {
+  background-color: gray;
+  border-radius: 10px;
+  width: 250px;
+  height: 300px;
+}
+
+.movie_right {
+  color: #fff;
+}
+
+.movie_right ul {
+  gap: 30px;
+  display: flex;
+}
+
+.movie_rate_section {
+  background-color: #d3d3d3;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.movie_rate_btn {
+  background-color: var(--secondary-main-color);
+  color: var(--secondary-sub-color);
+  border: none;
+  border-radius: 10px;
+  margin: 0 10px;
+  padding: 7px 15px;
+}
+
+.movie_book_btn {
+  background-color: var(--primary-main-color);
+  color: var(--secondary-sub-color);
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+  font-size: 1.2rem;
+}
+
+.movie_type_lan {
+  gap: 10px;
+  margin: 10px 0;
+  display: flex;
+}
+
+.movie_type_sec, .movie_lan_sec {
+  background-color: #d3d3d3;
+  border-radius: 5px;
+  padding: 3px 5px;
+}
+
+.about_movie {
+  text-align: justify;
+  width: 100%;
+  padding: 0 48px;
+}
+
+@media (width <= 855px) {
+  .about_movie {
+    width: 100%;
+    padding: 0 24px;
+  }
+}
+
+.about_movie_title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.cast_img {
+  background-color: #d3d3d3;
+  border: 1px solid #d3d3d3;
+  border-radius: 50%;
+}
+
+.cast-card {
+  text-align: center;
+  flex-shrink: 0;
+  width: 200px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cast-card p {
+  margin-top: 5px;
+  font-size: 1rem;
+  font-weight: 400;
+}
+
+.cast_scroll {
+  scrollbar-width: none;
+  gap: 10px;
+  padding-bottom: 10px;
+  display: flex;
+  overflow: auto hidden;
+}
+
+.cast_scroll::-webkit-scrollbar {
+  display: none;
+}
+
+/*# sourceMappingURL=app_css_movie_css_f9ee138c._.single.css.map*/

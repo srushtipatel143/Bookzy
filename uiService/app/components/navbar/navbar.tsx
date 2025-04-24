@@ -21,8 +21,13 @@ const Navbar = () => {
 
   useEffect(()=>{
     const selectedCity = Cookies.get("selected_city");
-    const city = selectedCity ? JSON.parse(selectedCity) : null;
-    setSelectedCity(city.city);
+    if(selectedCity){
+      const city = selectedCity ? JSON.parse(selectedCity) : null;
+      setSelectedCity(city.city);
+    }
+    else{
+      setTopCanvas(true)
+    }
   },[topCanvas]);
   return (
     <div className="container-fluid p-0 navbar_bg">

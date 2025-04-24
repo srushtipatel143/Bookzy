@@ -36,16 +36,16 @@
 }
 
 .form_styling {
-  box-shadow: 0px 4px 10px rgba(4,4,4,0.3);
+  box-shadow: 0px 4px 10px rgba(4, 4, 4, 0.3);
   padding: 20px;
   background-color: var(--secondary-sub-color);
 }
 
-.signin_btn{
+.signin_btn {
   border: none;
   padding: 3px 7px;
   border-radius: 5px;
-  background-color: var( --primary-main-color);
+  background-color: var(--primary-main-color);
   color: var(--secondary-sub-color);
 }
 
@@ -64,30 +64,45 @@
   .search-input {
     width: 180px !important;
   }
-  .offcanvas.offcanvas-end{
+
+  .offcanvas.offcanvas-end {
     width: 300px !important;
   }
 }
 
-.search_top{
-  background-color:rgba(243, 243, 243);
+.search_top {
+  background-color: rgba(243, 243, 243);
 }
 
-.custom_modal{
+.custom_modal {
   border-radius: 0px !important;
 }
 
-.city_modal{
- padding: 8px 10px;
- border-radius:20px;
- cursor: pointer;
- border: 1px solid var( --primary-main-color);
+.city_modal {
+  padding: 8px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1px solid var(--primary-main-color);
 }
 
-.form-control:focus{
- border-color: #dee2e6 !important;
+.form-control:focus {
+  border-color: #dee2e6 !important;
 }
 
-.navbar_bg{
+.navbar_bg {
   background: var(--secondary-sub-color);
+}
+
+.city_modal:hover {
+  background-color: var(--primary-main-color);
+  color: var(--secondary-sub-color);
+}
+
+.selected_city {
+  background-color: var(--primary-main-color);
+  color: var(--secondary-sub-color);
+  padding: 8px 10px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: 1px solid var(--primary-main-color);
 }
