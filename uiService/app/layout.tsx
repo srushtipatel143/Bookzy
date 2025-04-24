@@ -1,5 +1,6 @@
 'use client'
 import "./globals.css";
+import { SearchProvider } from "./components/context/searchContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 // import type { Metadata } from "next";
 
@@ -21,7 +22,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <title>Bookzy</title>
       </head>
       <body>
-        {children}
+        <SearchProvider>
+          {children}
+        </SearchProvider>
       </body>
     </html>
   );

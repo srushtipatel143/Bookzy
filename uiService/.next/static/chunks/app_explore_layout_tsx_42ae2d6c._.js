@@ -8,7 +8,7 @@
   "static/chunks/node_modules_react-icons_lib_74ccc930._.js",
   "static/chunks/node_modules_next_d3bb8cc9._.js",
   "static/chunks/node_modules_axios_lib_99999129._.js",
-  "static/chunks/node_modules_fd363bf3._.js",
+  "static/chunks/node_modules_dda7cd3e._.js",
   "static/chunks/app_88f6090f._.js",
   "static/chunks/app_css_44627873._.css"
 ],

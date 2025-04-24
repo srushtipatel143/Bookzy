@@ -22,6 +22,7 @@ const movieInfoSchema = new mongoose.Schema({
     },
     imageURl: {
         type: String,
+        default:"https://m.media-amazon.com/images/M/MV5BZWU3NDk5MjgtMTY2My00Yzg1LTg2OGYtZTE3ZTAzNmFkYTI4XkEyXkFqcGc@._V1_.jpg",
         trim: true
     },
     movieLanguage: [{
@@ -65,7 +66,9 @@ const movieInfoSchema = new mongoose.Schema({
             trim: true
         },
         imageUrl: {
-            type: String
+            type: String,
+            trim:true,
+            default:"https://www.citypng.com/public/uploads/preview/download-black-male-user-profile-icon-png-701751695035033bwdeymrpov.png"
         }
     }]
 

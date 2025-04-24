@@ -5,18 +5,47 @@ import { FiArrowLeft } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import "../../css/search.css";
 import { useEffect, useState } from "react";
+import {useSearch } from "../context/searchContext";
+import Cookies from "js-cookie";
+import { API_USER_URL } from "../../utils/config";
+import {toast,ToastContainer} from "react-toastify";
+import axios from "axios";
 
-interface searchfiledProp {
-    setShowSearch: (value: boolean) => void
+interface cinema{
+    id:number,
+    cinemaName:string,
+    cinemaLandmark:string
 }
 
-const Searchfield: React.FC<searchfiledProp> = ({ setShowSearch }) => {
+const Searchfield = () => {
     const router = useRouter();
     const pathname = usePathname();
+    const {setShowSearch } = useSearch();
     const [showDivSection, setShowDivSection] = useState(true);
     const [triggerCinemaNavigate, setTriggerCinemaNavigate] = useState(false);
     const [triggerMovieNavigate, setTriggerMovieNavigate] = useState(false);
     const [currentpath, setCurrentPath] = useState(pathname);
+    const [cinema,setcinema]=useState<cinema[]>([]);
+    
+    useEffect(()=>{
+        const fetchDetails=async()=>{
+            try {
+                const selectedCity=Cookies.get("selected_city");
+                if (!selectedCity) {
+                    toast.error("City is not selected");
+                    return;
+                }
+                const cityData = JSON.parse(selectedCity);
+                const getCinemaRes=await axios.get(`${API_USER_URL}/getAllCinemaByCity/${cityData.id}`);
+                const cinemaDetails=getCinemaRes?.data?.data;
+                setcinema(cinemaDetails);
+
+            } catch (error:any) {
+                toast.error(error.response.data.message)
+            }
+        }
+        fetchDetails();
+    },[])
 
     useEffect(() => {
         if (triggerCinemaNavigate) {
@@ -25,7 +54,7 @@ const Searchfield: React.FC<searchfiledProp> = ({ setShowSearch }) => {
         if (triggerMovieNavigate) {
             router.push("/explore/movie")
         }
-    }, [triggerCinemaNavigate,triggerMovieNavigate]);
+    }, [triggerCinemaNavigate, triggerMovieNavigate]);
 
     useEffect(() => {
         if (triggerCinemaNavigate && pathname !== currentpath) {
@@ -37,7 +66,7 @@ const Searchfield: React.FC<searchfiledProp> = ({ setShowSearch }) => {
     }, [pathname]);
 
     return (
-        <div className="container-fluid position-relative recommend_movie m-0 p-0" style={{ minHeight: "100vh" }}>
+        <div className="container-fluid position-relative search_top_priority recommend_movie m-0 p-0" style={{ minHeight: "100vh" }}>
             <div className="d-flex align-items-center search_top justify-content-between px-3  py-5">
                 <div style={{ cursor: "pointer" }} onClick={() => setShowSearch(false)}>
                     <FiArrowLeft size={30} />
@@ -111,15 +140,16 @@ const Searchfield: React.FC<searchfiledProp> = ({ setShowSearch }) => {
                             setCurrentPath(pathname);
                             setTriggerCinemaNavigate(true);
                         }}>
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9, 19].map((item, index) => (
-                                <ul key={index} className="fil_cinema_name">
-                                    <li className="fil_cinema_text">INOX: Himalaya mall,DriveIn Road,Ahmedabad</li>
+                            {cinema.map((item) => (
+                                <ul key={item.id} className="fil_cinema_name">
+                                    <li className="fil_cinema_text">{item.cinemaName} : {item.cinemaLandmark}</li>
                                 </ul>
                             ))}
                         </div>
                     </div>
                 )}
             </div>
+            <ToastContainer/>
         </div>
     );
 };
