@@ -4,6 +4,7 @@ const userMovieRatingSchema = new mongoose.Schema({
     movieId: {
         type:mongoose.Schema.ObjectId,
         required: true,
+        ref: "movieInfoCollection"
     },
     totalRating: {
         type: Number,

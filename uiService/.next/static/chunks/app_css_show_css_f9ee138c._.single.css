@@ -58,6 +58,20 @@
   overflow-x: auto;
 }
 
+@media (width <= 575px) {
+  .show_Date_sec {
+    width: 100%;
+  }
+
+  .show_movie_name_small {
+    flex-direction: column;
+  }
+
+  .show_movie_name_right {
+    display: flex !important;
+  }
+}
+
 .show_detail_date {
   background-color: #d3d3d3;
   border-radius: 15px;
@@ -133,7 +147,6 @@
 .show_movie_name_right {
   flex-wrap: wrap;
   gap: 10px;
-  width: 70%;
   display: flex;
 }
 

@@ -21065,7 +21065,7 @@ function AppContainer(param) {
                             children: /*#__PURE__*/ (0, _jsxruntime.jsx)(_headmanagercontextsharedruntime.HeadManagerContext.Provider, {
                                 value: headManager,
                                 children: /*#__PURE__*/ (0, _jsxruntime.jsx)(_imageconfigcontextsharedruntime.ImageConfigContext.Provider, {
-                                    value: ("TURBOPACK compile-time value", JSON.parse('{"deviceSizes":[640,750,828,1080,1200,1920,2048,3840],"imageSizes":[16,32,48,64,96,128,256,384],"path":"/_next/image","loader":"default","dangerouslyAllowSVG":false,"unoptimized":false,"domains":[],"remotePatterns":[{"protocol":"https","hostname":"images.deccanherald.com","port":"","pathname":"/**"},{"protocol":"https","hostname":"encrypted-tbn0.gstatic.com","port":"","pathname":"/**"},{"protocol":"https","hostname":"img.freepik.com","port":"","pathname":"/**"}]}')),
+                                    value: ("TURBOPACK compile-time value", JSON.parse('{"deviceSizes":[640,750,828,1080,1200,1920,2048,3840],"imageSizes":[16,32,48,64,96,128,256,384],"path":"/_next/image","loader":"default","dangerouslyAllowSVG":false,"unoptimized":false,"domains":[],"remotePatterns":[{"protocol":"https","hostname":"images.deccanherald.com","port":"","pathname":"/**"},{"protocol":"https","hostname":"encrypted-tbn0.gstatic.com","port":"","pathname":"/**"},{"protocol":"https","hostname":"img.freepik.com","port":"","pathname":"/**"},{"protocol":"https","hostname":"m.media-amazon.com","port":"","pathname":"/**"}]}')),
                                     children: children
                                 })
                             })

@@ -183,17 +183,37 @@ const getMoviesInCinema = async (req, res, next) => {
 
 const getLatestMovie = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const id = Number(req.params.id);
         const now = new Date();
         const istOffset = 5.5 * 60 * 60 * 1000;
         const istToday = new Date(now.getTime() + istOffset);
         istToday.setHours(0, 0, 0, 0);
         const today = new Date(istToday.getTime() - istOffset);
 
-        const getMovie = await cityMovieMapping.find({
-            cityId: id,
-            showTime: { $gte: today }
-        }).populate("movieId");
+        // const getMovie = await cityMovieMapping.find({
+        //     cityId: id,
+        //     showTime: { $gte: today }
+        // }).populate("movieId");
+
+        const getMovie = await cityMovieMapping.aggregate([
+            {
+              $match: {
+                cityId: id,
+                showTime: { $gte: today }
+              }
+            },
+            {
+              $lookup: {
+                from: "movieinfocollections",
+                localField: "movieId",
+                foreignField: "_id",
+                as: "movieDetail"
+              }
+            },
+            {
+              $unwind: "$movieDetail"
+            }
+          ]);
 
         res.status(200).json({
             success: true,

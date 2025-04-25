@@ -709,7 +709,6 @@ button.swiper-pagination-bullet {
 
 .rating_card {
   background-color: var(--primary-sub-color);
-  opacity: .8;
   border-radius: 0 0 10px 10px;
   width: 95%;
   padding: 3px;

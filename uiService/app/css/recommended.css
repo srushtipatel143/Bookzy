@@ -37,7 +37,7 @@
   bottom: 0;
   background-color: var(--primary-sub-color);
   border-radius: 0 0 10px 10px;
-  opacity: 0.8;
+  /* opacity: 0.8; */
   color: var(--secondary-sub-color) !important;
   width: 95%;
   padding: 3px;

@@ -4,25 +4,61 @@ import "../../css/recommended.css";
 import { IoIosArrowForward } from "react-icons/io";
 import { FaStar } from "react-icons/fa";
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import { toast, ToastContainer } from "react-toastify";
+import axios from "axios";
+import { API_USER_URL } from "../../utils/config";
+
+interface MovieDetails {
+  imageURl: string;
+}
+
+interface latestMovie{
+  _id:string
+  movieDetail:MovieDetails
+}
 
 const LatestMovie = () => {
+  const router = useRouter();
+  const [latestMovies,setLatestMovies]=useState<latestMovie[]>([]);
+  useEffect(() => {
+    const fetchDetails =async() => {
+      try {
+        const selectedCity = Cookies.get("selected_city");
+        if (selectedCity) {
+          const cityData = JSON.parse(selectedCity);
+          const cityID=cityData.id;
+          const getLatestMovies = await axios.get(`${API_USER_URL}/getlatestmovie/${cityID}`);
+          setLatestMovies(getLatestMovies.data.data)
+        }
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+      }
+    }
+    fetchDetails();
+  }, []);
+
+  console.log(latestMovies)
+
   return (
-    <div className="container-fluid p-0" style={{ backgroundColor: "#2C2B2B" }}>
+    <div className="container-fluid p-0">
       <div className="movie_wrapper mx-auto">
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
-          <p className="title_font text-light my-3">Latest Movies</p>
+          <p className="title_font text-dark my-3">Latest Movies</p>
           <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }}>
             See All <IoIosArrowForward />
           </p>
         </div>
 
         <div className="movie_scroll mb-3">
-          {[1, 2, 3, 4, 5, 6, 7].map((item) => (
-            <div key={item} className="movie-card p-0">
+          {latestMovies.map((item) => (
+            <div key={item._id} className="movie-card p-0" onClick={() => router.push("/explore/movie")}>
               <div style={{ height: "350px" }}>
                 <div className="latestMovie_wrapper">
                   <Image
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrwFBFgTscQ8nz7a0Vi3BbA5OU0M4Wuu7itw&s"
+                    src={item.movieDetail.imageURl}
                     alt="movie"
                     fill
                     className="latestMovie_image"
@@ -39,6 +75,7 @@ const LatestMovie = () => {
           ))}
         </div>
       </div>
+      <ToastContainer />
     </div>
   );
 };

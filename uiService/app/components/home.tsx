@@ -16,9 +16,9 @@ const Homescreen = () => {
             <div className="container-fluid p-0">
                 <Navbar />
                 <Carousal />
-                <RecommendedMovie />
-                <Ad />
                 <LatestMovie />
+                <Ad />
+                <RecommendedMovie />
                 <UpcomingMovie />
                 <Footer />
             </div>

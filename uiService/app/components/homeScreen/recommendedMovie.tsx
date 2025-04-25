@@ -10,10 +10,10 @@ const RecommendedMovie = () => {
   const router = useRouter();
 
   return (
-    <div className="container-fluid recommend_movie p-0">
+    <div className="container-fluid recommend_movie  p-0" style={{ backgroundColor: "#2C2B2B" }}>
       <div className="movie_wrapper mx-auto">
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
-          <p className="title_font my-3">Recommended Movies</p>
+          <p className="title_font text-light my-3">Recommended Movies</p>
           <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() => router.push("/explore/recommendedall")}>
             See All <IoIosArrowForward />
           </p>
