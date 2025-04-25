@@ -14,7 +14,7 @@
 
 @media (width <= 855px) {
   .show_detail_title {
-    width: 100%;
+    width: 80%;
   }
 
   .show_detail_title_ext {
@@ -150,6 +150,12 @@
   width: 90%;
   margin: auto;
   display: flex;
+}
+
+@media (width <= 855px) {
+  .cinema_list {
+    width: 80%;
+  }
 }
 
 .cinema_name {

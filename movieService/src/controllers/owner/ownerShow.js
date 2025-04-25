@@ -122,7 +122,7 @@ const addShow = async (req, res, next) => {
 
 
         const getSeatQuery = `SELECT seatinfo.cinemaId as cinemaId,seatinfo.screenId as screenId,
-        rowName,seatName FROM booking.seatinfo
+        rowName,seatName FROM seatinfo
         join rowsinfo on rowsinfo.id=seatinfo.RowId
         join screen on seatinfo.screenId=screen.id where screen.id=?`;
 

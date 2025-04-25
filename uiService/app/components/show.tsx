@@ -37,7 +37,7 @@ const Showlist = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="show_filter_sec">
+                        <div className="show_filter_sec d-none d-sm-flex">
                             <div className="show_detail_ext ms-auto">Hindi-2D</div>
                             <div className="show_detail_ext">Price Range</div>
                             <div className="show_detail_ext"> <IoSearch size={18} /></div>
@@ -51,7 +51,7 @@ const Showlist = () => {
                 <div className="d-flex flex-column">
                     {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item, index) => (
                         <div key={index} className="show_movie_name">
-                            <div className="d-flex m-2">
+                            <div className="d-flex show_movie_name_small   m-2">
                                 <div className="show_movie_name_left"><p className="fs-6">Sikandar</p></div>
                                 <div className="show_movie_name_right">
                                     {["1:00 PM", "1:00 PM", "1:00 PM", "1:00 PM", "1:00 PM", "1:00 PM", "1:00 PM"].map((item, index) => (

@@ -14,7 +14,7 @@
 
 @media (width <= 855px) {
   .show_detail_title {
-    width: 100%;
+    width: 80%;
   }
 
   .show_detail_title_ext {

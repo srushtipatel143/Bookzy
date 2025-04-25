@@ -46,7 +46,7 @@ const Cinemascreen = () => {
             <div className="container-fluid p-0 mt-3 show_inner_detail">
                 <div className="d-flex flex-column mt-1 show_detail_title show_detail_title_ext">
                     <div
-                        className="position-absolute start-0 mt-2 ms-2"
+                        className="position-absolute start-0 mt-2 px-2"
                         style={{ cursor: "pointer" }}
                         onClick={() => router.back()} >
                         <FiArrowLeft size={20} color="black" />
