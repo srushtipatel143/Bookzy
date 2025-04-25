@@ -13,12 +13,14 @@
 
   @media (max-width: 855px) {
     .show_detail_title {
-      width: 100%;
+      width: 80%;
     }
     .show_detail_title_ext{
         padding: 0 5px;
     }
   }
+
+
 
   .show_detail_title_text{
     font-size: 1.5rem;
@@ -55,6 +57,19 @@
     overflow-x: auto;
     padding: 10px 0;
   }
+
+  @media (max-width: 575) {
+    .show_Date_sec {
+      width: 100%;
+    }
+    .show_movie_name_small{
+      flex-direction: column;
+    }
+    .show_movie_name_right{
+      display: flex !important;
+    }
+  }
+
 
   .show_detail_date {
     display: flex;
@@ -132,7 +147,7 @@
   .show_movie_name_right{
     display: flex;
     flex-wrap: wrap;
-    width: 70%;
+    /* width: 70%; */
     gap: 10px;
   }
 
