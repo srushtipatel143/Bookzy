@@ -890,28 +890,21 @@ const Searchfield = ()=>{
                                 setCurrentPath(pathname);
                                 setTriggerCinemaNavigate(true);
                             },
-                            children: [
-                                1,
-                                2,
-                                3,
-                                4,
-                                5,
-                                6,
-                                7,
-                                8,
-                                9,
-                                19
-                            ].map((item, index)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
+                            children: cinema.map((item)=>/*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("ul", {
                                     className: "fil_cinema_name",
                                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$compiled$2f$react$2f$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$client$5d$__$28$ecmascript$29$__["jsxDEV"])("li", {
                                         className: "fil_cinema_text",
-                                        children: "INOX: Himalaya mall,DriveIn Road,Ahmedabad"
-                                    }, void 0, false, {
+                                        children: [
+                                            item.cinemaName,
+                                            " : ",
+                                            item.cinemaLandmark
+                                        ]
+                                    }, void 0, true, {
                                         fileName: "[project]/app/components/navbar/search.tsx",
                                         lineNumber: 145,
                                         columnNumber: 37
                                     }, this)
-                                }, index, false, {
+                                }, item.id, false, {
                                     fileName: "[project]/app/components/navbar/search.tsx",
                                     lineNumber: 144,
                                     columnNumber: 33

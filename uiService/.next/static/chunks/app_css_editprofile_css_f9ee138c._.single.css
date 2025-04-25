@@ -10,6 +10,18 @@
   display: flex;
 }
 
+@media (width <= 1024px) {
+  .edit_detail {
+    width: 75%;
+  }
+}
+
+@media (width <= 768px) {
+  .edit_detail {
+    width: 90%;
+  }
+}
+
 .acc_detail1 {
   background: linear-gradient(to right, var(--primary-sub-color), var(--primary-main-color));
   border-radius: 10px 10px 0 0;

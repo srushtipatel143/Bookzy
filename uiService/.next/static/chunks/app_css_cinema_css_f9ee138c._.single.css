@@ -8,6 +8,12 @@
   display: flex;
 }
 
+@media (width <= 855px) {
+  .cinema_list {
+    width: 80%;
+  }
+}
+
 .cinema_name {
   cursor: pointer;
   background-color: var(--secondary-sub-color);
