@@ -11,7 +11,7 @@ const getAllCity = async (req, res, next) => {
         const [cityResponse] = await pool.execute(query);
         return res.status(200).json({ message: "get city successfully", data: cityResponse })
     } catch (error) {
-        return next(new errorHandler("Something went wrong",500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -38,7 +38,7 @@ const getSingleMovie = async (req, res, next) => {
             data: movieData
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -98,7 +98,7 @@ const getShow = async (req, res, next) => {
 
     } catch (error) {
         console.log(error)
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -143,7 +143,7 @@ const getMovieforcinema = async (req, res, next) => {
             data: responseData
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -160,7 +160,7 @@ const getMoviesInCity = async (req, res, next) => {
             data: getMovie
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -177,7 +177,7 @@ const getMoviesInCinema = async (req, res, next) => {
             data: getMovie
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -197,23 +197,37 @@ const getLatestMovie = async (req, res, next) => {
 
         const getMovie = await cityMovieMapping.aggregate([
             {
-              $match: {
-                cityId: id,
-                showTime: { $gte: today }
-              }
+                $match: {
+                    cityId: id,
+                    showTime: { $gte: today }
+                }
             },
             {
-              $lookup: {
-                from: "movieinfocollections",
-                localField: "movieId",
-                foreignField: "_id",
-                as: "movieDetail"
-              }
+                $lookup: {
+                    from: "movieinfocollections",
+                    localField: "movieId",
+                    foreignField: "_id",
+                    as: "movieDetail"
+                }
             },
             {
-              $unwind: "$movieDetail"
+                $unwind: "$movieDetail"
+            },
+            {
+                $lookup: {
+                    from: "usermovieratingcollections",
+                    localField: "movieDetail._id",
+                    foreignField: "movieId",
+                    as: "ratingDetail"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$ratingDetail",
+                    preserveNullAndEmptyArrays: true
+                }
             }
-          ]);
+        ]);
 
         res.status(200).json({
             success: true,
@@ -221,11 +235,12 @@ const getLatestMovie = async (req, res, next) => {
         });
 
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        console.log(error)
+        return next(new errorHandler("Something went wrong ", 500, error));
     }
 }
 
-const getUpCommingMovie=async(req,res,next)=>{
+const getUpCommingMovie = async (req, res, next) => {
     try {
         const { id } = req.params;
         const now = new Date();
@@ -245,8 +260,8 @@ const getUpCommingMovie=async(req,res,next)=>{
         });
 
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
-module.exports = { getAllCity, getAllCinemaByCity, getSingleMovie, getShow, getMovieforcinema, getMoviesInCity, getMoviesInCinema, getLatestMovie,getUpCommingMovie };
+module.exports = { getAllCity, getAllCinemaByCity, getSingleMovie, getShow, getMovieforcinema, getMoviesInCity, getMoviesInCinema, getLatestMovie, getUpCommingMovie };

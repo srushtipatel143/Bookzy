@@ -9,27 +9,38 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-import { API_USER_URL } from "../../utils/config";
+import { API_USER_URL } from "@/app/utils/config";
 
 interface MovieDetails {
   imageURl: string;
+  _id:string;
 }
 
-interface latestMovie{
-  _id:string
-  movieDetail:MovieDetails
+interface RatingDetail {
+  totalRating: Number;
+  userRatings: [
+    {
+      ratings: number;
+    }
+  ]
+}
+
+interface latestMovie {
+  _id: string
+  movieDetail: MovieDetails;
+  ratingDetail: RatingDetail;
 }
 
 const LatestMovie = () => {
   const router = useRouter();
-  const [latestMovies,setLatestMovies]=useState<latestMovie[]>([]);
+  const [latestMovies, setLatestMovies] = useState<latestMovie[]>([]);
   useEffect(() => {
-    const fetchDetails =async() => {
+    const fetchDetails = async () => {
       try {
         const selectedCity = Cookies.get("selected_city");
         if (selectedCity) {
           const cityData = JSON.parse(selectedCity);
-          const cityID=cityData.id;
+          const cityID = cityData.id;
           const getLatestMovies = await axios.get(`${API_USER_URL}/getlatestmovie/${cityID}`);
           setLatestMovies(getLatestMovies.data.data)
         }
@@ -43,7 +54,7 @@ const LatestMovie = () => {
   console.log(latestMovies)
 
   return (
-    <div className="container-fluid p-0">
+    <div className="container-fluid p-0" style={{ backgroundColor: "#FFFFFF" }}>
       <div className="movie_wrapper mx-auto">
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
           <p className="title_font text-dark my-3">Latest Movies</p>
@@ -54,7 +65,7 @@ const LatestMovie = () => {
 
         <div className="movie_scroll mb-3">
           {latestMovies.map((item) => (
-            <div key={item._id} className="movie-card p-0" onClick={() => router.push("/explore/movie")}>
+            <div key={item._id} className="movie-card p-0" onClick={() => router.push(`/explore/movie/${item.movieDetail._id}`)}>
               <div style={{ height: "350px" }}>
                 <div className="latestMovie_wrapper">
                   <Image
@@ -68,7 +79,7 @@ const LatestMovie = () => {
               <div className="rating_card p-2">
                 <p className="m-0 d-flex align-items-center fs-5 gap-1">
                   <FaStar size={20} color="red" />
-                  8/10 37.3K Votes
+                  {item.ratingDetail ? `${item.ratingDetail.totalRating} / 10 ${item.ratingDetail.userRatings.length} Votes` : 'N / A'}
                 </p>
               </div>
             </div>
