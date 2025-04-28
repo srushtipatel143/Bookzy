@@ -51,14 +51,12 @@ const LatestMovie = () => {
     fetchDetails();
   }, []);
 
-  console.log(latestMovies)
-
   return (
     <div className="container-fluid p-0" style={{ backgroundColor: "#FFFFFF" }}>
       <div className="movie_wrapper mx-auto">
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
           <p className="title_font text-dark my-3">Latest Movies</p>
-          <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }}>
+          <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() => router.push("/explore/recommendedall")}>
             See All <IoIosArrowForward />
           </p>
         </div>
