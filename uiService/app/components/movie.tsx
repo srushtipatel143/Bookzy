@@ -2,9 +2,10 @@
 import "../css/movie.css";
 import { FaStar } from "react-icons/fa";
 import Footer from "./homeScreen/footer";
-// import { useRouter } from 'next/navigation';
-import { FiArrowLeft } from "react-icons/fi";
 import Image from 'next/image';
+import { dateFormat } from "../utils/formatdate";
+import BackButton from "../utils/backbutton";
+import Link from "next/link";
 
 interface MovieScreenProps {
     movie: {
@@ -17,49 +18,39 @@ interface MovieScreenProps {
         movieType: { type: string; status: boolean; _id: string }[];
         cast: { actor: string; role: string; imageUrl: string; _id: string }[];
         about: string;
+        ratingDetail: {
+            totalRating: number;
+            userRatings: [];
+        }[];
     };
 }
 
 const Moviescreen = ({ movie }: MovieScreenProps) => {
+    console.log(movie)
     const movieLength = movie.duration;
     const hr = Math.floor(movieLength / 60);
     const min = movieLength % 60;
     const duration = `${hr}h ${min}min`;
-
-    const date = new Date(movie.releaseDate);
-
-    const day = date.getUTCDate().toString().padStart(2, '0');
-    const month = date.toLocaleString('en-US', { month: 'short', timeZone: 'UTC' });
-    const year = date.getUTCFullYear();
-
-    const formattedDate = `${day} ${month},${year}`;
-
-
-    // const router = useRouter();
+    const formattedDate = dateFormat(movie.releaseDate);
     return (
         <div className="container-fluid mt-3 p-0 ">
             <div className="d-flex movie_detail">
-                <div
-                    className="position-absolute p-2"
-                    style={{ cursor: "pointer" }}
-                // onClick={() => router.back()} 
-                >
-                    <FiArrowLeft size={20} color="white" />
-                </div>
+                <BackButton />
                 <div className="d-flex align-items-center ">
                     <div className="movie_left my-5 ms-5 me-3">
+                        <Image width={250} height={300} alt="movie_image" src={movie.imageURl} style={{ borderRadius: "10px", objectFit: "cover" }} />
                     </div>
                     <div className="movie_right mx-3">
                         <p className="display-6">{movie.title}</p>
                         <div className="d-flex movie_rate_section">
                             <p className="m-0 d-flex align-items-center fs-5 gap-1">
                                 <FaStar size={20} color="red" />
-                                8/10 (37.3K votes)
+                                {movie.ratingDetail ? `${movie.ratingDetail[0].totalRating}/10 ${movie.ratingDetail[0].userRatings.length} Votes` : 'N / A'}
                             </p>
                             <button className="movie_rate_btn">Rate Now</button>
                         </div>
                         <div className="movie_type_lan">
-                            <div className="movie_type_sec">2D,3D,4D</div>
+                            {/* <div className="movie_type_sec">2D,3D,4D</div> */}
                             <div className="movie_lan_sec">
                                 {movie.movieLanguage.map((item, index) => (
                                     <span key={item._id}>
@@ -82,9 +73,14 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                             </ul>
                         </div>
                         <div>
-                            <button className="movie_book_btn"
+                            {/* <button className="movie_book_btn"
                             // onClick={() => router.push("/explore/cinema")}
-                            >Book tickets</button>
+                            >Book tickets</button> */}
+                            <Link href="/explore/cinema">
+                                <button className="movie_book_btn">
+                                    Book tickets
+                                </button>
+                            </Link>
                         </div>
                     </div>
                 </div>

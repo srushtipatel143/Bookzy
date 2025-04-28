@@ -1,6 +1,6 @@
 /* [project]/app/css/movie.css [app-client] (css) */
 .movie_detail {
-  background-color: var(--secondary-main-color);
+  background-color: var(--primary-sub-color);
   flex-wrap: wrap;
 }
 
@@ -21,17 +21,17 @@
 }
 
 .movie_rate_section {
-  background-color: #d3d3d3;
+  background-color: #323232;
   border-radius: 10px;
   padding: 10px;
 }
 
 .movie_rate_btn {
-  background-color: var(--secondary-main-color);
   color: var(--secondary-sub-color);
+  background-color: #a9a9a9;
   border: none;
   border-radius: 10px;
-  margin: 0 10px;
+  margin-left: auto;
   padding: 7px 15px;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .movie_type_sec, .movie_lan_sec {
-  background-color: #d3d3d3;
+  background-color: #323232;
   border-radius: 5px;
   padding: 3px 5px;
 }

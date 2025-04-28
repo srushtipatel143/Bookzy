@@ -10,7 +10,7 @@ const getMovieDetails=async(id:string)=>{
     const res=await fetch(`${API_USER_URL}/getSingleMovie/${id}`);
     if (!res.ok) throw new Error("Failed to fetch movie");
     const json = await res.json();
-    return json.data;
+    return json.data[0];
 }
 const Movie =async({params}:PageProps)=>{
     const movie=await getMovieDetails(params.id);

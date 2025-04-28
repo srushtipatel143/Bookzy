@@ -1,4 +1,5 @@
 const errorHandler = require("../../helpers/errors/errorHandler");
+const mongoose=require("mongoose");
 const { pool } = require("../../config/dbConn");
 const Movie = require("../../models/movieInfoModel");
 const Show = require("../../models/showInformationModel");
@@ -30,7 +31,23 @@ const getAllCinemaByCity = async (req, res, next) => {
 const getSingleMovie = async (req, res, next) => {
     try {
         const id = req.params.id;
-        const movieData = await Movie.findById({ _id: id });
+        // const movieData = await Movie.findById({ _id: id });
+        const movieData = await Movie.aggregate([
+            {
+              $match: {
+                _id: new mongoose.Types.ObjectId(id)
+              }
+            },
+            {
+              $lookup: {
+                from: "usermovieratingcollections",
+                localField: "_id",
+                foreignField: "movieId",
+                as: "ratingDetail"
+              }
+            }
+          ]);
+          
         if (!movieData) return next(new errorHandler("Movie not found", 401));
         return res.status(200).json({
             success: true,

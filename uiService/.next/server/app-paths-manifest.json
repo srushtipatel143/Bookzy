@@ -1,4 +1,6 @@
 {
+  "/explore/cinema/page": "app/explore/cinema/page.js",
   "/explore/movie/[id]/page": "app/explore/movie/[id]/page.js",
+  "/explore/show/page": "app/explore/show/page.js",
   "/page": "app/page.js"
 }

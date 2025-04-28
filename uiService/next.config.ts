@@ -29,7 +29,7 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.citypng.com', 
+        hostname: 'www.citypng.com',
         port: '',
         pathname: '/**',
       }
