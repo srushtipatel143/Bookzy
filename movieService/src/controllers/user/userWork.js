@@ -5,6 +5,7 @@ const Movie = require("../../models/movieInfoModel");
 const Show = require("../../models/showInformationModel");
 const cityMovieMapping = require("../../models/cityMovieMappingCollection");
 const cinemaMovieMapping = require("../../models/cinemaMovieMappingCollection");
+const Rating=require("../../models/userMovieRatingModel");
 
 const getAllCity = async (req, res, next) => {
     try {
@@ -31,28 +32,37 @@ const getAllCinemaByCity = async (req, res, next) => {
 const getSingleMovie = async (req, res, next) => {
     try {
         const id = req.params.id;
-        // const movieData = await Movie.findById({ _id: id });
-        const movieData = await Movie.aggregate([
-            {
-              $match: {
-                _id: new mongoose.Types.ObjectId(id)
-              }
-            },
-            {
-              $lookup: {
-                from: "usermovieratingcollections",
-                localField: "_id",
-                foreignField: "movieId",
-                as: "ratingDetail"
-              }
-            }
-          ]);
-          
+        const now = new Date();
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istToday = new Date(now.getTime() + istOffset);
+        istToday.setHours(0, 0, 0, 0);
+        const today = new Date(istToday.getTime() - istOffset);
+
+        const movieData = await Movie.findById({ _id: id });
         if (!movieData) return next(new errorHandler("Movie not found", 401));
+
+        const userRating=await Rating.findOne({movieId:id});
+
+        const getMovie = await Show.find({
+            movieId: id,
+            showStartTime: { $gte: today }
+        });
+        const getScreenTypeArray=getMovie.map((item)=>item.screenType);
+        const screenTypes=[... new Set(getScreenTypeArray)];
+
+        const ratingData={
+            totalRating:userRating.totalRating,
+            votes:userRating.userRatings.length
+        }
+        const data = {
+            ...movieData.toObject(),
+            screenTypes,
+            ratingData
+        };
         return res.status(200).json({
             success: true,
             message: "Movie get successfully",
-            data: movieData
+            data: data
         });
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
@@ -172,7 +182,7 @@ const getMoviesInCity = async (req, res, next) => {
             // showTime: { $exists: true, $not: { $size: 0 } }
         }).populate("movieId");
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: getMovie
         });
@@ -189,7 +199,7 @@ const getMoviesInCinema = async (req, res, next) => {
             // showTime: { $exists: true, $not: { $size: 0 } }
         }).populate("movieId");
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: getMovie
         });
@@ -246,7 +256,7 @@ const getLatestMovie = async (req, res, next) => {
             }
         ]);
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: getMovie
         });
@@ -271,7 +281,7 @@ const getUpCommingMovie = async (req, res, next) => {
             movieReleaseDate: { $gt: today }
         }).populate("movieId");
 
-        res.status(200).json({
+        return res.status(200).json({
             success: true,
             data: getMovie
         });

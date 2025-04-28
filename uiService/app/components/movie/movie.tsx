@@ -1,11 +1,11 @@
 
-import "../css/movie.css";
+import "../../css/movie.css";
 import { FaStar } from "react-icons/fa";
-import Footer from "./homeScreen/footer";
+import Footer from "../homeScreen/footer";
 import Image from 'next/image';
-import { dateFormat } from "../utils/formatdate";
-import BackButton from "../utils/backbutton";
-import Link from "next/link";
+import { dateFormat } from "../../utils/formatdate";
+import BackButton from "../../utils/backbutton";
+import SelectModal from "./selectModal";
 
 interface MovieScreenProps {
     movie: {
@@ -18,15 +18,16 @@ interface MovieScreenProps {
         movieType: { type: string; status: boolean; _id: string }[];
         cast: { actor: string; role: string; imageUrl: string; _id: string }[];
         about: string;
-        ratingDetail: {
+        ratingData: {
             totalRating: number;
-            userRatings: [];
-        }[];
+            votes:number;
+        };
+        screenTypes:[];
     };
 }
 
 const Moviescreen = ({ movie }: MovieScreenProps) => {
-    console.log(movie)
+
     const movieLength = movie.duration;
     const hr = Math.floor(movieLength / 60);
     const min = movieLength % 60;
@@ -45,17 +46,24 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                         <div className="d-flex movie_rate_section">
                             <p className="m-0 d-flex align-items-center fs-5 gap-1">
                                 <FaStar size={20} color="red" />
-                                {movie.ratingDetail ? `${movie.ratingDetail[0].totalRating}/10 ${movie.ratingDetail[0].userRatings.length} Votes` : 'N / A'}
+                                {movie.ratingData ? `${movie.ratingData.totalRating}/10 (${movie.ratingData.votes} Votes)` : 'N / A'}
                             </p>
                             <button className="movie_rate_btn">Rate Now</button>
                         </div>
                         <div className="movie_type_lan">
-                            {/* <div className="movie_type_sec">2D,3D,4D</div> */}
+                            <div className="movie_type_sec">
+                                {movie.screenTypes.map((item,index)=>(
+                                    <span key={index}>
+                                        {item}
+                                        {index !== movie.screenTypes.length - 1 && ','}
+                                    </span>
+                                ))}
+                            </div>
                             <div className="movie_lan_sec">
                                 {movie.movieLanguage.map((item, index) => (
                                     <span key={item._id}>
                                         {item.language}
-                                        {index !== movie.movieLanguage.length - 1 && ', '}
+                                        {index !== movie.movieLanguage.length - 1 && ','}
                                     </span>
                                 ))}
                             </div>
@@ -72,16 +80,7 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                                 <li>{formattedDate}</li>
                             </ul>
                         </div>
-                        <div>
-                            {/* <button className="movie_book_btn"
-                            // onClick={() => router.push("/explore/cinema")}
-                            >Book tickets</button> */}
-                            <Link href="/explore/cinema">
-                                <button className="movie_book_btn">
-                                    Book tickets
-                                </button>
-                            </Link>
-                        </div>
+                       <SelectModal movie={movie}/>
                     </div>
                 </div>
             </div>
@@ -93,7 +92,6 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
             </div>
             <div className="about_movie py-4 recommend_movie">
                 <p className="about_movie_title">Cast</p>
-
                 <div className="cast_scroll mt-4">
                     {movie.cast.map((item) => (
                         <div key={item._id} className="cast-card p-0">

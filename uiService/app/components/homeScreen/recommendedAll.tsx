@@ -1,5 +1,4 @@
 'use client';
-
 import Carousel from "./carousal";
 import Footer from "./footer";
 import { IoIosArrowForward } from "react-icons/io";

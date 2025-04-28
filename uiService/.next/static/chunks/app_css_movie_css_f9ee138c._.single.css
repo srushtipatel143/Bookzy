@@ -106,4 +106,17 @@
   display: none;
 }
 
+.select_language {
+  color: #8f8f8f;
+  background-color: #f2f5f9;
+}
+
+.select_screen_modal {
+  cursor: pointer;
+  color: var(--primary-main-color);
+  border: 1px solid #a9a9a9;
+  border-radius: 15px;
+  padding: 5px 20px;
+}
+
 /*# sourceMappingURL=app_css_movie_css_f9ee138c._.single.css.map*/
