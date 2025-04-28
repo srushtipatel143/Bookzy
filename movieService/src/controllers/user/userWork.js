@@ -13,6 +13,7 @@ const getAllCity = async (req, res, next) => {
         const [cityResponse] = await pool.execute(query);
         return res.status(200).json({ message: "get city successfully", data: cityResponse })
     } catch (error) {
+        
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }

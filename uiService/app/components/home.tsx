@@ -4,7 +4,7 @@ import Carousal from "./homeScreen/carousal";
 import RecommendedMovie from "./homeScreen/recommendedMovie";
 import Ad from "./homeScreen/ad";
 import UpcomingMovie from "./homeScreen/UpcomingMovie";
-import LatestMovie from "./homeScreen/latestmovie";
+import LatestMovieScreen from "./homeScreen/latestmovie";
 import Footer from "./homeScreen/footer";
 import { useSearch } from "./context/searchContext";
 import Searchfield from "./navbar/search";
@@ -16,7 +16,7 @@ const Homescreen = () => {
             <div className="container-fluid p-0">
                 <Navbar />
                 <Carousal />
-                <LatestMovie />
+                <LatestMovieScreen />
                 <Ad />
                 <RecommendedMovie />
                 <UpcomingMovie />

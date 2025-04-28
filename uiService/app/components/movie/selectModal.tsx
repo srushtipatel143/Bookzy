@@ -35,11 +35,11 @@ const SelectModal = ({ movie }: MovieScreenProps) => {
             <button className="movie_book_btn" onClick={handleButtonClick}>
                 Book tickets
             </button>
-            <Modal show={selectFormat} onHide={() => setSelectFormat(false)}>
+            <Modal centered show={selectFormat} onHide={() => setSelectFormat(false)}>
                 <Modal.Header className="border-0" closeButton>
                     <span className="fw-lighter fs-5"> Select language and format</span>
                 </Modal.Header>
-                <Modal.Body className="p-0 mb-2">
+                <Modal.Body className="p-0 mb-4">
                     <div>
                         {movie.movieLanguage.map((item) => (
                             <div key={item._id} >

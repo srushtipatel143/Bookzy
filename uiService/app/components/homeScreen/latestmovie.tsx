@@ -10,30 +10,35 @@ import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { API_USER_URL } from "@/app/utils/config";
+import { useLatestMoviesStore } from "@/app/store/latestMovieStore";
+import { LatestMovie } from "../movie/latestMovieInterface";
 
-interface MovieDetails {
-  imageURl: string;
-  _id:string;
-}
+// interface MovieDetails {
+//   imageURl: string;
+//   _id: string;
+// }
 
-interface RatingDetail {
-  totalRating: Number;
-  userRatings: [
-    {
-      ratings: number;
-    }
-  ]
-}
+// interface RatingDetail {
+//   totalRating: number;
+//   userRatings: [
+//     {
+//       ratings: number;
+//     }
+//   ]
+// }
 
-interface latestMovie {
-  _id: string
-  movieDetail: MovieDetails;
-  ratingDetail: RatingDetail;
-}
+// interface latestMovie {
+//   _id: string
+//   movieDetail: MovieDetails;
+//   ratingDetail: RatingDetail;
+// }
 
-const LatestMovie = () => {
+const LatestMovieScreen = () => {
+
   const router = useRouter();
-  const [latestMovies, setLatestMovies] = useState<latestMovie[]>([]);
+  const [latestMovies, setLatestMovies] = useState<LatestMovie[]>([]);
+  const setLatestMoviesInStore=useLatestMoviesStore((state)=>state.setLatestMovies);
+
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -56,7 +61,10 @@ const LatestMovie = () => {
       <div className="movie_wrapper mx-auto">
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
           <p className="title_font text-dark my-3">Latest Movies</p>
-          <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() => router.push("/explore/recommendedall")}>
+          <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() => {
+            setLatestMoviesInStore(latestMovies);
+            router.push("/explore/recommendedall")
+          }}>
             See All <IoIosArrowForward />
           </p>
         </div>
@@ -89,4 +97,4 @@ const LatestMovie = () => {
   );
 };
 
-export default LatestMovie;
+export default LatestMovieScreen;

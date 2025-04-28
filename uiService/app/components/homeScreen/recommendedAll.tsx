@@ -7,12 +7,15 @@ import "../../css/recommendedall.css";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useLatestMoviesStore } from "@/app/store/latestMovieStore";
 
 const RecommendedAll = () => {
     const router = useRouter();
     const [showLanguages, setshowlanguages] = useState(false);
     const [showGenres, setShowGenres] = useState(false);
     const [showFormt, setShowFormat] = useState(false);
+    const latestMovies = useLatestMoviesStore((state) => state.latestMovies);
+    console.log("latest",latestMovies)
     return (
         <div className="container-fluid m=0 recommed_all">
             <Carousel />
