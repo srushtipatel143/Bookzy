@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/app/globals.css"],"sourcesContent":["@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');\r\n:root {\r\n  --primary-main-color: #d71921;\r\n  --secondary-main-color: #2C2B2B;\r\n  --primary-sub-color: #040404;\r\n  --secondary-sub-color: #FFFFFF;\r\n}\r\n\r\n.text_font {\r\n  color: var(--primary-main-color);\r\n}\r\n\r\n.title_font {\r\n  font-weight: 600;\r\n  font-size: 28px;\r\n}\r\n\r\nbody {\r\n  font-family: \"Open Sans\", sans-serif !important;\r\n  background-color: rgb(243, 243, 243) !important;\r\n}"],"names":[],"mappings":"AACA;;;;;;;AAOA;;;;AAIA;;;;;AAKA"}}]
-}

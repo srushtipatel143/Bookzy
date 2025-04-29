@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 16, "column": 0}, "map": {"version":3,"sources":["file://C%3A/Users/Admin/Desktop/my/Bookzy/uiService/app/page.tsx"],"sourcesContent":["'use client';\r\n\r\nimport Homescreen from \"./components/home\";\r\nconst Home =()=>{\r\n    return(\r\n       <Homescreen/>\r\n    )\r\n}\r\n\r\nexport default Home;"],"names":[],"mappings":";;;;AAEA;AAFA;;;AAGA,MAAM,OAAM;IACR,qBACG,6LAAC,6HAAA,CAAA,UAAU;;;;;AAElB;KAJM;uCAMS","debugId":null}}]
-}

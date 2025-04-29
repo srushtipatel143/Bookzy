@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 1, "column": 0}, "map": {"version":3,"sources":["turbopack:///[project]/app/css/footer.css"],"sourcesContent":[".footer_part{\r\n    background-color: var( --primary-sub-color);\r\n}\r\n\r\n.footer_content {\r\n  width: 75%;\r\n  color: darkgrey;\r\n  margin: auto;\r\n  text-align: center;\r\n}\r\n\r\n.icon-style {\r\n  color: darkgrey;\r\n  font-size: 40px;\r\n  padding: 0 5px;\r\n}\r\n\r\n.ar_line {\r\n  flex: 1;\r\n  height: 0.5px;\r\n  background-color: darkgrey;\r\n  margin: 0 2rem;\r\n}\r\n\r\n.movie_links_tag {\r\n  color: rgb(109, 109, 109);\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.movie_link,.movie_sep {\r\n  color: rgb(109, 109, 109);\r\n  font-size: 0.8rem;\r\n}\r\n\r\n.movie_link:hover {\r\n  cursor: pointer;\r\n  color: var(--secondary-sub-color);\r\n}"],"names":[],"mappings":"AAAA;;;;AAIA;;;;;;;AAOA;;;;;;AAMA;;;;;;;AAOA;;;;;AAUA"}}]
-}
