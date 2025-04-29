@@ -9,3 +9,5 @@ authService/.env
 movieService/.env
 notificationService/.env
 uiService/.env.local
+
+.next/
