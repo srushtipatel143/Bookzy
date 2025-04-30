@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
+import { useCity } from "../context/cityContext";
 
 interface citymodalprops {
   topCanvas: boolean,
@@ -19,7 +20,7 @@ interface CityType {
 
 const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
   const [city, setCity] = useState<CityType[]>([]);
-  const [selectedCityId, setSelectedCityId] = useState<number | null>(null);
+  const { selectCity, setSelectCity } = useCity();
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -29,18 +30,18 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
         const selectedCity = Cookies.get("selected_city");
         if (selectedCity) {
           const cityData = JSON.parse(selectedCity);
-          setSelectedCityId(cityData.id);
+          setSelectCity({ id: cityData.id, city: cityData.city });
         }
-      } catch (error:any) {
+      } catch (error: any) {
         toast.error(error.response.data.message);
       }
     };
     fetchCities();
   }, []);
 
-  const selectCity = (cityObj: CityType) => {
+  const selectCityFunction = (cityObj: CityType) => {
     Cookies.set("selected_city", JSON.stringify(cityObj), { expires: 3650 });
-    setSelectedCityId(cityObj.id);
+    setSelectCity({ id: cityObj.id, city: cityObj.city });
     setTopCanvas(false);
   };
 
@@ -68,7 +69,7 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
         <Modal.Body>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
             {city.map((item) => (
-              <span key={item.id} className={`${item.id === selectedCityId ? "selected_city" : "city_modal"}`} onClick={() => selectCity(item)} >
+              <span key={item.id} className={`${item.id === selectCity?.id ? "selected_city" : "city_modal"}`} onClick={() => selectCityFunction(item)} >
                 {item.city}
               </span>
             ))}

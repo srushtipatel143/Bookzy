@@ -4,6 +4,7 @@ import { SearchProvider } from "./components/context/searchContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import { store } from "@/app/store";
+import { CityProvider } from "./components/context/cityContext";
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -16,11 +17,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <title>Bookzy</title>
       </head>
       <body>
-        <Provider store={store}>
-          <SearchProvider>
-            {children}
-          </SearchProvider>
-        </Provider>
+        <CityProvider>
+          <Provider store={store}>
+            <SearchProvider>
+              {children}
+            </SearchProvider>
+          </Provider>
+        </CityProvider>
       </body>
     </html>
   );

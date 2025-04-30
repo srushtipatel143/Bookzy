@@ -3,23 +3,26 @@ import Carousel from "../homeScreen/carousal";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import "../../css/recommendedall.css";
-import { useState} from "react";
+import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Footer from "../homeScreen/footer";
-import { useSelector, UseSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/app/store";
+import { useCity } from "../context/cityContext";
 
 const RecommendedAll = () => {
     const router = useRouter();
     const [showLanguages, setshowlanguages] = useState(false);
     const [showGenres, setShowGenres] = useState(false);
     const [showFormt, setShowFormat] = useState(false);
-    const movies=useSelector((state:RootState)=>state.latestMovie.movies);
-    console.log("data come ",movies)
+    const {selectCity}=useCity(); 
+    const movies = useSelector((state: RootState) => state.latestMovie.movies);
     
+
+
     return (
-        <div className="container-fluid m=0 recommed_all">
+        <div key={selectCity?.id} className="container-fluid m=0 recommed_all">
             <Carousel />
             <div className=" d-flex mt-5 pb-3 main_movie gap-5">
                 <div className="left_fliter">
@@ -75,7 +78,7 @@ const RecommendedAll = () => {
                     <div className="see_browse">Browse by Cinemas</div>
                 </div>
                 <div className="right_movie">
-                    <div className="fs-3 fw-bold mb-3">Movies in Ahmedabad</div>
+                    <div className="fs-3 fw-bold mb-3">Movies in {selectCity?.city}</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
                         {["Hindi", "English", "Bangali", "Punjabi", "Telugu", "Bhojpuri", "Marathi"].map((item, index) => (
                             <span key={index} className="lag_modal_right" >
@@ -88,12 +91,12 @@ const RecommendedAll = () => {
                         <span className="d-flex justify-content-center align-items-center gap-2">Explore Upcoming Movies<IoIosArrowForward /></span>
                     </div>
                     <div className="see_scroll">
-                        {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((item) => (
-                            <div key={item} className="see-card p-0" onClick={() => router.push("/explore/movie")}>
+                        {movies.map((item) => (
+                            <div key={item._id} className="see-card p-0" onClick={() => router.push("/explore/movie")}>
                                 <div style={{ height: "400px" }} className="mb-3">
-                                    <div className="recommendedAllMovie_wrapper" style={{ position: 'relative',height:"80%",width:"100%" }}>
+                                    <div className="recommendedAllMovie_wrapper" style={{ position: 'relative', height: "80%", width: "100%" }}>
                                         <Image
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrwFBFgTscQ8nz7a0Vi3BbA5OU0M4Wuu7itw&s"
+                                            src={item.imageURl}
                                             alt="movie"
                                             fill
                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -101,16 +104,20 @@ const RecommendedAll = () => {
                                             className="recommendedAllMovie_image"
                                         />
                                     </div>
-                                    <p className="fs-5 p-0 mt-3 fw-bold">Sikandar</p>
-                                    <span>Action,Drama</span>
-
+                                    <p className="fs-5 p-0 mt-3 fw-bold">{item.title}</p>
+                                    {item.movieType.map((val, index) =>
+                                        <span key={val._id}>
+                                            {val.type}
+                                            {index !== item.movieType.length - 1 && ','}
+                                        </span>
+                                    )}
                                 </div>
                             </div>
                         ))}
                     </div>
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </div>
     );
 };

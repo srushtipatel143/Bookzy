@@ -8,12 +8,15 @@ import LatestMovieScreen from "./homeScreen/latestmovie";
 import Footer from "./homeScreen/footer";
 import { useSearch } from "./context/searchContext";
 import Searchfield from "./navbar/search";
+import { useCity } from "./context/cityContext";
 
 const Homescreen = () => {
     const { showSearch } = useSearch();
+    const {selectCity}=useCity();
+
     return (
         !showSearch ? (
-            <div className="container-fluid p-0">
+            <div  key={selectCity?.id} className="container-fluid p-0">
                 <Navbar />
                 <Carousal />
                 <LatestMovieScreen />

@@ -7,4 +7,9 @@ export interface ratingData {
     _id: string;
     imageURl: string;
     ratingData: ratingData;
+    title: string;
+    movieType: {
+      _id: string;
+      type: string;
+    }[];
   }
