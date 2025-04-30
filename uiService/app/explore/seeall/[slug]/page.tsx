@@ -1,4 +1,5 @@
-import RecommendedAll from "../../components/seeAllScreen/recommendedAll";
+import RecommendedAll from "../../../components/seeAllScreen/recommendedAll";
+
 const Recommended =()=>{
     return(
        <RecommendedAll/>

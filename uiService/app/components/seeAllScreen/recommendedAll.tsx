@@ -7,12 +7,16 @@ import { useState} from "react";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Footer from "../homeScreen/footer";
+import { useSelector, UseSelector } from "react-redux";
+import { RootState } from "@/app/store";
 
 const RecommendedAll = () => {
     const router = useRouter();
     const [showLanguages, setshowlanguages] = useState(false);
     const [showGenres, setShowGenres] = useState(false);
     const [showFormt, setShowFormat] = useState(false);
+    const movies=useSelector((state:RootState)=>state.latestMovie.movies);
+    console.log("data come ",movies)
     
     return (
         <div className="container-fluid m=0 recommed_all">

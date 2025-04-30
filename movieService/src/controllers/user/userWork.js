@@ -218,44 +218,34 @@ const getLatestMovie = async (req, res, next) => {
         istToday.setHours(0, 0, 0, 0);
         const today = new Date(istToday.getTime() - istOffset);
 
-        // const getMovie = await cityMovieMapping.find({
-        //     cityId: id,
-        //     showTime: { $gte: today }
-        // }).populate("movieId");
+        const getdata=await cityMovieMapping.find({
+            cityId: id,
+            showTime: { $gte: today }
+        });
 
-        const getMovie = await cityMovieMapping.aggregate([
-            {
-                $match: {
-                    cityId: id,
-                    showTime: { $gte: today }
-                }
-            },
-            {
-                $lookup: {
-                    from: "movieinfocollections",
-                    localField: "movieId",
-                    foreignField: "_id",
-                    as: "movieDetail"
-                }
-            },
-            {
-                $unwind: "$movieDetail"
-            },
-            {
-                $lookup: {
-                    from: "usermovieratingcollections",
-                    localField: "movieDetail._id",
-                    foreignField: "movieId",
-                    as: "ratingDetail"
-                }
-            },
-            {
-                $unwind: {
-                    path: "$ratingDetail",
-                    preserveNullAndEmptyArrays: true
-                }
+        const getMovie = await Promise.all(getdata.map(async (item) => {
+            const movieDetail = await Movie.findById({ _id: item.movieId });
+            const userRating = await Rating.findOne({ movieId: item.movieId });
+            const getMoviescreentype = await Show.find({movieId: item.movieId,showStartTime: { $gte: today}});
+
+            const ratingData={
+                totalRating:userRating.totalRating,
+                votes:userRating.userRatings.length
             }
-        ]);
+
+            const screenType=getMoviescreentype.map((item)=>{
+                return item.screenType
+            })
+
+            const screenTypes=[... new Set(screenType)];
+            const movieData={
+                ...movieDetail.toObject(),
+                ratingData,
+                screenTypes
+            }
+            return movieData;
+            
+        }));
 
         return res.status(200).json({
             success: true,

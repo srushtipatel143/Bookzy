@@ -13,7 +13,7 @@ const UpcomingMovie = () => {
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
           <p className="title_font my-3">Upcoming Movies</p>
           <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() =>
-            router.push("/explore/seeall")}>
+            router.push("/explore/seeall/upcoming-movie")}>
             See All <IoIosArrowForward />
           </p>
         </div>

@@ -11,11 +11,14 @@ import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { API_USER_URL } from "@/app/utils/config";
 import { LatestMovie } from "../movie/latestMovieInterface";
+import { useDispatch } from "react-redux";
+import { setLatestMovies } from "@/app/store/features/latestMovie/latest-movie";
 
 const LatestMovieScreen = () => {
 
   const router = useRouter();
-  const [latestMovies, setLatestMovies] = useState<LatestMovie[]>([]);
+  const dispatch=useDispatch();
+  const [latestMovies, setLatestMoviesdata] = useState<LatestMovie[]>([]);
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -24,7 +27,8 @@ const LatestMovieScreen = () => {
           const cityData = JSON.parse(selectedCity);
           const cityID = cityData.id;
           const getLatestMovies = await axios.get(`${API_USER_URL}/getlatestmovie/${cityID}`);
-          setLatestMovies(getLatestMovies.data.data)
+          setLatestMoviesdata(getLatestMovies.data.data);
+          dispatch(setLatestMovies(getLatestMovies.data.data));
         }
       } catch (error: any) {
         toast.error(error.response.data.message);
@@ -39,7 +43,7 @@ const LatestMovieScreen = () => {
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
           <p className="title_font text-dark my-3">Latest Movies</p>
           <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() => {
-            router.push("/explore/seeall")
+            router.push("/explore/seeall/latest-movie")
           }}>
             See All <IoIosArrowForward />
           </p>
@@ -47,11 +51,11 @@ const LatestMovieScreen = () => {
 
         <div className="movie_scroll mb-3">
           {latestMovies.map((item) => (
-            <div key={item._id} className="movie-card p-0" onClick={() => router.push(`/explore/movie/${item.movieDetail._id}`)}>
+            <div key={item._id} className="movie-card p-0" onClick={() => router.push(`/explore/movie/${item._id}`)}>
               <div style={{ height: "350px" }}>
                 <div className="latestMovie_wrapper">
                   <Image
-                    src={item.movieDetail.imageURl}
+                    src={item.imageURl}
                     alt="movie"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -63,7 +67,7 @@ const LatestMovieScreen = () => {
               <div className="rating_card p-2">
                 <p className="m-0 d-flex align-items-center fs-5 gap-1">
                   <FaStar size={20} color="red" />
-                  {item.ratingDetail ? `${item.ratingDetail.totalRating} / 10 ${item.ratingDetail.userRatings.length} Votes` : 'N / A'}
+                  {item.ratingData ? `${item.ratingData.totalRating} / 10 ${item.ratingData.votes} Votes` : 'N / A'}
                 </p>
               </div>
             </div>

@@ -1,15 +1,10 @@
-export interface MovieDetails {
-    imageURl: string;
-    _id: string;
-  }
-  
-  export interface RatingDetail {
+export interface ratingData {
     totalRating: number;
-    userRatings: { ratings: number }[];
+    votes:number;
   }
   
   export interface LatestMovie {
     _id: string;
-    movieDetail: MovieDetails;
-    ratingDetail: RatingDetail;
+    imageURl: string;
+    ratingData: ratingData;
   }
