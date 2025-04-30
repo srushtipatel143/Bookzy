@@ -69,7 +69,8 @@ const Carousel = () => {
               </div>
             </div>
             <div className='left_carousel2 d-sm-block'>
-              <Image src='https://images.deccanherald.com/deccanherald%2F2024-05%2F95ffb1a6-39aa-47b0-a94f-55d67ef13c6f%2FFzz4CTIWIAANZyk.jpg?auto=format%2Ccompress&fmt=webp&fit=max&format=webp&q=70&w=400&dpr=2' alt='slide_image' fill/>
+              <Image src='https://images.deccanherald.com/deccanherald%2F2024-05%2F95ffb1a6-39aa-47b0-a94f-55d67ef13c6f%2FFzz4CTIWIAANZyk.jpg?auto=format%2Ccompress&fmt=webp&fit=max&format=webp&q=70&w=400&dpr=2' priority alt='slide_image' fill
+              sizes="(max-width: 768px) 100vw, 50vw"  />
             </div>
            
           </div>

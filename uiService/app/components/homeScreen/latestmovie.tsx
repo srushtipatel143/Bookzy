@@ -10,35 +10,12 @@ import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { API_USER_URL } from "@/app/utils/config";
-import { useLatestMoviesStore } from "@/app/store/latestMovieStore";
 import { LatestMovie } from "../movie/latestMovieInterface";
-
-// interface MovieDetails {
-//   imageURl: string;
-//   _id: string;
-// }
-
-// interface RatingDetail {
-//   totalRating: number;
-//   userRatings: [
-//     {
-//       ratings: number;
-//     }
-//   ]
-// }
-
-// interface latestMovie {
-//   _id: string
-//   movieDetail: MovieDetails;
-//   ratingDetail: RatingDetail;
-// }
 
 const LatestMovieScreen = () => {
 
   const router = useRouter();
   const [latestMovies, setLatestMovies] = useState<LatestMovie[]>([]);
-  const setLatestMoviesInStore=useLatestMoviesStore((state)=>state.setLatestMovies);
-
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -62,8 +39,7 @@ const LatestMovieScreen = () => {
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
           <p className="title_font text-dark my-3">Latest Movies</p>
           <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() => {
-            setLatestMoviesInStore(latestMovies);
-            router.push("/explore/recommendedall")
+            router.push("/explore/seeall")
           }}>
             See All <IoIosArrowForward />
           </p>
@@ -78,6 +54,8 @@ const LatestMovieScreen = () => {
                     src={item.movieDetail.imageURl}
                     alt="movie"
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    priority
                     className="latestMovie_image"
                   />
                 </div>

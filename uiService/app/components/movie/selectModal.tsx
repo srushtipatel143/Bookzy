@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Modal } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import {useState } from "react";
 
 interface MovieScreenProps {
     movie: {

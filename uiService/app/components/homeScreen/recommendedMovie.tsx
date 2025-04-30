@@ -14,7 +14,7 @@ const RecommendedMovie = () => {
       <div className="movie_wrapper mx-auto pb-3">
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
           <p className="title_font text-light my-3">Recommended Movies</p>
-          <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() => router.push("/explore/recommendedall")}>
+          <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() => router.push("/explore/seeall")}>
             See All <IoIosArrowForward />
           </p>
         </div>
@@ -29,6 +29,8 @@ const RecommendedMovie = () => {
                     alt="movie"
                     fill
                     className="latestMovie_image"
+                    priority
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
               </div>

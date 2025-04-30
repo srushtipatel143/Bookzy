@@ -1,6 +1,4 @@
-'use client';
-
-import RecommendedAll from "../../components/homeScreen/recommendedAll";
+import RecommendedAll from "../../components/seeAllScreen/recommendedAll";
 const Recommended =()=>{
     return(
        <RecommendedAll/>

@@ -1,21 +1,19 @@
 'use client';
-import Carousel from "./carousal";
-import Footer from "./footer";
+import Carousel from "../homeScreen/carousal";
 import { IoIosArrowForward } from "react-icons/io";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import "../../css/recommendedall.css";
-import { useState } from "react";
+import { useState} from "react";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
-import { useLatestMoviesStore } from "@/app/store/latestMovieStore";
+import Footer from "../homeScreen/footer";
 
 const RecommendedAll = () => {
     const router = useRouter();
     const [showLanguages, setshowlanguages] = useState(false);
     const [showGenres, setShowGenres] = useState(false);
     const [showFormt, setShowFormat] = useState(false);
-    const latestMovies = useLatestMoviesStore((state) => state.latestMovies);
-    console.log("latest",latestMovies)
+    
     return (
         <div className="container-fluid m=0 recommed_all">
             <Carousel />
@@ -89,22 +87,13 @@ const RecommendedAll = () => {
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16].map((item) => (
                             <div key={item} className="see-card p-0" onClick={() => router.push("/explore/movie")}>
                                 <div style={{ height: "400px" }} className="mb-3">
-                                    {/* <img
-                                        src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrwFBFgTscQ8nz7a0Vi3BbA5OU0M4Wuu7itw&s`}
-                                        style={{
-                                            width: "100%",
-                                            height: "80%",
-                                            objectFit: "cover",
-                                            borderRadius: "10px",
-                                        }}
-                                        alt="movie"
-                                    /> */}
-
-                                    <div className="recommendedAllMovie_wrapper">
+                                    <div className="recommendedAllMovie_wrapper" style={{ position: 'relative',height:"80%",width:"100%" }}>
                                         <Image
-                                            src={`https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrwFBFgTscQ8nz7a0Vi3BbA5OU0M4Wuu7itw&s`}
+                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrwFBFgTscQ8nz7a0Vi3BbA5OU0M4Wuu7itw&s"
                                             alt="movie"
                                             fill
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                            priority
                                             className="recommendedAllMovie_image"
                                         />
                                     </div>
@@ -117,7 +106,7 @@ const RecommendedAll = () => {
                     </div>
                 </div>
             </div>
-            <Footer />
+            <Footer/>
         </div>
     );
 };

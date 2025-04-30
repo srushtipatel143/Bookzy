@@ -2,15 +2,6 @@
 import "./globals.css";
 import { SearchProvider } from "./components/context/searchContext";
 import "bootstrap/dist/css/bootstrap.min.css";
-// import type { Metadata } from "next";
-
-// export const metadata: Metadata = {
-//   title: "Bookzy",
-//   description:"Booking made easy",
-//   icons: {
-//     icon: '/booking_logo.png',
-//   },
-// };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
