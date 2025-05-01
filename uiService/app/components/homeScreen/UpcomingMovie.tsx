@@ -53,7 +53,7 @@ const UpcomingMovieScreen = () => {
 
         <div className="movie_scroll mb-3">
           {upcomingMovies.map((item) => (
-            <div key={item._id} className="movie-card p-0">
+            <div key={item._id} onClick={() => router.push(`/explore/movie/${item._id}`)} className="movie-card p-0">
               <div style={{ height: "350px" }}>
                 <div className="latestMovie_wrapper">
                   <Image
