@@ -17,7 +17,7 @@ import { setLatestMovies } from "@/app/store/features/latestMovie/latest-movie";
 const LatestMovieScreen = () => {
 
   const router = useRouter();
-  const dispatch=useDispatch();
+  const dispatch = useDispatch();
   const [latestMovies, setLatestMoviesdata] = useState<LatestMovie[]>([]);
   useEffect(() => {
     const fetchDetails = async () => {
@@ -26,9 +26,14 @@ const LatestMovieScreen = () => {
         if (selectedCity) {
           const cityData = JSON.parse(selectedCity);
           const cityID = cityData.id;
+          const cache: Cache = await caches.open("movie-cache");
           const getLatestMovies = await axios.get(`${API_USER_URL}/getlatestmovie/${cityID}`);
           setLatestMoviesdata(getLatestMovies.data.data);
           dispatch(setLatestMovies(getLatestMovies.data.data));
+          const cacheKey = `/latest-movies/${cityID}`;
+          const jsonBlob = new Blob([JSON.stringify(getLatestMovies.data.data)], { type: 'application/json' });
+          const responseToCache = new Response(jsonBlob);
+          await cache.put(cacheKey, responseToCache);
         }
       } catch (error: any) {
         toast.error(error.response.data.message);

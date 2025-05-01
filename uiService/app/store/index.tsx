@@ -1,9 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
 import latestMovieReducer  from "./features/latestMovie/latest-movie";
+import upcomingMovieReducer from "./features/upcomingMovie/upcoming-movie";
+
 
 export const store=configureStore({
     reducer:{
-        latestMovie:latestMovieReducer
+        latestMovie:latestMovieReducer,
+        upcomingMovie:upcomingMovieReducer
     }
 });
 

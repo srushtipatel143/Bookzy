@@ -1,12 +1,6 @@
-export interface ratingData {
-    totalRating: number;
-    votes:number;
-  }
-  
-  export interface LatestMovie {
+export interface UpcomingMovie {
     _id: string;
     imageURl: string;
-    ratingData: ratingData;
     title: string;
     movieType: {
       _id: string;

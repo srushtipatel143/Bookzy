@@ -17,6 +17,14 @@ interface cinema{
     cinemaLandmark:string
 }
 
+interface movie{
+    _id:string,
+    title:string,
+    movieLanguage:{
+        language:string;
+    }[];
+}
+
 const Searchfield = () => {
     const router = useRouter();
     const pathname = usePathname();
@@ -26,6 +34,7 @@ const Searchfield = () => {
     const [triggerMovieNavigate, setTriggerMovieNavigate] = useState(false);
     const [currentpath, setCurrentPath] = useState(pathname);
     const [cinema,setcinema]=useState<cinema[]>([]);
+    const [movie,setMovie]=useState<movie[]>([]);
     
     useEffect(()=>{
         const fetchDetails=async()=>{
@@ -37,15 +46,22 @@ const Searchfield = () => {
                 }
                 const cityData = JSON.parse(selectedCity);
                 const getCinemaRes=await axios.get(`${API_USER_URL}/getAllCinemaByCity/${cityData.id}`);
+                const getMovies=await axios.get(`${API_USER_URL}/getmoviesincity/${cityData.id}`);
                 const cinemaDetails=getCinemaRes?.data?.data;
+                const movieDetails=getMovies?.data?.data;
                 setcinema(cinemaDetails);
+                setMovie(movieDetails);
 
             } catch (error:any) {
                 toast.error(error.response.data.message)
             }
         }
         fetchDetails();
-    },[])
+    },[]);
+
+    const languages = Array.from(
+        new Set(movie.flatMap(data => data.movieLanguage.map(item => item.language)))
+    );
 
     useEffect(() => {
         if (triggerCinemaNavigate) {
@@ -100,7 +116,7 @@ const Searchfield = () => {
                     {showDivSection && (
                         <div style={{ display: "flex", gap: "5px", fontSize: "12px" }}>
                             <div style={{ padding: "5px 10px" }}>Filter</div>
-                            {["Hindi", "English", "Bangali", "Punjabi", "Telugu", "Bhojpuri", "Marathi"].map((item, index) => (
+                            {languages.map((item, index) => (
                                 <span key={index} className="filter_Sec1RightLan" >
                                     {item}
                                 </span>

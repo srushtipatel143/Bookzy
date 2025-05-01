@@ -15,7 +15,8 @@ const addShow = async (req, res, next) => {
 
         const isValidUserQuery = `select count(*) as isValidUser,cityId from cinema where id=? and userId=? group by id`;
         const [isValidUserRes] = await conn.execute(isValidUserQuery, [data.cinemaId, id]);
-        if (isValidUserRes[0].isValidUser === 0) {
+        console.log(isValidUserRes)
+        if (isValidUserRes.length===0 ||isValidUserRes[0].isValidUser === 0) {
             await session.abortTransaction();
             await session.endSession();
             return next(new errorHandler("User is not authorized", 401));

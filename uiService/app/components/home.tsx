@@ -3,7 +3,7 @@ import Navbar from "./navbar/navbar"
 import Carousal from "./homeScreen/carousal";
 import RecommendedMovie from "./homeScreen/recommendedMovie";
 import Ad from "./homeScreen/ad";
-import UpcomingMovie from "./homeScreen/UpcomingMovie";
+import UpcomingMovieScreen from "./homeScreen/UpcomingMovie";
 import LatestMovieScreen from "./homeScreen/latestmovie";
 import Footer from "./homeScreen/footer";
 import { useSearch } from "./context/searchContext";
@@ -22,7 +22,7 @@ const Homescreen = () => {
                 <LatestMovieScreen />
                 <Ad />
                 <RecommendedMovie />
-                <UpcomingMovie />
+                <UpcomingMovieScreen />
                 <Footer />
             </div>
         ) : (

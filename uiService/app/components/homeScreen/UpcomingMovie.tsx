@@ -3,10 +3,43 @@
 import "../../css/recommended.css";
 import { IoIosArrowForward } from "react-icons/io";
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';import { useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import Cookies from "js-cookie";
+import axios from "axios";
+import { API_USER_URL } from "@/app/utils/config";
+import { setUpcomingMovies } from "@/app/store/features/upcomingMovie/upcoming-movie";
+import { UpcomingMovie } from "../movie/upcomingMovieInterface";
 
-const UpcomingMovie = () => {
+
+const UpcomingMovieScreen = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
+  const [upcomingMovies, setUpcomingMoviesdata] = useState<UpcomingMovie[]>([]);
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const selectedCity = Cookies.get("selected_city");
+        if (selectedCity) {
+          const cityData = JSON.parse(selectedCity);
+          const cityID = cityData.id;
+          const cache: Cache = await caches.open("movie-cache");
+          const getUpcomongtMovies = await axios.get(`${API_USER_URL}/upcomingmovie/${cityID}`);
+          setUpcomingMoviesdata(getUpcomongtMovies.data.data);
+          dispatch(setUpcomingMovies(getUpcomongtMovies.data.data));
+          const cacheKey = `/upcoming-movies/${cityID}`;
+          const jsonBlob = new Blob([JSON.stringify(getUpcomongtMovies.data.data)], { type: 'application/json' });
+          const responseToCache = new Response(jsonBlob);
+          await cache.put(cacheKey, responseToCache);
+        }
+      } catch (error: any) {
+        toast.error(error.response.data.message);
+      }
+    }
+    fetchDetails();
+  }, []);
+
   return (
     <div className="container-fluid p-0 recommend_movie" >
       <div className="movie_wrapper mx-auto py-3">
@@ -19,12 +52,12 @@ const UpcomingMovie = () => {
         </div>
 
         <div className="movie_scroll mb-3">
-          {[1, 2, 3, 4, 5, 6, 7].map((item) => (
-            <div key={item} className="movie-card p-0">
+          {upcomingMovies.map((item) => (
+            <div key={item._id} className="movie-card p-0">
               <div style={{ height: "350px" }}>
                 <div className="latestMovie_wrapper">
                   <Image
-                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSrwFBFgTscQ8nz7a0Vi3BbA5OU0M4Wuu7itw&s"
+                    src={item.imageURl}
                     alt="movie"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
@@ -41,4 +74,4 @@ const UpcomingMovie = () => {
   );
 };
 
-export default UpcomingMovie;
+export default UpcomingMovieScreen;

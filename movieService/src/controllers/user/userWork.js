@@ -1,11 +1,11 @@
 const errorHandler = require("../../helpers/errors/errorHandler");
-const mongoose=require("mongoose");
+const mongoose = require("mongoose");
 const { pool } = require("../../config/dbConn");
 const Movie = require("../../models/movieInfoModel");
 const Show = require("../../models/showInformationModel");
 const cityMovieMapping = require("../../models/cityMovieMappingCollection");
 const cinemaMovieMapping = require("../../models/cinemaMovieMappingCollection");
-const Rating=require("../../models/userMovieRatingModel");
+const Rating = require("../../models/userMovieRatingModel");
 
 const getAllCity = async (req, res, next) => {
     try {
@@ -13,7 +13,7 @@ const getAllCity = async (req, res, next) => {
         const [cityResponse] = await pool.execute(query);
         return res.status(200).json({ message: "get city successfully", data: cityResponse })
     } catch (error) {
-        
+
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
@@ -42,18 +42,23 @@ const getSingleMovie = async (req, res, next) => {
         const movieData = await Movie.findById({ _id: id });
         if (!movieData) return next(new errorHandler("Movie not found", 401));
 
-        const userRating=await Rating.findOne({movieId:id});
+        const userRating = await Rating.findOne({ movieId: id });
 
         const getMovie = await Show.find({
             movieId: id,
             showStartTime: { $gte: today }
         });
-        const getScreenTypeArray=getMovie.map((item)=>item.screenType);
-        const screenTypes=[... new Set(getScreenTypeArray)];
+        const getScreenTypeArray = getMovie.map((item) => item.screenType);
+        const screenTypes = [... new Set(getScreenTypeArray)];
 
-        const ratingData={
-            totalRating:userRating.totalRating,
-            votes:userRating.userRatings.length
+        console.log(userRating)
+
+        let ratingData={};
+        if(userRating!==null ){
+            ratingData = {
+                totalRating: userRating.totalRating,
+                votes: userRating.userRatings.length
+            }
         }
         const data = {
             ...movieData.toObject(),
@@ -178,10 +183,19 @@ const getMovieforcinema = async (req, res, next) => {
 const getMoviesInCity = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const getMovie = await cityMovieMapping.find({
+        const getdata = await cityMovieMapping.find({
             cityId: id,
             // showTime: { $exists: true, $not: { $size: 0 } }
-        }).populate("movieId");
+        });
+
+        const getMovie = await Promise.all(getdata.map(async (item) => {
+            const movieDetail = await Movie.findById({ _id: item.movieId });
+            const movieData = {
+                ...movieDetail.toObject(),
+            }
+            return movieData;
+
+        }));
 
         return res.status(200).json({
             success: true,
@@ -218,33 +232,37 @@ const getLatestMovie = async (req, res, next) => {
         istToday.setHours(0, 0, 0, 0);
         const today = new Date(istToday.getTime() - istOffset);
 
-        const getdata=await cityMovieMapping.find({
+        const getdata = await cityMovieMapping.find({
             cityId: id,
-            showTime: { $gte: today }
+            showTime: { $gte: today },
+            movieReleaseDate:{$lte:today}
         });
 
         const getMovie = await Promise.all(getdata.map(async (item) => {
             const movieDetail = await Movie.findById({ _id: item.movieId });
             const userRating = await Rating.findOne({ movieId: item.movieId });
-            const getMoviescreentype = await Show.find({movieId: item.movieId,showStartTime: { $gte: today}});
+            const getMoviescreentype = await Show.find({ movieId: item.movieId, showStartTime: { $gte: today } });
 
-            const ratingData={
-                totalRating:userRating.totalRating,
-                votes:userRating.userRatings.length
+            let ratingData = [];
+            if (userRating && userRating.userRatings.length > 0) {
+                ratingData = {
+                    totalRating: userRating.totalRating,
+                    votes: userRating.userRatings.length
+                };
             }
 
-            const screenType=getMoviescreentype.map((item)=>{
+            const screenType = getMoviescreentype.map((item) => {
                 return item.screenType
             })
 
-            const screenTypes=[... new Set(screenType)];
-            const movieData={
+            const screenTypes = [... new Set(screenType)];
+            const movieData = {
                 ...movieDetail.toObject(),
                 ratingData,
                 screenTypes
             }
             return movieData;
-            
+
         }));
 
         return res.status(200).json({
@@ -267,10 +285,25 @@ const getUpCommingMovie = async (req, res, next) => {
         istToday.setHours(0, 0, 0, 0);
         const today = new Date(istToday.getTime() - istOffset);
 
-        const getMovie = await cityMovieMapping.find({
+        const getdata = await cityMovieMapping.find({
             cityId: id,
             movieReleaseDate: { $gt: today }
-        }).populate("movieId");
+        });
+
+        const getMovie = await Promise.all(getdata.map(async (item) => {
+            const movieDetail = await Movie.findById({ _id: item.movieId });
+            const getMoviescreentype = await Show.find({ movieId: item.movieId, showStartTime: { $gte: today } });
+
+            const screenType = getMoviescreentype.map((item) => {
+                return item.screenType
+            })
+            const screenTypes = [... new Set(screenType)];
+            const movieData = {
+                ...movieDetail.toObject(),
+                screenTypes
+            }
+            return movieData;
+        }));
 
         return res.status(200).json({
             success: true,
