@@ -1,5 +1,4 @@
 const errorHandler = require("../../helpers/errors/errorHandler");
-const mongoose = require("mongoose");
 const { pool } = require("../../config/dbConn");
 const Movie = require("../../models/movieInfoModel");
 const Show = require("../../models/showInformationModel");
@@ -51,10 +50,8 @@ const getSingleMovie = async (req, res, next) => {
         const getScreenTypeArray = getMovie.map((item) => item.screenType);
         const screenTypes = [... new Set(getScreenTypeArray)];
 
-        console.log(userRating)
-
-        let ratingData={};
-        if(userRating!==null ){
+        let ratingData = {};
+        if (userRating !== null) {
             ratingData = {
                 totalRating: userRating.totalRating,
                 votes: userRating.userRatings.length
@@ -130,7 +127,6 @@ const getShow = async (req, res, next) => {
         return res.status(200).json({ message: "get screen successfully", data: screenData })
 
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
@@ -183,23 +179,60 @@ const getMovieforcinema = async (req, res, next) => {
 const getMoviesInCity = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const getdata = await cityMovieMapping.find({
-            cityId: id,
-            // showTime: { $exists: true, $not: { $size: 0 } }
+        const now = new Date();
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istToday = new Date(now.getTime() + istOffset);
+        istToday.setHours(0, 0, 0, 0);
+        const today = new Date(istToday.getTime() - istOffset);
+
+        const query = `SELECT id,cinemaName,cinemaLandmark FROM cinema where cityId=? and status=?`;
+        const param = [id, 1];
+        const [CinemaResponse] = await pool.execute(query, param);
+
+        const allMovies = [];
+
+        for (const cinema of CinemaResponse) {
+            const movies = await Show.find({
+                cinemaId: cinema.id,
+                showStartTime: { $gte: today },
+            });
+            allMovies.push(...movies);
+        }
+
+        const resultMap = new Map();
+
+        allMovies.forEach(show => {
+            const language = show.movieLanguage;
+            const movieId = show.movieId.toString();
+            if (!resultMap.has(language)) {
+                resultMap.set(language, new Map());
+            }
+
+            const moviesMap = resultMap.get(language);
+
+            if (!moviesMap.has(movieId)) {
+                moviesMap.set(movieId, {
+                    movieId: movieId,
+                    movieName: show.movieName,
+                    screenTypes: new Set()
+                });
+            }
+
+            moviesMap.get(movieId).screenTypes.add(show.screenType);
         });
 
-        const getMovie = await Promise.all(getdata.map(async (item) => {
-            const movieDetail = await Movie.findById({ _id: item.movieId });
-            const movieData = {
-                ...movieDetail.toObject(),
-            }
-            return movieData;
-
+        const finalResult= Array.from(resultMap.entries()).map(([language, moviesMap]) => ({
+            language,
+            movies: Array.from(moviesMap.values()).map(movie => ({
+                movieId: movie.movieId,
+                movieName: movie.movieName,
+                screenTypes: Array.from(movie.screenTypes)
+            }))
         }));
 
         return res.status(200).json({
             success: true,
-            data: getMovie
+            data: finalResult
         });
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
@@ -235,7 +268,7 @@ const getLatestMovie = async (req, res, next) => {
         const getdata = await cityMovieMapping.find({
             cityId: id,
             showTime: { $gte: today },
-            movieReleaseDate:{$lte:today}
+            movieReleaseDate: { $lte: today }
         });
 
         const getMovie = await Promise.all(getdata.map(async (item) => {
@@ -271,7 +304,6 @@ const getLatestMovie = async (req, res, next) => {
         });
 
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong ", 500, error));
     }
 }

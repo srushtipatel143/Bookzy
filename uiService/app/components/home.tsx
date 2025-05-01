@@ -20,9 +20,9 @@ const Homescreen = () => {
                 <Navbar />
                 <Carousal />
                 <LatestMovieScreen />
-                <Ad />
-                <RecommendedMovie />
+                {/* <RecommendedMovie /> */}
                 <UpcomingMovieScreen />
+                <Ad />
                 <Footer />
             </div>
         ) : (

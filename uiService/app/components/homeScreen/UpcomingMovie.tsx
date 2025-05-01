@@ -41,10 +41,10 @@ const UpcomingMovieScreen = () => {
   }, []);
 
   return (
-    <div className="container-fluid p-0 recommend_movie" >
+    <div className="container-fluid p-0 mb-3 recommend_movie" style={{ backgroundColor: "#2C2B2B" }}>
       <div className="movie_wrapper mx-auto py-3">
         <div className="d-flex justify-content-between mb-2 first_movie_sec">
-          <p className="title_font my-3">Upcoming Movies</p>
+          <p className="title_font text-light my-3">Upcoming Movies</p>
           <p className="text_font d-flex align-items-center gap-1" style={{ cursor: "pointer" }} onClick={() =>
             router.push("/explore/seeall/upcoming-movie")}>
             See All <IoIosArrowForward />

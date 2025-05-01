@@ -65,7 +65,7 @@
 
 .fil_cinema_text {
     text-decoration: none;
-    font-size: 13px;
+    font-size: 11px;
     color: var(--secondary-main-color);
     font-weight: 400;
     cursor: pointer;
@@ -109,11 +109,15 @@
     color: var(--primary-main-color);
   }
 
-  /* .search_top_priority{
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left:0;
-    z-index:9999;
-  } */
+ .fil_cinema_type{
+    font-size: 10px;
+    border: 1px solid darkgray;
+    padding: 2px 5px;
+ }
+
+ .fil_cinema_type:hover{
+    cursor: pointer;
+    background-color: var(--primary-main-color);
+    color: var(--secondary-sub-color);
+    
+ }

@@ -5,63 +5,63 @@ import { FiArrowLeft } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import "../../css/search.css";
 import { useEffect, useState } from "react";
-import {useSearch } from "../context/searchContext";
+import { useSearch } from "../context/searchContext";
 import Cookies from "js-cookie";
 import { API_USER_URL } from "../../utils/config";
-import {toast,ToastContainer} from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 
-interface cinema{
-    id:number,
-    cinemaName:string,
-    cinemaLandmark:string
+interface cinema {
+    id: number,
+    cinemaName: string,
+    cinemaLandmark: string
 }
 
-interface movie{
-    _id:string,
-    title:string,
-    movieLanguage:{
-        language:string;
+interface movie {
+    language: string;
+    movies: {
+        movieId: string;
+        movieName: string;
+        screenTypes: [];
     }[];
-}
+}[];
 
 const Searchfield = () => {
     const router = useRouter();
     const pathname = usePathname();
-    const {setShowSearch } = useSearch();
+    const { setShowSearch } = useSearch();
     const [showDivSection, setShowDivSection] = useState(true);
     const [triggerCinemaNavigate, setTriggerCinemaNavigate] = useState(false);
     const [triggerMovieNavigate, setTriggerMovieNavigate] = useState(false);
     const [currentpath, setCurrentPath] = useState(pathname);
-    const [cinema,setcinema]=useState<cinema[]>([]);
-    const [movie,setMovie]=useState<movie[]>([]);
-    
-    useEffect(()=>{
-        const fetchDetails=async()=>{
+    const [cinema, setcinema] = useState<cinema[]>([]);
+    const [movie, setMovie] = useState<movie[]>([]);
+
+    useEffect(() => {
+        const fetchDetails = async () => {
             try {
-                const selectedCity=Cookies.get("selected_city");
+                const selectedCity = Cookies.get("selected_city");
                 if (!selectedCity) {
                     toast.error("City is not selected");
                     return;
                 }
                 const cityData = JSON.parse(selectedCity);
-                const getCinemaRes=await axios.get(`${API_USER_URL}/getAllCinemaByCity/${cityData.id}`);
-                const getMovies=await axios.get(`${API_USER_URL}/getmoviesincity/${cityData.id}`);
-                const cinemaDetails=getCinemaRes?.data?.data;
-                const movieDetails=getMovies?.data?.data;
+                const getCinemaRes = await axios.get(`${API_USER_URL}/getAllCinemaByCity/${cityData.id}`);
+                const getMovies = await axios.get(`${API_USER_URL}/getmoviesincity/${cityData.id}`);
+                console.log()
+                const cinemaDetails = getCinemaRes?.data?.data;
+                const movieDetails = getMovies?.data?.data;
                 setcinema(cinemaDetails);
                 setMovie(movieDetails);
 
-            } catch (error:any) {
+            } catch (error: any) {
                 toast.error(error.response.data.message)
             }
         }
         fetchDetails();
-    },[]);
+    }, []);
 
-    const languages = Array.from(
-        new Set(movie.flatMap(data => data.movieLanguage.map(item => item.language)))
-    );
+    console.log(movie)
 
     useEffect(() => {
         if (triggerCinemaNavigate) {
@@ -116,9 +116,9 @@ const Searchfield = () => {
                     {showDivSection && (
                         <div style={{ display: "flex", gap: "5px", fontSize: "12px" }}>
                             <div style={{ padding: "5px 10px" }}>Filter</div>
-                            {languages.map((item, index) => (
+                            {movie.map((item, index) => (
                                 <span key={index} className="filter_Sec1RightLan" >
-                                    {item}
+                                    {item.language}
                                 </span>
                             ))}
                         </div>
@@ -126,32 +126,33 @@ const Searchfield = () => {
                 </div>
 
                 {showDivSection ? (
-                    <div className="filter_Sec3 mt-5">
-                        {[
-                            { language: "Hindi", movies: [1, 2, 3, 4, 5, 6, 7, 8] },
-                            { language: "Telugu", movies: [1, 2, 3] },
-                            { language: "Bangali", movies: [1, 2, 3] },
-                            { language: "Punjabi", movies: [1] },
-                            { language: "English", movies: [1, 2, 3] },
-                            { language: "English", movies: [1, 2, 3, 4, 5, 6, 7] }
-                        ].map((section, index) => (
-                            <div key={index} className="fil_movie_list1 mt-1">
+                    <div className="filter_Sec3 mt-3">
+                        {movie.map((section) => (
+                            <div key={section.language} className="fil_movie_list1 mt-1">
                                 <div className="fil_movie_list">
                                     <div className="language_title my-3">{section.language}</div>
-                                    {section.movies.map((row, rowIndex) => (
-                                        <div key={rowIndex} onClick={() => {
+                                    {section.movies.map((row) => (
+                                        <div key={row.movieId} onClick={() => {
                                             setCurrentPath(pathname);
                                             setTriggerMovieNavigate(true);
-                                        }} className="fil_cinema_text">
-                                            Main Tera Hero
+                                        }}>
+                                            <div className="fil_cinema_text">{row.movieName}</div>
+                                            {row.screenTypes.length > 1 && (
+                                                <div className='d-flex my-1'>
+                                                    {row.screenTypes.map((val, i) => (
+                                                        <div className='fil_cinema_type' key={val}>{val}</div>
+                                                    ))}
+                                                </div>
+                                            )}
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         ))}
+
                     </div>
                 ) : (
-                    <div className="filter_Sec2 mt-5">
+                    <div className="filter_Sec2 mt-3">
                         <div className="fil_cinema_list mt-3" onClick={() => {
                             setCurrentPath(pathname);
                             setTriggerCinemaNavigate(true);
@@ -165,7 +166,7 @@ const Searchfield = () => {
                     </div>
                 )}
             </div>
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     );
 };
