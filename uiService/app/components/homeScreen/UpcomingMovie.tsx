@@ -70,6 +70,7 @@ const UpcomingMovieScreen = () => {
           ))}
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 };
