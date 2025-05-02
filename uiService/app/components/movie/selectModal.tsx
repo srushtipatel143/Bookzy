@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { Modal } from "react-bootstrap";
-import {useState } from "react";
+import { useState } from "react";
 
 interface MovieScreenProps {
     movie: {
@@ -18,7 +18,10 @@ interface MovieScreenProps {
             totalRating: number;
             votes: number;
         };
-        screenTypes: [];
+        availableScreen:{
+            language:string;
+            screenType:[];
+        } [];
     };
 }
 
@@ -29,6 +32,19 @@ const SelectModal = ({ movie }: MovieScreenProps) => {
     const handleButtonClick = () => {
         setSelectFormat(true);
     };
+
+    const selectValue = (data:any) => {
+
+        const value = {
+            movieId: movie._id,
+            movieName: movie.title,
+            type: movie.movieType,
+            selectLanguage:data.language,
+            selectScreen:data.screenType
+        }
+        localStorage.setItem("select-movie",JSON.stringify(value));
+        router.push("/explore/cinema")
+    }
 
     return (
         <div>
@@ -41,13 +57,13 @@ const SelectModal = ({ movie }: MovieScreenProps) => {
                 </Modal.Header>
                 <Modal.Body className="p-0 mb-4">
                     <div>
-                        {movie.movieLanguage.map((item) => (
-                            <div key={item._id} >
+                        {movie.availableScreen.map((item) => (
+                            <div key={item.language} >
                                 <div className="my-2 py-2 px-4 select_language"> {item.language}</div>
                                 <div className="px-4" style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
-                                    {movie.screenTypes.map((item, index) => (
-                                        <div key={index} className={`select_screen_modal`} onClick={() => router.push("/explore/cinema")}>
-                                            {item}
+                                    {item.screenType.map((val, index) => (
+                                        <div key={index} className={`select_screen_modal`} onClick={() => selectValue({ language: item.language, screenType: val })}>
+                                            {val}
                                         </div>
                                     ))}
                                 </div>

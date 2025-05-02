@@ -7,40 +7,68 @@ import { CiHeart } from "react-icons/ci";
 import { FiArrowLeft } from "react-icons/fi";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import {toast,ToastContainer} from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
 import { API_USER_URL } from "../utils/config";
 
-interface cinema{
-    id:number,
-    cinemaName:string,
-    cinemaLandmark:string
+interface cinema {
+    id: number,
+    cinemaName: string,
+    cinemaLandmark: string,
+    show:{
+        formattedShowTime:string;
+        _id:string;
+    }[];
+}
+
+interface SelectMovie {
+    movieId: string;
+    movieName: string;
+    type: {
+        type: string;
+        _id: string;
+    }[];
+    selectLanguage: string;
+    selectScreen: string;
 }
 
 const Cinemascreen = () => {
     const router = useRouter();
-    const [cinema,setcinema]=useState<cinema[]>([]);
-    useEffect(()=>{
-        const fetchDetails=async()=>{
+    const [cinema, setcinema] = useState<cinema[]>([]);
+    const [selectMovie, setSelectMovie] = useState<SelectMovie | null>(null)
+    useEffect(() => {
+        const fetchDetails = async () => {
             try {
-                const selectedCity=Cookies.get("selected_city");
+                const getSelectMovie = localStorage.getItem("select-movie");
+                const getSelectMovieData: SelectMovie | null = getSelectMovie ? JSON.parse(getSelectMovie) : null;
+                setSelectMovie(getSelectMovieData)
+
+                const selectedCity = Cookies.get("selected_city");
                 if (!selectedCity) {
                     toast.error("City is not selected");
                     return;
                 }
                 const cityData = JSON.parse(selectedCity);
-                const getCinemaRes=await axios.get(`${API_USER_URL}/getAllCinemaByCity/${cityData.id}`);
-                const cinemaDetails=getCinemaRes?.data?.data;
+                const bodydata = {
+                    cityId: cityData?.id,
+                    movieId: getSelectMovieData?.movieId,
+                    language: getSelectMovieData?.selectLanguage,
+                    selectScreen: getSelectMovieData?.selectScreen
+                }
+
+                const getCinemaRes = await axios.get(`${API_USER_URL}/getallcinemabyfilter`, {
+                    params: bodydata
+                });
+                const cinemaDetails = getCinemaRes?.data?.data;
                 setcinema(cinemaDetails);
 
-            } catch (error:any) {
+            } catch (error: any) {
                 toast.error(error.response.data.message)
             }
         }
         fetchDetails();
-    },[])
+    }, [])
 
-    console.log(cinema)
     return (
         <div className="container-fluid p-0 show_detail">
             <div className="container-fluid p-0 mt-3 show_inner_detail">
@@ -52,25 +80,36 @@ const Cinemascreen = () => {
                         <FiArrowLeft size={20} color="black" />
                     </div>
                     <div className="mt-1">
-                        <p className="show_detail_title_text">Sikandar - (Hindi)</p>
+                        <p className="show_detail_title_text">{selectMovie?.movieName} - ({selectMovie?.selectLanguage})</p>
                     </div>
                     <div className="d-flex gap-2">
-                        {["Action", "Drama"].map((item, index) => (
-                            <div className="show_detail_type" key={index}><span>{item}</span></div>
+                        {selectMovie?.type.map((item, index) => (
+                            <div className="show_detail_type" key={item._id}><span>{item.type}</span></div>
                         ))}
                     </div>
                 </div>
                 <div className="hrLine"></div>
             </div>
-            <div className="cinema_list mt-3" onClick={() => router.push("/explore/show")}>
-                {cinema.map((item) => (
-                    <div key={item.id} className="cinema_name">
-                        <CiHeart size={20} />
-                        <span className="cinema_text">{item.cinemaName} : {item.cinemaLandmark}</span>
-                    </div>
-                ))}
+            <div className="p-0 mt-3 show_detail_title show_data">
+                <div className="d-flex flex-column">
+                    {cinema.map((item, index) => (
+                        <div key={index} className="show_movie_name">
+                            <div className="d-flex show_movie_name_small   m-2">
+                                <div className="show_movie_name_left">
+                                    <CiHeart size={20} />
+                                    <span className="cinema_text">{item.cinemaName} : {item.cinemaLandmark}</span></div>
+                                <div className="show_movie_name_right">
+                                    {item.show.map((item) => (
+                                        <div className="show_movie_time" onClick={() => router.push("/seat")} key={item._id}>{item.formattedShowTime}</div>
+                                    ))}
+                                </div>
+                            </div>
+                            <hr />
+                        </div>
+                    ))}
+                </div>
             </div>
-            <ToastContainer/>
+            <ToastContainer />
         </div>
     )
 }

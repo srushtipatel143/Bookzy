@@ -23,12 +23,16 @@ interface MovieScreenProps {
             votes:number;
         };
         screenTypes:[];
+        availableScreen:{
+            language:string;
+            screenType:[];
+        } [];
     };
 }
 
 const Moviescreen = ({ movie }: MovieScreenProps) => {
 
-    const movieLength = movie.duration;
+    const movieLength = movie?.duration;
     const hr = Math.floor(movieLength / 60);
     const min = movieLength % 60;
     const duration = `${hr}h ${min}min`;
@@ -52,18 +56,18 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                         </div>
                         <div className="movie_type_lan">
                             <div className="movie_type_sec">
-                                {movie.screenTypes.map((item,index)=>(
+                                {movie.screenTypes?.map((item,index)=>(
                                     <span key={index}>
                                         {item}
-                                        {index !== movie.screenTypes.length - 1 && ','}
+                                        {index !== movie.screenTypes?.length - 1 && ','}
                                     </span>
                                 ))}
                             </div>
                             <div className="movie_lan_sec">
-                                {movie.movieLanguage.map((item, index) => (
+                                {movie.movieLanguage?.map((item, index) => (
                                     <span key={item._id}>
                                         {item.language}
-                                        {index !== movie.movieLanguage.length - 1 && ','}
+                                        {index !== movie.movieLanguage?.length - 1 && ','}
                                     </span>
                                 ))}
                             </div>
@@ -71,10 +75,10 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                         <div className="d-flex">
                             <p>{duration}</p>
                             <ul>
-                                <li> {movie.movieType.map((item, index) => (
+                                <li> {movie.movieType?.map((item, index) => (
                                     <span key={item._id}>
                                         {item.type}
-                                        {index !== movie.movieType.length - 1 && ','}
+                                        {index !== movie.movieType?.length - 1 && ','}
                                     </span>
                                 ))}</li>
                                 <li>{formattedDate}</li>
@@ -93,7 +97,7 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
             <div className="about_movie py-4 recommend_movie">
                 <p className="about_movie_title">Cast</p>
                 <div className="cast_scroll mt-4">
-                    {movie.cast.map((item) => (
+                    {movie.cast?.map((item) => (
                         <div key={item._id} className="cast-card p-0">
                             <Image height={120} width={120} src={item.imageUrl} alt="cast_image" className="cast_img" />
                             <p>{item.actor}</p>

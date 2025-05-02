@@ -29,6 +29,67 @@ const getAllCinemaByCity = async (req, res, next) => {
     }
 };
 
+const getAllCinemaByFilter = async (req, res, next) => {
+    try {
+        const data = req.query;
+
+        const now = new Date();
+        const istOffset = 5.5 * 60 * 60 * 1000;
+        const istToday = new Date(now.getTime() + istOffset);
+        istToday.setHours(0, 0, 0, 0);
+        const today = new Date(istToday.getTime() - istOffset);
+
+        const getdata = await Show.find({
+            movieId: data.movieId,
+            movieLanguage: data.language,
+            screenType: data.selectScreen,
+            showStartTime: { $gte: today }
+        });
+
+        const getCinemaId = getdata.map((item) => item.cinemaId);
+        const uniqueCinemaId = [...new Set(getCinemaId)];
+
+        if (uniqueCinemaId.length === 0) {
+            return res.status(200).json({ message: "No cinemas found", data: [] });
+        }
+
+        const placeholders = uniqueCinemaId.map(() => '?').join(',');
+        const query = `SELECT id, cinemaName, cinemaLandmark FROM cinema WHERE cityId = ? AND status = ? AND id IN (${placeholders})`;
+        const param = [data.cityId, 1, ...uniqueCinemaId];
+        const [CinemaResponse] = await pool.execute(query, param);
+
+        const cinemaShowMap = new Map();
+        getdata.forEach(show => {
+            const cinemaId = show.cinemaId.toString();
+            if (!cinemaShowMap.has(cinemaId)) {
+                cinemaShowMap.set(cinemaId, []);
+            }
+            const showDate = new Date(show.showStartTime);
+            
+            const formattedTime = showDate.toLocaleTimeString('en-US', {
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'UTC', 
+            });
+            
+            cinemaShowMap.get(cinemaId).push({
+                ...show.toObject ? show.toObject() : show,
+                formattedShowTime: formattedTime
+            });
+        });
+
+        const finalData = CinemaResponse.map(cinema => ({
+            ...cinema,
+            show: cinemaShowMap.get(cinema.id.toString()) || []
+        }));
+
+        return res.status(200).json({ message: "Get cinema successfully", data: finalData });
+    } catch (error) {
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+};
+
 const getSingleMovie = async (req, res, next) => {
     try {
         const id = req.params.id;
@@ -47,8 +108,30 @@ const getSingleMovie = async (req, res, next) => {
             movieId: id,
             showStartTime: { $gte: today }
         });
-        const getScreenTypeArray = getMovie.map((item) => item.screenType);
-        const screenTypes = [... new Set(getScreenTypeArray)];
+
+        const getScreenTypeArrayAll = getMovie.map((item) => item.screenType);
+        const screenTypes = [... new Set(getScreenTypeArrayAll)];
+
+        const getScreenTypeArray = getMovie.map((item) => {
+            return {
+                screenType: item.screenType,
+                language: item.movieLanguage
+            }
+        });
+
+        const resultMap = new Map();
+
+        getScreenTypeArray.forEach(({ language, screenType }) => {
+            if (!resultMap.has(language)) {
+                resultMap.set(language, new Set());
+            }
+            resultMap.get(language).add(screenType);
+        });
+
+        const availableScreen = Array.from(resultMap.entries()).map(([language, screenTypes]) => ({
+            language,
+            screenType: Array.from(screenTypes),
+        }));
 
         let ratingData = {};
         if (userRating !== null) {
@@ -57,11 +140,14 @@ const getSingleMovie = async (req, res, next) => {
                 votes: userRating.userRatings.length
             }
         }
+
         const data = {
             ...movieData.toObject(),
             screenTypes,
+            availableScreen,
             ratingData
         };
+
         return res.status(200).json({
             success: true,
             message: "Movie get successfully",
@@ -221,7 +307,7 @@ const getMoviesInCity = async (req, res, next) => {
             moviesMap.get(movieId).screenTypes.add(show.screenType);
         });
 
-        const finalResult= Array.from(resultMap.entries()).map(([language, moviesMap]) => ({
+        const finalResult = Array.from(resultMap.entries()).map(([language, moviesMap]) => ({
             language,
             movies: Array.from(moviesMap.values()).map(movie => ({
                 movieId: movie.movieId,
@@ -244,7 +330,6 @@ const getMoviesInCinema = async (req, res, next) => {
         const { id } = req.params;
         const getMovie = await cinemaMovieMapping.find({
             cinemaId: id,
-            // showTime: { $exists: true, $not: { $size: 0 } }
         }).populate("movieId");
 
         return res.status(200).json({
@@ -347,4 +432,4 @@ const getUpCommingMovie = async (req, res, next) => {
     }
 }
 
-module.exports = { getAllCity, getAllCinemaByCity, getSingleMovie, getShow, getMovieforcinema, getMoviesInCity, getMoviesInCinema, getLatestMovie, getUpCommingMovie };
+module.exports = { getAllCity, getAllCinemaByCity, getSingleMovie, getShow, getAllCinemaByFilter, getMovieforcinema, getMoviesInCity, getMoviesInCinema, getLatestMovie, getUpCommingMovie };

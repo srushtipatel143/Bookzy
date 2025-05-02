@@ -31,11 +31,9 @@ const Searchfield = () => {
     const pathname = usePathname();
     const { setShowSearch } = useSearch();
     const [showDivSection, setShowDivSection] = useState(true);
-    const [triggerCinemaNavigate, setTriggerCinemaNavigate] = useState(false);
-    const [triggerMovieNavigate, setTriggerMovieNavigate] = useState(false);
-    const [currentpath, setCurrentPath] = useState(pathname);
     const [cinema, setcinema] = useState<cinema[]>([]);
     const [movie, setMovie] = useState<movie[]>([]);
+   
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -60,26 +58,6 @@ const Searchfield = () => {
         }
         fetchDetails();
     }, []);
-
-    console.log(movie)
-
-    useEffect(() => {
-        if (triggerCinemaNavigate) {
-            router.push("/explore/cinema")
-        }
-        if (triggerMovieNavigate) {
-            router.push("/explore/movie")
-        }
-    }, [triggerCinemaNavigate, triggerMovieNavigate]);
-
-    useEffect(() => {
-        if (triggerCinemaNavigate && pathname !== currentpath) {
-            setShowSearch(false)
-        }
-        if (triggerMovieNavigate && pathname !== currentpath) {
-            setShowSearch(false)
-        }
-    }, [pathname]);
 
     return (
         <div className="container-fluid position-relative search_top_priority recommend_movie m-0 p-0" style={{ minHeight: "100vh" }}>
@@ -133,8 +111,9 @@ const Searchfield = () => {
                                     <div className="language_title my-3">{section.language}</div>
                                     {section.movies.map((row) => (
                                         <div key={row.movieId} onClick={() => {
-                                            setCurrentPath(pathname);
-                                            setTriggerMovieNavigate(true);
+                                            setShowSearch(false);
+                                            router.push(`/explore/movie/${row.movieId}`);
+
                                         }}>
                                             <div className="fil_cinema_text">{row.movieName}</div>
                                             {row.screenTypes.length > 1 && (
@@ -153,13 +132,13 @@ const Searchfield = () => {
                     </div>
                 ) : (
                     <div className="filter_Sec2 mt-3">
-                        <div className="fil_cinema_list mt-3" onClick={() => {
-                            setCurrentPath(pathname);
-                            setTriggerCinemaNavigate(true);
-                        }}>
+                        <div className="fil_cinema_list mt-3">
                             {cinema.map((item) => (
                                 <ul key={item.id} className="fil_cinema_name">
-                                    <li className="fil_cinema_text">{item.cinemaName} : {item.cinemaLandmark}</li>
+                                    <li onClick={() => {
+                                        setShowSearch(false);
+                                        router.push("/explore/show");
+                                    }} className="fil_cinema_text">{item.cinemaName} : {item.cinemaLandmark}</li>
                                 </ul>
                             ))}
                         </div>
