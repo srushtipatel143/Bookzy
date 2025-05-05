@@ -15,7 +15,7 @@ const addCinema = async (req, res, next) => {
         await pool.query(callProcedure,param);
         return res.status(200).json({ success: true, message: "cinema added successfully", data: req.body })
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     } 
 }
 
@@ -56,7 +56,7 @@ const getSingleCinema = async (req, res, next) => {
         }
         return res.status(200).json({ success: true, message: "cinema get successfully", data: groupedCinemaRes })
     } catch (error) {
-        return next(new errorHandler("Databaseb error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -96,8 +96,7 @@ const getCinemaByUSer = async (req, res, next) => {
         }
         return res.status(200).json({ success: true, message: "cinema get successfully", data: groupedCinemaRes })
     } catch (error) {
-        console.log(error)
-        return next(new errorHandler("Databaseb error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -119,7 +118,7 @@ const editCinema = async (req, res, next) => {
         }
         return res.status(200).json({ success: true, message: "cinema update successfully", data: req.body })
     } catch (error) {
-        return next(new errorHandler("Databaseb error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 

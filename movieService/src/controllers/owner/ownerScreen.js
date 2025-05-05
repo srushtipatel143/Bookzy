@@ -85,7 +85,7 @@ const addScreen = async (req, res, next) => {
 
     } catch (error) {
         if (conn) await conn.rollback();
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     } finally {
         if (conn) conn.release();
     }
@@ -143,7 +143,7 @@ const getScreenByCinemaId = async (req, res, next) => {
         }
         return res.status(200).json({message:"get screen successfully",data:screenData})
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 module.exports = { addScreen, getScreenByCinemaId };

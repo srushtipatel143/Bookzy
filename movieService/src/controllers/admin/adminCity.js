@@ -10,7 +10,7 @@ const addCity = async (req, res, next) => {
         await pool.execute(callProcedure, param)
         return res.status(200).json({ success: true, message: "city added successfully", data: req.body })
     } catch (error) {
-        return next(new errorHandler("Databaseb error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 
@@ -22,7 +22,7 @@ const getSingleCity = async (req, res, next) => {
         const [getCityRes] = await pool.execute(getCityQuery, [id,userId]);
         return res.status(200).json({ success: true, message: "city get successfully", data: getCityRes })
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 
@@ -33,7 +33,7 @@ const getCityByUSer = async (req, res, next) => {
         const [getCityRes] = await pool.execute(getCityQuery, [id]);
         return res.status(200).json({ success: true, message: "city get successfully", data: getCityRes })
     } catch (error) {
-        return next(new errorHandler("Databaseb error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 
@@ -46,7 +46,7 @@ const editCity = async (req, res, next) => {
         await pool.execute(callProcedure, param);
         return res.status(200).json({ success: true, message: "city update successfully", data: req.body })
     } catch (error) {
-        return next(new errorHandler("Databaseb error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 

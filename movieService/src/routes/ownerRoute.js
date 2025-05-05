@@ -11,11 +11,11 @@ router.get("/getallcinema",getAccessToRoute,getCinemaByUSer);
 router.put("/editcinema",getAccessToRoute,editCinema);
 
 router.post("/addscreen",getAccessToRoute,addScreen);
-router.get("/getScreenByCinemaId/:id",getAccessToRoute,getScreenByCinemaId);
+router.get("/getscreenbycinemaid/:id",getAccessToRoute,getScreenByCinemaId);
 
-router.post("/addShow",getAccessToRoute,addShow);
-router.put("/editShow",getAccessToRoute,editShow);
-router.get("/getShow/:id",getAccessToRoute,getShow);
-router.get("/getShowByCinemaId",getAccessToRoute,getShowByCinemaId);
+router.post("/addshow",getAccessToRoute,addShow);
+router.put("/editshow",getAccessToRoute,editShow);
+router.get("/getshow/:id",getAccessToRoute,getShow);
+router.get("/getshowbybinemaid",getAccessToRoute,getShowByCinemaId);
 
 module.exports=router;

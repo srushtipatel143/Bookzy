@@ -26,22 +26,21 @@ async function init() {
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
                 console.log(`topic is ${topic},`)
-               try {
-                console.log("val",message.value.toString())
-                const emailData = JSON.parse(message.value.toString());
-                await sendMail(emailData);
+                try {
+                    console.log("val", message.value.toString())
+                    const emailData = JSON.parse(message.value.toString());
+                    await sendMail(emailData);
 
-               } catch (error) {
-                
-                console.log("Error is",error)
-               }
+                } catch (error) {
+                    return next(new errorHandler("Something went wrong", 500, error));
+                }
             }
         });
     } catch (error) {
-        console.error("Error in consumer:", error);
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
 
 // init();
-module.exports={init};
+module.exports = { init };

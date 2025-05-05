@@ -44,7 +44,7 @@ const signup = async (req, res, next) => {
             data: savedUser,
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 
@@ -77,7 +77,7 @@ const signIn = async (req, res, next) => {
             data: user,
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 
@@ -99,7 +99,7 @@ const validateOtp = async (req, res, next) => {
             return res.status(400).json({ message: "Invalid OTP" });
         }
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -134,7 +134,7 @@ const resendOtp = async (req, res, next) => {
         });
 
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -148,7 +148,7 @@ const editProfile = async (req, res, next) => {
             message: "Profile Update Successfully"
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 

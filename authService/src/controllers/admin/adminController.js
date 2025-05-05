@@ -22,7 +22,7 @@ const adminLogin = async (req, res, next) => {
             return next(new errorHandler("Invalid Password", 409));
         }
     } catch (error) {
-        return next(new errorHandler("Databaseb error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 

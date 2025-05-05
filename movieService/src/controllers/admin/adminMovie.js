@@ -15,9 +15,8 @@ const addMovie = async (req, res, next) => {
             message: "Movie added successfully",
             data: movieData
         });
-
     } catch (error) {
-        return next(new errorHandler("database error", 500, error))
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -39,7 +38,7 @@ const updateMovie = async (req, res, next) => {
             data: data
         });
     } catch (error) {
-        return next(new errorHandler("database error", 500, error))
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -54,7 +53,7 @@ const getAllMovie = async (req, res, next) => {
         });
 
     } catch (error) {
-        return next(new errorHandler("database error", 500, error))
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -72,7 +71,7 @@ const getSingleMovie = async (req, res, next) => {
             data: getMovie
         });
     } catch (error) {
-        return next(new errorHandler("database error", 500, error))
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 

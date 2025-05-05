@@ -24,7 +24,7 @@ const addRating=async(req,res,next)=>{
             message: "rating add successfully"
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 
@@ -38,7 +38,7 @@ const getSingleMovieRatings=async(req,res,next)=>{
             data:ratings
         });
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 

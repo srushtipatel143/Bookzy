@@ -4,18 +4,18 @@ const {getAllCity,getAllCinemaByCity,getSingleMovie,getShow,getMovieforcinema,ge
 const {addRating,getSingleMovieRatings}=require("../controllers/user/userRating");
 const {getAccessToUserRoute}=require("../middlewares/authorization/authUser");
 
-router.get("/getAllCity",getAllCity);
-router.get("/getAllCinemaByCity/:id",getAllCinemaByCity);
-router.get("/getSingleMovie/:id",getSingleMovie);
+router.get("/getallcity",getAllCity);
+router.get("/getallcinemabycity/:id",getAllCinemaByCity);
+router.get("/getsinglemovie/:id",getSingleMovie);
 router.get("/getshowinfo/:id",getShow)
-router.get("/getMovieforcinema",getMovieforcinema);
+router.get("/getmovieforcinema",getMovieforcinema);
 router.get("/getmoviesincity/:id",getMoviesInCity);
 router.get("/getmoviesincinema/:id",getMoviesInCinema);
 router.get("/getlatestmovie/:id",getLatestMovie);
 router.get("/upcomingmovie/:id",getUpCommingMovie)
 router.get("/getallcinemabyfilter",getAllCinemaByFilter)
 
-router.post("/addRating",getAccessToUserRoute,addRating);
-router.get("/getSingleMovieRatings/:id",getSingleMovieRatings)
+router.post("/addrating",getAccessToUserRoute,addRating);
+router.get("/getsinglemovieratings/:id",getSingleMovieRatings)
 
 module.exports=router;

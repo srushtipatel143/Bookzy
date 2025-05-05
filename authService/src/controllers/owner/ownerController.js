@@ -21,7 +21,7 @@ const ownerLogin = async (req, res, next) => {
             return next(new errorHandler("Invalid Password", 409));
         }
     } catch (error) {
-        return next(new errorHandler("Databaseb error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 };
 
@@ -76,7 +76,6 @@ const setForgotPassword = async (req, res, next) => {
         const changeFgtPwd = await owner.save();
         return res.status(200).json({ success: true, message: "Password Reset Successfully", data: changeFgtPwd })
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Error during passsword reset", 500, error));
     }
 }

@@ -10,9 +10,9 @@ router.get("/getcity/:id",getAccessToRouteBoth,getSingleCity);
 router.get("/getallcity",getAccessToRouteBoth,getCityByUSer);
 router.put("/editcity",getAccessToRouteBoth,editCity)
 
-router.post("/addMovie",getAccessToRouteBoth,addMovie)
-router.put("/updateMovie",getAccessToRouteBoth,updateMovie)
-router.get("/getAllMovie",getAccessToRouteBoth,getAllMovie)
-router.get("/getSingleMovie/:id",getAccessToRouteBoth,getSingleMovie)
+router.post("/addmovie",getAccessToRouteBoth,addMovie)
+router.put("/updatemovie",getAccessToRouteBoth,updateMovie)
+router.get("/getallmovie",getAccessToRouteBoth,getAllMovie)
+router.get("/getsinglemovie/:id",getAccessToRouteBoth,getSingleMovie)
 
 module.exports=router;

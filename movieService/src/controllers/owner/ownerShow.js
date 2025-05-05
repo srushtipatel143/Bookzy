@@ -157,10 +157,9 @@ const addShow = async (req, res, next) => {
             session.endSession();
         }
     } catch (error) {
-        console.log(error)
         await session.abortTransaction();
         await conn.rollback();
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -190,8 +189,7 @@ const editShow = async (req, res, next) => {
         });
 
     } catch (error) {
-        console.log(error)
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -199,7 +197,6 @@ const getShow = async (req, res, next) => {
     try {
         //const { screenId, showId } = req.body;
         const showId = req.params.id;
-
         const showData = await Show.findOne({ _id: showId });
 
         // const query = `SELECT seatinfo.screenId as screenId,screenName,screen.noOfRows as screenRow,screen.noOfSeats as screenSeat,seatinfo.RowId as rowId,
@@ -248,7 +245,7 @@ const getShow = async (req, res, next) => {
         return res.status(200).json({ message: "get show successfully", data: showData })
 
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
@@ -263,7 +260,7 @@ const getShowByCinemaId = async (req, res, next) => {
         });
 
     } catch (error) {
-        return next(new errorHandler("Database error", 500, error));
+        return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
