@@ -161,7 +161,9 @@ const Searchfield = () => {
                             {cinema.map((item) => (
                                 <ul key={item.id} className="fil_cinema_name">
                                     <li onClick={() => {
+                                        const cinemaId=item.id.toString();
                                         setShowSearch(false);
+                                        localStorage.setItem("selected-cinema",cinemaId);
                                         router.push("/explore/show");
                                     }} className="fil_cinema_text">{item.cinemaName} : {item.cinemaLandmark}</li>
                                 </ul>

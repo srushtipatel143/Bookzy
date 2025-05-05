@@ -18,6 +18,11 @@ interface cinema {
     show:{
         formattedShowTime:string;
         _id:string;
+        priceInfoForShow: {
+            rowType: string;
+            price: number;
+            _id: string;
+        }[];
     }[];
 }
 
@@ -99,8 +104,24 @@ const Cinemascreen = () => {
                                     <CiHeart size={20} />
                                     <span className="cinema_text">{item.cinemaName} : {item.cinemaLandmark}</span></div>
                                 <div className="show_movie_name_right">
-                                    {item.show.map((item) => (
+                                    {/* {item.show.map((item) => (
                                         <div className="show_movie_time" onClick={() => router.push("/seat")} key={item._id}>{item.formattedShowTime}</div>
+                                    ))} */}
+                                    {item?.show?.map((val) => (
+                                        <div key={val._id} className="show_time_container">
+                                            <div className="show_movie_time" onClick={() => router.push("/seat")} >{val.formattedShowTime}</div>
+                                            <div className="price_info_hover">
+                                                <div className="d-flex">
+                                                    {val.priceInfoForShow.map((dt) => (
+                                                        <div className="show_extdata" key={dt._id}>
+                                                            <div className="show_extdata_rs">RS. {dt.price}</div>
+                                                            <div className="show_extdata_type">{dt.rowType}</div>
+                                                        </div>
+                                                    ))}
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     ))}
                                 </div>
                             </div>

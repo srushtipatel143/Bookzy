@@ -1,157 +1,224 @@
-.show_detail_title{
-    width:90%;
-    margin: auto;
+.show_detail_title {
+  width: 90%;
+  margin: auto;
 }
 
-.show_detail{
-    background-color: rgb(238, 236, 236);
+.show_detail {
+  background-color: rgb(238, 236, 236);
 }
 
 .show_inner_detail {
   background-color: var(--secondary-sub-color);
 }
 
-  @media (max-width: 855px) {
-    .show_detail_title {
-      width: 80%;
-    }
-    .show_detail_title_ext{
-        padding: 0 5px;
-    }
+@media (max-width: 855px) {
+  .show_detail_title {
+    width: 80%;
   }
+
+  .show_detail_title_ext {
+    padding: 0 5px;
+  }
+}
 
 
 
-  .show_detail_title_text{
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
+.show_detail_title_text {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
 
-  .show_detail_type{
-    border: 1px solid black;
-    border-radius: 15px;
-    padding: 3px 6px;
-    font-size:0.7rem;
-  }
+.show_detail_type {
+  border: 1px solid black;
+  border-radius: 15px;
+  padding: 3px 6px;
+  font-size: 0.7rem;
+}
 
-  .show_detail_sec2{
-    display: flex;
-    flex-wrap: wrap;
-    justify-content:space-between;
-  }
+.show_detail_sec2 {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
 
-  .hrLine{
-    height: 1px;
-    background-color: lightgray;
-    margin-top: 10px;
-  }
+.hrLine {
+  height: 1px;
+  background-color: lightgray;
+  margin-top: 10px;
+}
 
-  .hrLine1{
-    box-shadow: 0 3px 3px -2px lightgrey;
-    height: 1px;
-    background-color: lightgray;
-  }
+.hrLine1 {
+  box-shadow: 0 3px 3px -2px lightgrey;
+  height: 1px;
+  background-color: lightgray;
+}
 
-  .show_Date_sec{
-    width: 30%;
-    overflow-x: auto;
-    padding: 10px 0;
-  }
+.show_Date_sec {
+  width: 30%;
+  overflow-x: auto;
+  padding: 10px 0;
+}
 
-  @media (max-width: 575) {
-    .show_Date_sec {
-      width: 100%;
-    }
-    .show_movie_name_small{
-      flex-direction: column;
-    }
-    .show_movie_name_right{
-      display: flex !important;
-    }
-  }
-
-
-  .show_detail_date {
-    display: flex;
-    flex-direction: column; /* Stack day, date, month vertically */
-    justify-content: center;
-    align-items: center;
-    background-color: lightgray;
-    border-radius: 15px;
-    margin-right: 5px;
-    font-size: 0.7rem;
-    min-width: 50px;
-  }
-  
-  .date-day, .date-date, .date-month {
-    line-height: 1.2;
-  }
-  
-  .date-day {
-    text-transform: uppercase;
-  }
-  
-  .date-date {
-    font-size: 1rem;
-    font-weight: bold;
-  }
-  
-  .date-month {
-    text-transform: uppercase;
-  }
-  
-  .show_detail_sec2_date {
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: thin;
-    -ms-overflow-style: auto;
-  }
-
-  .show_filter_sec {
-    width: 70%;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .show_detail_ext{
-    padding: 0 15px;
-    border-left: 1px solid lightgray;
-    height: 100%;
-    display: flex;
-    align-items: center;
-  }
-  .show_data{
-    background-color: var(--secondary-sub-color);
-  }
-
-  .show_movie_time{
-    font-size: 14px;
-    border: 1px solid black;
-    border-radius: 10px;
-    padding: 5px 20px;
-    cursor: pointer;
-  }
-
-  .show_movie_name{
+@media (max-width: 575) {
+  .show_Date_sec {
     width: 100%;
   }
 
-  .show_movie_name_left{
-    width: 30%;
+  .show_movie_name_small {
+    flex-direction: column;
   }
 
-  .show_movie_name_left{
-    font-weight: 500;
+  .show_movie_name_right {
+    display: flex !important;
   }
-  .show_movie_name_right{
-    display: flex;
-    flex-wrap: wrap;
-    /* width: 70%; */
-    gap: 10px;
-  }
+}
 
-  .d-flex::-webkit-scrollbar {
-    display: none; /* For Chrome, Safari, and Opera */
-  }
+
+.show_detail_date {
+  display: flex;
+  flex-direction: column;
+  /* Stack day, date, month vertically */
+  justify-content: center;
+  align-items: center;
+  background-color: lightgray;
+  border-radius: 15px;
+  margin-right: 5px;
+  font-size: 0.7rem;
+  min-width: 50px;
+}
+
+.date-day,
+.date-date,
+.date-month {
+  line-height: 1.2;
+}
+
+.date-day {
+  text-transform: uppercase;
+}
+
+.date-date {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.date-month {
+  text-transform: uppercase;
+}
+
+.show_detail_sec2_date {
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+  -ms-overflow-style: auto;
+}
+
+.show_filter_sec {
+  width: 70%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.show_detail_ext {
+  padding: 0 15px;
+  border-left: 1px solid lightgray;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.show_data {
+  background-color: var(--secondary-sub-color);
+}
+
+.show_movie_time {
+  font-size: 14px;
+  border: 1px solid black;
+  border-radius: 10px;
+  padding: 5px 20px;
+  cursor: pointer;
+}
+
+.show_movie_name {
+  width: 100%;
+}
+
+.show_movie_name_left {
+  width: 30%;
+}
+
+.show_movie_name_left {
+  font-weight: 500;
+}
+
+.show_movie_name_right {
+  display: flex;
+  flex-wrap: wrap;
+  /* width: 70%; */
+  gap: 10px;
+}
+
+.d-flex::-webkit-scrollbar {
+  display: none;
+  /* For Chrome, Safari, and Opera */
+}
+
+.show_extdata {
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 4.5rem;
+}
+
+.show_extdata_rs {
+  font-size: 14px;
+}
+
+.show_extdata_type {
+  font-size: 12px;
+  color: green;
+}
+
+.show_time_container {
+  position: relative;
+  margin: 5px;
+}
+
+.price_info_hover {
+  display: none;
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background-color: white;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 5px;
+  min-width: 120px;
+}
+
+.price_info_hover::before {
+  content: "";
+  position: absolute;
+  top: 115%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 10px solid white;
+}
+
+.show_time_container:hover .price_info_hover {
+  display: block;
+}
+
+.show_extdata {
+  margin: 5px 0;
+}
