@@ -33,7 +33,7 @@ const Searchfield = () => {
     const [showDivSection, setShowDivSection] = useState(true);
     const [cinema, setcinema] = useState<cinema[]>([]);
     const [movie, setMovie] = useState<movie[]>([]);
-   
+
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -46,7 +46,6 @@ const Searchfield = () => {
                 const cityData = JSON.parse(selectedCity);
                 const getCinemaRes = await axios.get(`${API_USER_URL}/getAllCinemaByCity/${cityData.id}`);
                 const getMovies = await axios.get(`${API_USER_URL}/getmoviesincity/${cityData.id}`);
-                console.log()
                 const cinemaDetails = getCinemaRes?.data?.data;
                 const movieDetails = getMovies?.data?.data;
                 setcinema(cinemaDetails);
@@ -58,6 +57,19 @@ const Searchfield = () => {
         }
         fetchDetails();
     }, []);
+
+    const typeSelect = (data: any) => {
+        const value = {
+            movieId: data.movieId,
+            movieName: data.movieName,
+            selectLanguage: data.selectLanguage,
+            selectScreen: data.selectScreen,
+            type:data.movieType
+        }
+        localStorage.setItem("select-movie",JSON.stringify(value));
+        router.push("/explore/cinema");
+        setShowSearch(false);
+    }
 
     return (
         <div className="container-fluid position-relative search_top_priority recommend_movie m-0 p-0" style={{ minHeight: "100vh" }}>
@@ -110,16 +122,26 @@ const Searchfield = () => {
                                 <div className="fil_movie_list">
                                     <div className="language_title my-3">{section.language}</div>
                                     {section.movies.map((row) => (
-                                        <div key={row.movieId} onClick={() => {
+                                        <div key={row.movieId} onClick={(e) => {
+                                            e.preventDefault()
                                             setShowSearch(false);
                                             router.push(`/explore/movie/${row.movieId}`);
-
                                         }}>
                                             <div className="fil_cinema_text">{row.movieName}</div>
                                             {row.screenTypes.length > 1 && (
                                                 <div className='d-flex my-1'>
                                                     {row.screenTypes.map((val, i) => (
-                                                        <div className='fil_cinema_type' key={val}>{val}</div>
+                                                        <div className='fil_cinema_type' onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            e.preventDefault()
+                                                            typeSelect({
+                                                                movieId: row.movieId,
+                                                                movieName: row.movieName,
+                                                                movieType:row.movieType,
+                                                                selectLanguage: section.language,
+                                                                selectScreen: val
+                                                            })
+                                                        }} key={val}>{val}</div>
                                                     ))}
                                                 </div>
                                             )}

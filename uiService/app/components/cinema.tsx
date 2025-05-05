@@ -83,7 +83,7 @@ const Cinemascreen = () => {
                         <p className="show_detail_title_text">{selectMovie?.movieName} - ({selectMovie?.selectLanguage})</p>
                     </div>
                     <div className="d-flex gap-2">
-                        {selectMovie?.type.map((item, index) => (
+                        {selectMovie?.type?.map((item, index) => (
                             <div className="show_detail_type" key={item._id}><span>{item.type}</span></div>
                         ))}
                     </div>
