@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { FiArrowLeft } from "react-icons/fi";
 import { RxCross2 } from "react-icons/rx";
 import "../../css/search.css";
@@ -23,12 +23,14 @@ interface movie {
         movieId: string;
         movieName: string;
         screenTypes: [];
+        movieType: {
+            type: string;
+        }[];
     }[];
 }[];
 
 const Searchfield = () => {
     const router = useRouter();
-    const pathname = usePathname();
     const { setShowSearch } = useSearch();
     const [showDivSection, setShowDivSection] = useState(true);
     const [cinema, setcinema] = useState<cinema[]>([]);
@@ -48,6 +50,7 @@ const Searchfield = () => {
                 const getMovies = await axios.get(`${API_USER_URL}/getmoviesincity/${cityData.id}`);
                 const cinemaDetails = getCinemaRes?.data?.data;
                 const movieDetails = getMovies?.data?.data;
+                console.log(movieDetails)
                 setcinema(cinemaDetails);
                 setMovie(movieDetails);
 
@@ -64,9 +67,9 @@ const Searchfield = () => {
             movieName: data.movieName,
             selectLanguage: data.selectLanguage,
             selectScreen: data.selectScreen,
-            type:data.movieType
+            type: data.movieType
         }
-        localStorage.setItem("select-movie",JSON.stringify(value));
+        localStorage.setItem("select-movie", JSON.stringify(value));
         router.push("/explore/cinema");
         setShowSearch(false);
     }
@@ -130,14 +133,14 @@ const Searchfield = () => {
                                             <div className="fil_cinema_text">{row.movieName}</div>
                                             {row.screenTypes.length > 1 && (
                                                 <div className='d-flex my-1'>
-                                                    {row.screenTypes.map((val, i) => (
+                                                    {row.screenTypes.map((val) => (
                                                         <div className='fil_cinema_type' onClick={(e) => {
                                                             e.stopPropagation();
                                                             e.preventDefault()
                                                             typeSelect({
                                                                 movieId: row.movieId,
                                                                 movieName: row.movieName,
-                                                                movieType:row.movieType,
+                                                                movieType: row.movieType,
                                                                 selectLanguage: section.language,
                                                                 selectScreen: val
                                                             })
