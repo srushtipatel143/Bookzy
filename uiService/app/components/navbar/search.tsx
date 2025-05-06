@@ -55,7 +55,7 @@ const Searchfield = () => {
                 setMovie(movieDetails);
 
             } catch (error: any) {
-                toast.error(error.response.data.message)
+                toast.error(error.response.data.message);
             }
         }
         fetchDetails();
