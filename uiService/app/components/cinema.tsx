@@ -10,14 +10,15 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
 import { API_USER_URL } from "../utils/config";
+import { json } from "stream/consumers";
 
 interface cinema {
     id: number,
     cinemaName: string,
     cinemaLandmark: string,
-    show:{
-        formattedShowTime:string;
-        _id:string;
+    show: {
+        formattedShowTime: string;
+        _id: string;
         priceInfoForShow: {
             rowType: string;
             price: number;
@@ -60,7 +61,6 @@ const Cinemascreen = () => {
                     language: getSelectMovieData?.selectLanguage,
                     selectScreen: getSelectMovieData?.selectScreen
                 }
-
                 const getCinemaRes = await axios.get(`${API_USER_URL}/getallcinemabyfilter`, {
                     params: bodydata
                 });
@@ -72,7 +72,13 @@ const Cinemascreen = () => {
             }
         }
         fetchDetails();
-    }, [])
+    }, []);
+
+    const selectShow=(data:any)=>{
+        const selectShowDetail=JSON.stringify(data)
+        localStorage.setItem("select-show",selectShowDetail)
+        router.push("/seat")
+    }
 
     return (
         <div className="container-fluid p-0 show_detail">
@@ -104,12 +110,9 @@ const Cinemascreen = () => {
                                     <CiHeart size={20} />
                                     <span className="cinema_text">{item.cinemaName} : {item.cinemaLandmark}</span></div>
                                 <div className="show_movie_name_right">
-                                    {/* {item.show.map((item) => (
-                                        <div className="show_movie_time" onClick={() => router.push("/seat")} key={item._id}>{item.formattedShowTime}</div>
-                                    ))} */}
                                     {item?.show?.map((val) => (
                                         <div key={val._id} className="show_time_container">
-                                            <div className="show_movie_time" onClick={() => router.push("/seat")} >{val.formattedShowTime}</div>
+                                            <div className="show_movie_time" onClick={() => selectShow({...item,selectshow:val._id})} >{val.formattedShowTime}</div>
                                             <div className="price_info_hover">
                                                 <div className="d-flex">
                                                     {val.priceInfoForShow.map((dt) => (
@@ -119,7 +122,6 @@ const Cinemascreen = () => {
                                                         </div>
                                                     ))}
                                                 </div>
-
                                             </div>
                                         </div>
                                     ))}

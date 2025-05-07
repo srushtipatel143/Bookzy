@@ -4,9 +4,68 @@ import { useRouter } from 'next/navigation';
 import { RiArrowLeftWideFill } from "react-icons/ri";
 import { RxCross2 } from "react-icons/rx";
 import "../css/seat.css";
+import { useEffect, useState } from 'react';
+import { API_USER_URL } from "../utils/config";
+import { toast, ToastContainer } from "react-toastify";
+import Cookies from 'js-cookie';
+import axios from 'axios';
+
+interface showDetails {
+    cinemaLandmark: string,
+    cinemaName: string;
+    formattedTimeFull: string;
+    movieName: String;
+    city: string;
+    _id: string;
+    priceInfoForShow: {
+        rowType: string;
+        price: number;
+        _id: string;
+    }[];
+}
+
+interface showTimeChart {
+    selectshow: string;
+    show: {
+        formattedShowTime: string;
+        _id: string;
+        priceInfoForShow: {
+            rowType: string;
+            price: number;
+            _id: string;
+        }[];
+    }[];
+}
 
 const Seatscreen = () => {
     const router = useRouter();
+    const [selectShowChart, setSelectshowChart] = useState<showTimeChart | undefined>();
+    const [selectShow, setSelectshow] = useState<showDetails | undefined>(undefined);
+    useEffect(() => {
+        const fetchDetails = async() => {
+            try {
+                const selectShowdata = localStorage.getItem("select-show");
+                if (selectShowdata) {
+                    const selectedCity = Cookies.get("selected_city");
+                    if (selectedCity) {
+                        const city = selectedCity ? JSON.parse(selectedCity) : null;
+                        const selectShowDetail = JSON.parse(selectShowdata);
+                        setSelectshowChart(selectShowDetail)
+                        const selectShowInfo = selectShowDetail.show.find((item: showDetails) => item._id === selectShowDetail.selectshow);
+                        const data = { ...selectShowInfo, city: city.city, cinemaLandmark: selectShowDetail.cinemaLandmark };
+                        setSelectshow(data);
+
+                        const responseSeats=await axios.get(`${API_USER_URL}/getshowinfo/${selectShowChart?.selectshow}`);
+                        console.log(responseSeats)
+                    }
+                }
+            } catch (error: any) {
+                toast.error(error.response.data.message)
+            }
+        }
+        fetchDetails()
+            ;
+    }, []);
 
     return (
         <div className="container-fluid p-0" style={{ minHeight: "100vh" }}>
@@ -14,9 +73,9 @@ const Seatscreen = () => {
                 <div className="d-flex justify-content-center align-items-center">
                     <div style={{ cursor: "pointer" }} onClick={() => router.back()}> <RiArrowLeftWideFill size={40} /></div>
                     <div>
-                        <span className="fs-5 fw-bold">Sikandar</span>
+                        <span className="fs-5 fw-bold">{selectShow?.movieName}</span>
                         <br />
-                        <span className="fs-6">PVR: Palladium Mall, Ahmedabad | Tuesday,Apr 8, 2025, 01:30 PM</span>
+                        <span className="fs-6">{selectShow?.cinemaName} : {selectShow?.cinemaLandmark}, {selectShow?.city} | {selectShow?.formattedTimeFull}</span>
                     </div>
                 </div>
                 <div style={{ cursor: "pointer" }} onClick={() => router.back()}>
@@ -24,8 +83,8 @@ const Seatscreen = () => {
                 </div>
             </div>
             <div className="show_time_list p-3">
-                {["1:00 PM", "1:00 PM", "1:00 PM", "1:00 PM", "1:00 PM", "1:00 PM", "1:00 PM"].map((item, index) => (
-                    <div className="seat_show_time" key={index}>{item}</div>
+                {selectShowChart?.show?.map((item) => (
+                    <div className={item._id === selectShowChart?.selectshow ? "seat_show_timeSelect" : "seat_show_time"} key={item._id}>{item.formattedShowTime}</div>
                 ))}
             </div>
             <div className="hrLine1"></div>
@@ -55,6 +114,7 @@ const Seatscreen = () => {
                     ))}
                 </div>
             </div>
+            <ToastContainer />
         </div>
     );
 };

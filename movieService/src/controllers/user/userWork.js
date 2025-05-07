@@ -73,9 +73,21 @@ const getAllCinemaByFilter = async (req, res, next) => {
                 timeZone: 'UTC',
             });
 
+            const formattedTimeFull = showDate.toLocaleTimeString('en-US', {
+                weekday: "long",
+                month: "short",
+                day: "numeric", 
+                year: "numeric",
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'UTC',
+            });
+
             cinemaShowMap.get(cinemaId).push({
                 ...show.toObject ? show.toObject() : show,
-                formattedShowTime: formattedTime
+                formattedShowTime: formattedTime,
+                formattedTimeFull:formattedTimeFull
             });
         });
 
@@ -287,27 +299,6 @@ const getMoviesInCity = async (req, res, next) => {
 
         const resultMap = new Map();
 
-        // allMovies.forEach(show => {
-        //     const language = show.movieLanguage;
-        //     const movieId = show.movieId.toString();
-        //     const movieDetail = await Movie.findById(movieId).lean();
-        //     if (!resultMap.has(language)) {
-        //         resultMap.set(language, new Map());
-        //     }
-
-        //     const moviesMap = resultMap.get(language);
-
-        //     if (!moviesMap.has(movieId)) {
-        //         moviesMap.set(movieId, {
-        //             movieId: movieId,
-        //             movieName: show.movieName,
-        //             movieType:movieDetail.movieType,
-        //             screenTypes: new Set()
-        //         });
-        //     }
-        //     moviesMap.get(movieId).screenTypes.add(show.screenType);
-        // });
-
         for (const show of allMovies) {
             {
                 const language = show.movieLanguage;
@@ -393,10 +384,21 @@ const getMoviesInCinema = async (req, res, next) => {
                 hour12: true,
                 timeZone: 'UTC',
             });
+            const formattedTimeFull = showDate.toLocaleTimeString('en-US', {
+                weekday: "long",
+                month: "short",
+                day: "numeric", 
+                year: "numeric",
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+                timeZone: 'UTC',
+            });
 
             movieShowMap.get(movieId).shows.push({
                 ...show.toObject ? show.toObject() : show,
-                formattedShowTime: formattedTime
+                formattedShowTime: formattedTime,
+                formattedTimeFull:formattedTimeFull
             })
         })
 
