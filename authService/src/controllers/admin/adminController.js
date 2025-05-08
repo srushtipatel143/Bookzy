@@ -35,7 +35,6 @@ const resetPassword = async (req, res, next) => {
         return next(new errorHandler("There is no admin with this email", 400));
     }
     const resetPasswordToken = await  admin.getResetPasswordTokenFromAdmin();
-    console.log(resetPasswordToken)
     const resetPasswordUrl = `${URL}/resetpassword?resetPasswordToken=${resetPasswordToken}`
     const emailTemplate = `
         <h3 style="color : red "> Reset Your Password </h3>

@@ -15,7 +15,6 @@ const addShow = async (req, res, next) => {
 
         const isValidUserQuery = `select count(*) as isValidUser,cityId from cinema where id=? and userId=? group by id`;
         const [isValidUserRes] = await conn.execute(isValidUserQuery, [data.cinemaId, id]);
-        console.log(isValidUserRes)
         if (isValidUserRes.length===0 ||isValidUserRes[0].isValidUser === 0) {
             await session.abortTransaction();
             await session.endSession();
@@ -56,7 +55,6 @@ const addShow = async (req, res, next) => {
         })
 
         if (existingCityMovieEntry) {
-            console.log(existingCityMovieEntry.expiresAt, showEndTime, existingCityMovieEntry.expiresAt < showEndTime)
             if (existingCityMovieEntry.expiresAt < showEndTime) {
                 await existingCityMovieEntry.updateOne(
                     {

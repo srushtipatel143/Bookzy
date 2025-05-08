@@ -50,7 +50,6 @@ const Searchfield = () => {
                 const getMovies = await axios.get(`${API_USER_URL}/getmoviesincity/${cityData.id}`);
                 const cinemaDetails = getCinemaRes?.data?.data;
                 const movieDetails = getMovies?.data?.data;
-                console.log(movieDetails)
                 setcinema(cinemaDetails);
                 setMovie(movieDetails);
 

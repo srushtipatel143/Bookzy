@@ -25,9 +25,7 @@ async function init() {
         await consumer.subscribe({ topics, fromBeginning: true })
         await consumer.run({
             eachMessage: async ({ topic, partition, message }) => {
-                console.log(`topic is ${topic},`)
                 try {
-                    console.log("val", message.value.toString())
                     const emailData = JSON.parse(message.value.toString());
                     await sendMail(emailData);
 

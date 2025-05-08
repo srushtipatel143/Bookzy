@@ -116,5 +116,4 @@ userSchema.methods.generateAndSendOtp = async function () {
     return otp;
 }
 
-
 module.exports = mongoose.model("UserCollection", userSchema);

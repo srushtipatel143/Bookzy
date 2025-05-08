@@ -55,7 +55,6 @@ const Navbar = () => {
                   placeholder="Search for Cinemas and Movies"
                   aria-label="Search"
                   onClick={() => {
-                    console.log("click this")
                     setShowSearch(true)
                   }}
                   onKeyDown={() => setShowSearch(true)}

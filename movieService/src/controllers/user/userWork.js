@@ -3,7 +3,6 @@ const { pool } = require("../../config/dbConn");
 const Movie = require("../../models/movieInfoModel");
 const Show = require("../../models/showInformationModel");
 const cityMovieMapping = require("../../models/cityMovieMappingCollection");
-const cinemaMovieMapping = require("../../models/cinemaMovieMappingCollection");
 const Rating = require("../../models/userMovieRatingModel");
 
 const getAllCity = async (req, res, next) => {
@@ -76,7 +75,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
             const formattedTimeFull = showDate.toLocaleTimeString('en-US', {
                 weekday: "long",
                 month: "short",
-                day: "numeric", 
+                day: "numeric",
                 year: "numeric",
                 hour: 'numeric',
                 minute: '2-digit',
@@ -87,7 +86,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
             cinemaShowMap.get(cinemaId).push({
                 ...show.toObject ? show.toObject() : show,
                 formattedShowTime: formattedTime,
-                formattedTimeFull:formattedTimeFull
+                formattedTimeFull: formattedTimeFull
             });
         });
 
@@ -177,7 +176,7 @@ const getShow = async (req, res, next) => {
         const showData = await Show.findOne({ _id: showId });
 
         const query = `SELECT seatinfo.screenId as screenId,screenName,screen.noOfRows as screenRow,screen.noOfSeats as screenSeat,seatinfo.RowId as rowId,
-        rowName,rowType,rowsinfo.noOfRowSeat as rowSeat,seatinfo.id as seatId,seatName FROM booking.seatinfo
+        rowName,rowType,rowsinfo.noOfRowSeat as rowSeat,seatinfo.id as seatId,seatName FROM seatinfo
         join rowsinfo on rowsinfo.id=seatinfo.RowId
         join screen on seatinfo.screenId=screen.id where screen.id=?`;
         const [response] = await pool.execute(query, [showData.screenId]);
@@ -197,23 +196,32 @@ const getShow = async (req, res, next) => {
                     screenSeat: item.screenSeat,
                     language: showData.movieLanguage,
                     showTime: showData.showStartTime,
-                    rows: []
+                    types: []
                 };
                 screenMap.set(item.screenId, newData);
                 screenData.push(newData);
             }
             const existingScreen = screenMap.get(item.screenId);
-            let existingRow = existingScreen.rows.find(r => r.rowId === item.rowId);
+
+            let existingType = existingScreen.types.find(t => t.rowType === item.rowType);
+            if (!existingType) {
+                existingType = {
+                    rowType: item.rowType,
+                    price: showData.priceInfoForShow.find((val) => val.rowType === item.rowType)?.price || 0,
+                    rows: []
+                };
+                existingScreen.types.push(existingType);
+            }
+
+            let existingRow = existingType.rows.find(r => r.rowId === item.rowId);
             if (!existingRow) {
                 existingRow = {
                     rowId: item.rowId,
                     rowName: item.rowName,
-                    rowType: item.rowType,
                     rowSeat: item.rowSeat,
-                    price: showData.priceInfoForShow.find((val) => val.rowType === item.rowType)?.price || 0,
                     seats: []
                 };
-                existingScreen.rows.push(existingRow);
+                existingType.rows.push(existingRow);
             }
             if (!existingRow.seats.some(s => s.seatId === item.seatId)) {
                 existingRow.seats.push({
@@ -222,7 +230,7 @@ const getShow = async (req, res, next) => {
                 });
             }
         }
-        return res.status(200).json({ message: "get screen successfully", data: screenData })
+        return res.status(200).json({ message: "get screen successfully", data: screenData[0] })
 
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
@@ -387,7 +395,7 @@ const getMoviesInCinema = async (req, res, next) => {
             const formattedTimeFull = showDate.toLocaleTimeString('en-US', {
                 weekday: "long",
                 month: "short",
-                day: "numeric", 
+                day: "numeric",
                 year: "numeric",
                 hour: 'numeric',
                 minute: '2-digit',
@@ -398,13 +406,13 @@ const getMoviesInCinema = async (req, res, next) => {
             movieShowMap.get(movieId).shows.push({
                 ...show.toObject ? show.toObject() : show,
                 formattedShowTime: formattedTime,
-                formattedTimeFull:formattedTimeFull
+                formattedTimeFull: formattedTimeFull
             })
         })
 
         const finalData = {
             ...cinema,
-            movieData:Array.from(movieShowMap.values())
+            movieData: Array.from(movieShowMap.values())
         };
 
         return res.status(200).json({
@@ -412,7 +420,6 @@ const getMoviesInCinema = async (req, res, next) => {
             data: finalData
         });
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }

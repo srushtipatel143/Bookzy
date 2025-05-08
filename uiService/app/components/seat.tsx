@@ -37,12 +37,29 @@ interface showTimeChart {
     }[];
 }
 
+interface SeatLayout {
+    types: {
+        rowType: string,
+        price: number,
+        rows: {
+            rowId: number;
+            rowName: string;
+            seats: {
+                seatId: number;
+                seatName: string;
+            }[];
+        }[];
+    }[];
+}
+
 const Seatscreen = () => {
     const router = useRouter();
-    const [selectShowChart, setSelectshowChart] = useState<showTimeChart | undefined>();
+    const [selectShowChart, setSelectshowChart] = useState<showTimeChart | undefined>(undefined);
     const [selectShow, setSelectshow] = useState<showDetails | undefined>(undefined);
+    const [seatLayout, setSeatLAyout] = useState<SeatLayout | undefined>(undefined)
+
     useEffect(() => {
-        const fetchDetails = async() => {
+        const fetchDetails = async () => {
             try {
                 const selectShowdata = localStorage.getItem("select-show");
                 if (selectShowdata) {
@@ -55,16 +72,15 @@ const Seatscreen = () => {
                         const data = { ...selectShowInfo, city: city.city, cinemaLandmark: selectShowDetail.cinemaLandmark };
                         setSelectshow(data);
 
-                        const responseSeats=await axios.get(`${API_USER_URL}/getshowinfo/${selectShowChart?.selectshow}`);
-                        console.log(responseSeats)
+                        const responseSeats = await axios.get(`${API_USER_URL}/getshowinfo/${selectShowDetail?.selectshow}`);
+                        setSeatLAyout(responseSeats.data.data)
                     }
                 }
             } catch (error: any) {
                 toast.error(error.response.data.message)
             }
         }
-        fetchDetails()
-            ;
+        fetchDetails();
     }, []);
 
     return (
@@ -90,19 +106,15 @@ const Seatscreen = () => {
             <div className="hrLine1"></div>
             <div className="show_seat">
                 <div className="seat_main_sec p-3">
-                    {[
-                        { category: "Platinum", rows: ["A", "B", "C"] },
-                        { category: "Gold", rows: ["D", "E", "F"] },
-                        { category: "Silver", rows: ["G", "H", "I", "J"] }
-                    ].map((section, index) => (
-                        <div key={index} className="seat_category">
-                            <div className="seatCategory my-1">Rs. 399 {section.category}</div>
+                    {seatLayout?.types?.map((section) => (
+                        <div key={section.rowType} className="seat_category">
+                            <div className="seatCategory my-1">Rs.{section?.price} {section?.rowType} </div>
                             <div className="hrLineSeat my-1"></div>
-                            {section.rows.map((row, rowIndex) => (
-                                <div key={rowIndex} className="d-flex seat_row">
-                                    <div className="row_label">{row}</div>
+                            {section?.rows?.map((row) => (
+                                <div key={row.rowId} className="d-flex seat_row">
+                                    <div className="row_label">{row.rowName}</div>
                                     <div className="d-flex row_seat">
-                                        {Array.from({ length: 15 }).map((_, seatIndex) => (
+                                        {Array.from({ length: row.seats.length }).map((_, seatIndex) => (
                                             <div key={seatIndex} className="seat">
                                                 {seatIndex + 1}
                                             </div>
