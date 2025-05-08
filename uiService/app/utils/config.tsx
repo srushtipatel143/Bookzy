@@ -1,2 +1,3 @@
 const API_USER_URL = process.env.NEXT_PUBLIC_USER_API_URL;
-export { API_USER_URL };
+const API_AUTH_URL=process.env.NEXT_PUBLIC_USER_AUTH_API_URL
+export { API_USER_URL,API_AUTH_URL }

@@ -4,9 +4,27 @@ import "../../css/userlogin.css";
 import { useRouter } from 'next/navigation';
 import { FiArrowLeft } from "react-icons/fi";
 import Image from 'next/image';
+import { API_AUTH_URL } from "../../utils/config";
+import { toast, ToastContainer } from "react-toastify";
+import { useState } from "react";
+import axios from "axios";
 
 const UserLogin = () => {
   const router = useRouter();
+  const [email,setEmail]=useState('');
+
+  const submitForm=async()=>{
+    try {
+      const data={
+        email:email
+      }
+      const response=await axios.post(`${API_AUTH_URL}/signin`,data);
+      console.log(response)
+     // router.push("/user/userotp")
+    } catch (error:any) {
+      toast.error(error.response.data.message)
+    }
+  }
   return (
     <div className="container-fluid flex-grow-1 d-flex justify-content-center align-items-center bg_image">
       <div className="card p-4 text-center form_styling" style={{ width: "350px" }}>
@@ -23,12 +41,13 @@ const UserLogin = () => {
           <p className="login_font">Please enter your email address for verification</p>
         </div>
         <div className="my-3">
-          <input type="email" className="form-control" placeholder="Enter email address" />
+          <input onChange={(e)=>setEmail(e.target.value)} type="email" className="form-control" placeholder="Enter email address" />
         </div>
         <div className="mt-5">
-          <button className="button-primary w-100" onClick={() => router.push("/user/userotp")}>Send Verification Code</button>
+          <button className="button-primary w-100" onClick={submitForm}>Send Verification Code</button>
         </div>
       </div>
+      <ToastContainer/>
     </div>
   );
 };

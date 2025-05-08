@@ -39,7 +39,7 @@ const signIn = async (req, res, next) => {
 
         const key = "1";
         const topic = "otp";
-        produceMessage(topic, numberOfPartion, key, emailPayload)
+        //produceMessage(topic, numberOfPartion, key, emailPayload)
         return res.status(200).json({
             success: true,
             message: "OTP has been sent to the email.",
