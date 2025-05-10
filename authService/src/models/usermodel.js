@@ -25,12 +25,10 @@ const userSchema = new mongoose.Schema({
     },
     countryCode: {
         type: Number,
-        require: true,
         cast: "Country Code is required",
     },
     mobile: {
         type: Number,
-        require: true,
         trim: true,
         match: [/^\d{10}$/, "Mobile number must be a 10-digit number"],
     },

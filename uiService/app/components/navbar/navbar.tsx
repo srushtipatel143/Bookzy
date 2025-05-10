@@ -15,7 +15,7 @@ import { useUser } from "../context/userContext";
 
 const Navbar = () => {
   const { setShowSearch } = useSearch();
-  const {selectUser,setSelectUser}=useUser();
+  const { selectUser, setSelectUser } = useUser();
   const [canvasshow, setCanvasShow] = useState(false);
   const [topCanvas, setTopCanvas] = useState(false)
 
@@ -30,8 +30,7 @@ const Navbar = () => {
       const city = selectedCity ? JSON.parse(selectedCity) : null;
       setSelectedCity(city.city);
       if (user) {
-         const userVal = user ? JSON.parse(user) : null;
-         console.log(user)
+        const userVal = user ? JSON.parse(user) : null;
         setSelectUser(userVal)
         setLoggedUser(true)
       }
@@ -97,7 +96,11 @@ const Navbar = () => {
                       borderRadius: "50%",
                     }}
                   />
-                  <p className="m-0 d-none d-sm-block">Hi, Guest</p>
+                  <p className="m-0 d-none d-sm-block">Hi,{selectUser?.user
+                    ? (selectUser.user.length > 7
+                      ? `${selectUser.user.substring(0, 7)}...`
+                      : selectUser.user)
+                    : 'Guest'}</p>
                 </div>
               ) : (
                 <button className="signin_btn" onClick={() => router.push("/user/userlogin")}>Sign in</button>

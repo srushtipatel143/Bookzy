@@ -92,7 +92,7 @@ const UserOtp = () => {
                     }}>Verify</button>
                 </div>
                 <div className="mt-4">
-                    <p className="login_font">Resend verification code in 45 seconds</p>
+                    <p className="resendOtp_font">Resend verification code</p>
                 </div>
             </div>
             <ToastContainer />
