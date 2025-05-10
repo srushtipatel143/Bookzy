@@ -66,7 +66,6 @@ const EditProfile = () => {
     };
 
     const profileEdit = async () => {
-
         try {
             const payload = {
                 firstName: formData.firstName,

@@ -20,7 +20,6 @@ const UserOtp = () => {
     const handleChange = (value: string, index: number) => {
         if (!/^[0-9]?$/.test(value)) return;
         const newOtp = [...otp];
-
         newOtp[index] = value;
         setOtp(newOtp);
         if (value && index < 5) {
@@ -40,14 +39,12 @@ const UserOtp = () => {
                 userId: slug,
                 otp: val
             }
-
             const response = await axios.post(`${API_AUTH_URL}/validateotp`, data);
             if (response.data.success) {
                 const {token,imageURL} = response?.data;
                 Cookies.set("token", JSON.stringify({token,imageURL}), { expires: 3650 });
                 router.push("/user/success")
             }
-
         } catch (error: any) {
             toast.error(error.response.data.message);
         }
