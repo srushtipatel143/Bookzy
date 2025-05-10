@@ -5,6 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import { store } from "@/app/store";
 import { CityProvider } from "./components/context/cityContext";
+import { UserProvider } from "./components/context/userContext";
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
@@ -18,11 +19,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </head>
       <body>
         <CityProvider>
-          <Provider store={store}>
-            <SearchProvider>
-              {children}
-            </SearchProvider>
-          </Provider>
+          <UserProvider>
+            <Provider store={store}>
+              <SearchProvider>
+                {children}
+              </SearchProvider>
+            </Provider>
+          </UserProvider>
         </CityProvider>
       </body>
     </html>

@@ -15,7 +15,8 @@ const EditProfile = () => {
                                 <Image
                                     src="/user.png"
                                     alt="user"
-                                    fill
+                                    height={75}
+                                    width={75}
                                 />
                             </div>
                         </div>

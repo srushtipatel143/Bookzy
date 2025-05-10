@@ -11,19 +11,33 @@ import Citymodal from "./citymodal";
 import Image from 'next/image';
 import Cookies from "js-cookie";
 import { useSearch } from "../context/searchContext";
+import { useUser } from "../context/userContext";
 
 const Navbar = () => {
-  const {setShowSearch } = useSearch();
+  const { setShowSearch } = useSearch();
+  const {selectUser,setSelectUser}=useUser();
   const [canvasshow, setCanvasShow] = useState(false);
   const [topCanvas, setTopCanvas] = useState(false)
+
+  const [loggedUser, setLoggedUser] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const router = useRouter();
 
   useEffect(() => {
     const selectedCity = Cookies.get("selected_city");
+    const user = Cookies.get("token");
     if (selectedCity) {
       const city = selectedCity ? JSON.parse(selectedCity) : null;
       setSelectedCity(city.city);
+      if (user) {
+         const userVal = user ? JSON.parse(user) : null;
+         console.log(user)
+        setSelectUser(userVal)
+        setLoggedUser(true)
+      }
+      else {
+        setLoggedUser(false)
+      }
     }
     else {
       setTopCanvas(true)
@@ -69,21 +83,26 @@ const Navbar = () => {
               <IoIosArrowDown style={{ cursor: "pointer" }} onClick={() => setTopCanvas(true)} size={18} />
             </div>
             <Citymodal topCanvas={topCanvas} setTopCanvas={setTopCanvas} />
-            {/* <div className="d-flex align-items-center gap-2">
-              <img
-                src="user.png"
-                alt="user"
-                style={{
-                  width: "35px",
-                  height: "35px",
-                  borderRadius: "50%",
-                }}
-              />
-              <p className="m-0 d-none d-sm-block">Hi, Guest</p>
-            </div> */}
+
 
             <div className="d-flex align-items-center gap-2">
-              <button className="signin_btn" onClick={() => router.push("/user/userlogin")}>Sign in</button>
+              {loggedUser ? (
+                <div className="d-flex align-items-center gap-2">
+                  <img
+                    src={selectUser?.imageURL}
+                    alt="user"
+                    style={{
+                      width: "35px",
+                      height: "35px",
+                      borderRadius: "50%",
+                    }}
+                  />
+                  <p className="m-0 d-none d-sm-block">Hi, Guest</p>
+                </div>
+              ) : (
+                <button className="signin_btn" onClick={() => router.push("/user/userlogin")}>Sign in</button>
+              )}
+
               <IoMenu size={32} style={{ cursor: "pointer" }} onClick={() => setCanvasShow(true)} />
               <RightBar canvasshow={canvasshow} setCanvasShow={setCanvasShow} />
             </div>

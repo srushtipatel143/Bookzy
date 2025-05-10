@@ -94,7 +94,8 @@ userSchema.methods.generateJWTFromUser = function(){
     payload={
         id:this._id,
         email:this.email,
-        role:this.role
+        role:this.role,
+        imageURL:this.imageURL
     }
     const token=jwt.sign(payload,JWT_SECRET_KEY,{
         expiresIn:JWT_EXPIRE

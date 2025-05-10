@@ -12,6 +12,7 @@ const sendToken=async(user,statusCode,res)=>{
         userName:user.userName,
         email:user.email,
         role:user.role,
+        imageURL:user.imageURL,
         token
     })
 };
