@@ -1,5 +1,5 @@
 const errorHandler = require("../../helpers/errors/errorHandler");
-const User=require("../../models/usermodel");
+const User = require("../../models/usermodel");
 const OTP = require("../../models/otpModel");
 const sendMail = require("../../helpers/libraries/sendEmail");
 const bcrypt = require("bcrypt");
@@ -12,13 +12,13 @@ const signIn = async (req, res, next) => {
     try {
         const data = req.body;
         const user = await User.findOne({ email: data.email });
-        let otp,savedUser;
+        let otp, savedUser;
         if (!user) {
-            const newUser = new User({email:data.email});
+            const newUser = new User({ email: data.email });
             savedUser = await newUser.save();
             otp = await savedUser.generateAndSendOtp();
         }
-        else{
+        else {
             if (user && user.isDelete) {
                 data.isDelete = false;
                 const userToUpdate = user;
@@ -27,7 +27,7 @@ const signIn = async (req, res, next) => {
             }
             otp = await user.generateAndSendOtp();
         }
-       
+
         console.log(otp)
         const { EMAIL_USERNAME } = process.env;
         const emailPayload = {
@@ -44,7 +44,7 @@ const signIn = async (req, res, next) => {
             statusCode:200,
             success: true,
             message: "OTP has been sent to the email.",
-            data: !user?savedUser:user,
+            data: !user ? savedUser : user,
         });
     } catch (error) {
         console.log(error)
@@ -123,5 +123,19 @@ const editProfile = async (req, res, next) => {
     }
 }
 
+const getUserDetail = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const user = await User.findById({ _id: id });
+        return res.status(200).json({
+            success: true,
+            data: user,
+            message: "User get Successfully"
+        });
+    } catch (error) {
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+}
 
-module.exports = {resendOtp, validateOtp, signIn, editProfile };
+
+module.exports = { resendOtp, validateOtp, signIn, editProfile, getUserDetail };

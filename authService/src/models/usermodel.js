@@ -25,12 +25,10 @@ const userSchema = new mongoose.Schema({
     },
     countryCode: {
         type: Number,
-        require: true,
         cast: "Country Code is required",
     },
     mobile: {
         type: Number,
-        require: true,
         trim: true,
         match: [/^\d{10}$/, "Mobile number must be a 10-digit number"],
     },
@@ -94,7 +92,8 @@ userSchema.methods.generateJWTFromUser = function(){
     payload={
         id:this._id,
         email:this.email,
-        role:this.role
+        role:this.role,
+        imageURL:this.imageURL
     }
     const token=jwt.sign(payload,JWT_SECRET_KEY,{
         expiresIn:JWT_EXPIRE

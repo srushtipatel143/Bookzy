@@ -18,12 +18,22 @@ const UserLogin = () => {
       const data = {
         email: email
       }
+<<<<<<< HEAD
       const response = await axios.post(`${API_AUTH_URL}/signin`, data);
       if (response.data.success) {
         router.push("/user/userotp")
       }
 
     } catch (error: any) {
+=======
+      const response=await axios.post(`${API_AUTH_URL}/signin`,data);
+      console.log(response.data)
+      if(response.data.success){
+        const id=response?.data?.data?._id;
+        router.push(`/user/userotp/${id}`)
+      }
+    } catch (error:any) {
+>>>>>>> eb39b8d7ffe054093bcf55b040633deef3e8c656
       toast.error(error.response.data.message)
     }
   }

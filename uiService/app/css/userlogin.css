@@ -13,6 +13,18 @@
   font-size: 14px;
 }
 
+.resendOtp_font {
+  color:darkgray;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.resendOtp_font:hover{
+   color: var(--secondary-main-color);
+   text-decoration: underline;
+   cursor: pointer;
+}
+
 .success_font {
   font-size: 24px;
   color: var(--primary-main-color);
