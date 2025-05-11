@@ -8,12 +8,11 @@ const adminRouter=require("./routes/adminRoutes");
 const ownerRouter=require("./routes/ownerRoutes");
 const userRouter=require("./routes/userRoutes");
 
+app.use(cors());
 
 app.use("/api/auth/admin",adminRouter);
 app.use("/api/auth/owner",ownerRouter);
 app.use("/api/auth/user",userRouter);
-
-app.use(cors());
 
 app.use((err, req, res, next) => {
     if (err instanceof errorHandler) {
