@@ -17,9 +17,7 @@ const Navbar = () => {
   const { setShowSearch } = useSearch();
   const { selectUser, setSelectUser } = useUser();
   const [canvasshow, setCanvasShow] = useState(false);
-  const [topCanvas, setTopCanvas] = useState(false)
-
-  const [loggedUser, setLoggedUser] = useState(false);
+  const [topCanvas, setTopCanvas] = useState(false);
   const [selectedCity, setSelectedCity] = useState<string>("");
   const router = useRouter();
 
@@ -32,10 +30,9 @@ const Navbar = () => {
       if (user) {
         const userVal = user ? JSON.parse(user) : null;
         setSelectUser(userVal)
-        setLoggedUser(true)
       }
       else {
-        setLoggedUser(false)
+        setSelectUser(null)
       }
     }
     else {
@@ -85,7 +82,7 @@ const Navbar = () => {
 
 
             <div className="d-flex align-items-center gap-2">
-              {loggedUser ? (
+              {selectUser!==null ? (
                 <div className="d-flex align-items-center gap-2">
                   <img
                     src={selectUser?.imageURL}

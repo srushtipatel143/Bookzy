@@ -118,3 +118,17 @@
   cursor: pointer;
   border: 1px solid var(--primary-main-color);
 }
+
+
+.sign_outBtn{
+  cursor: pointer;
+  background-color:var(--secondary-sub-color);
+  color: var(--primary-main-color);
+  border: 1px solid var(--primary-main-color);
+  border-radius: 5px;
+  font-size: 1.3rem;
+  position: absolute;
+  bottom:1rem;
+  right: 1rem;
+  width: 92%;
+}

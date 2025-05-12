@@ -9,7 +9,7 @@ const sendToken=async(user,statusCode,res)=>{
     // });
     return res.status(statusCode).json({
         success: true ,
-        userName:user.userName,
+        user:user.firstName,
         email:user.email,
         role:user.role,
         imageURL:user.imageURL,
