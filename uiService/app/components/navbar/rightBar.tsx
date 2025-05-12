@@ -13,6 +13,7 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
     const { selectUser,setSelectUser } = useUser();
     const signout=()=>{
         Cookies.remove("token");
+        router.push(("/"))
         setSelectUser(null);
         setCanvasShow(false)
     }

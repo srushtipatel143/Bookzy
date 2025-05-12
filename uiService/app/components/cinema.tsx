@@ -73,9 +73,9 @@ const Cinemascreen = () => {
         fetchDetails();
     }, []);
 
-    const selectShow=(data:any)=>{
-        const selectShowDetail=JSON.stringify(data)
-        localStorage.setItem("select-show",selectShowDetail)
+    const selectShow = (data: any) => {
+        const selectShowDetail = JSON.stringify(data)
+        localStorage.setItem("select-show", selectShowDetail)
         router.push("/seat")
     }
 
@@ -104,14 +104,14 @@ const Cinemascreen = () => {
                 <div className="d-flex flex-column">
                     {cinema.map((item, index) => (
                         <div key={index} className="show_movie_name">
-                            <div className="d-flex show_movie_name_small   m-2">
+                            <div className="d-flex show_movie_name_small my-3 mx-3">
                                 <div className="show_movie_name_left">
                                     <CiHeart size={20} />
                                     <span className="cinema_text">{item.cinemaName} : {item.cinemaLandmark}</span></div>
                                 <div className="show_movie_name_right">
                                     {item?.show?.map((val) => (
                                         <div key={val._id} className="show_time_container">
-                                            <div className="show_movie_time" onClick={() => selectShow({...item,selectshow:val._id})} >{val.formattedShowTime}</div>
+                                            <div className="show_movie_time" onClick={() => selectShow({ ...item, selectshow: val._id })} >{val.formattedShowTime}</div>
                                             <div className="price_info_hover">
                                                 <div className="d-flex">
                                                     {val.priceInfoForShow.map((dt) => (
@@ -126,7 +126,7 @@ const Cinemascreen = () => {
                                     ))}
                                 </div>
                             </div>
-                            <hr />
+                            <div className="hrLine1"></div>
                         </div>
                     ))}
                 </div>
