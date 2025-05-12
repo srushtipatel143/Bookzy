@@ -10,7 +10,6 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
 import { API_USER_URL } from "../utils/config";
-import { json } from "stream/consumers";
 
 interface cinema {
     id: number,

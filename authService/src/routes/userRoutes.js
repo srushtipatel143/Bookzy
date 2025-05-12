@@ -3,7 +3,7 @@ const router=express.Router();
 const {resendOtp,validateOtp,signIn,editProfile,getUserDetail}=require("../controllers/user/signup");
 const {getAccessToUserRoute}=require("../middlewares/authorization/authUser");
 
-router.post("/resendotp",resendOtp);
+router.post("/resendotp/:id",resendOtp);
 router.post("/validateotp",validateOtp)
 router.post("/signin",signIn);
 router.put("/editprofile",getAccessToUserRoute,editProfile);

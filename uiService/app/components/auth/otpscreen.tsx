@@ -41,11 +41,19 @@ const UserOtp = () => {
             }
             const response = await axios.post(`${API_AUTH_URL}/validateotp`, data);
             if (response.data.success) {
-                const {token,imageURL} = response?.data;
-                Cookies.set("token", JSON.stringify({token,imageURL}), { expires: 3650 });
+                const {token,imageURL,user} = response?.data;
+                Cookies.set("token", JSON.stringify({token,imageURL,user}), { expires: 3650 });
                 router.push("/user/success")
             }
         } catch (error: any) {
+            toast.error(error.response.data.message);
+        }
+    }
+
+    const resendOTP=async()=>{
+        try {
+            await axios.post(`${API_AUTH_URL}/resendotp/${slug}`);
+        } catch (error:any) {
             toast.error(error.response.data.message);
         }
     }
@@ -81,7 +89,6 @@ const UserOtp = () => {
                 </div>
                 <div className="mt-3">
                     <button className="button-primary w-100" onClick={() => {
-                        // console.log(otp)
                         const val = otp.join('');
                         if (val !== '' && val.length === 6) {
                             verifyCode(val);
@@ -89,7 +96,7 @@ const UserOtp = () => {
                     }}>Verify</button>
                 </div>
                 <div className="mt-4">
-                    <p className="resendOtp_font">Resend verification code</p>
+                    <p className="resendOtp_font" onClick={resendOTP}>Resend verification code</p>
                 </div>
             </div>
             <ToastContainer />

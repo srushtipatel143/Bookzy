@@ -2,6 +2,7 @@ import { Offcanvas } from "react-bootstrap";
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useUser } from "../context/userContext";
+import Cookies from "js-cookie";
 
 interface RightBarprops {
     canvasshow: boolean,
@@ -9,7 +10,12 @@ interface RightBarprops {
 }
 const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
     const router = useRouter();
-    const { selectUser } = useUser();
+    const { selectUser,setSelectUser } = useUser();
+    const signout=()=>{
+        Cookies.remove("token");
+        setSelectUser(null);
+        setCanvasShow(false)
+    }
     return (
         <Offcanvas
             show={canvasshow}
@@ -32,6 +38,15 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
                     </div>
                 )}
             </div>
+
+            {selectUser !== null && (
+                <div className="">
+                    <button className="sign_outBtn py-1" onClick={signout}>
+                        Sign out
+                    </button>
+                </div>
+            )}
+
         </Offcanvas>
     )
 }

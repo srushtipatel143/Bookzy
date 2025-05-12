@@ -75,21 +75,15 @@ const validateOtp = async (req, res, next) => {
 
 const resendOtp = async (req, res, next) => {
     try {
-        const { email } = req.body;
-        const user = await User.findOne({ email: email });
+        const { id } = req.params;
+        const user = await User.findById({ _id: id });
         const otp = await user.generateAndSendOtp();
         console.log(otp)
         const { EMAIL_USERNAME } = process.env;
-        // sendMail({
-        //     from: EMAIL_USERNAME,
-        //     to: email,
-        //     subject: "Your Otp is here",
-        //     html: `Your OTP code is <h3>${otp}</h3>It is valid for 5 minutes.`
-        // });
 
         const emailPayload = {
             from: EMAIL_USERNAME,
-            to: email,
+            to: user.email,
             subject: "Your Otp is here",
             html: `Your OTP code is <h3>${otp}</h3>It is valid for 5 minutes.`,
         };

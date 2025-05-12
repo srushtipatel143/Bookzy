@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { dateFormat } from "../../utils/formatdate";
 import BackButton from "../../utils/backbutton";
 import SelectModal from "./selectModal";
+import AddRating from "./addRating";
 
 interface MovieScreenProps {
     movie: {
@@ -52,7 +53,7 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                                 <FaStar size={20} color="red" />
                                 {Object.keys(movie.ratingData).length > 0 ? `${movie.ratingData.totalRating}/10 (${movie.ratingData.votes} Votes)` : 'N / A'}
                             </p>
-                            <button className="movie_rate_btn">Rate Now</button>
+                           <AddRating movie={movie}/>
                         </div>
                         <div className="movie_type_lan">
                             <div className="movie_type_sec">
