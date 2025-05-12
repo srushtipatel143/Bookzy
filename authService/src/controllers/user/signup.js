@@ -41,6 +41,7 @@ const signIn = async (req, res, next) => {
         const topic = "otp";
         //produceMessage(topic, numberOfPartion, key, emailPayload)
         return res.status(200).json({
+            statusCode:200,
             success: true,
             message: "OTP has been sent to the email.",
             data: !user ? savedUser : user,
