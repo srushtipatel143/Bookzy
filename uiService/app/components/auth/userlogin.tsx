@@ -19,7 +19,6 @@ const UserLogin = () => {
         email: email
       }
       const response=await axios.post(`${API_AUTH_URL}/signin`,data);
-      console.log(response.data)
       if(response.data.success){
         const id=response?.data?.data?._id;
         router.push(`/user/userotp/${id}`)

@@ -1,13 +1,12 @@
-const getAccessTokenFromHeader=(req)=>{
-    const authorization=req.headers.authorization;
-    const access_token=authorization.split(" ")[1];
-    return access_token;
+const getAccessTokenFromHeader = (req) => {
+    const { token } = req.cookies;
+    return token;
 }
 
-const isTokenIncluded=(req)=>{
+const isTokenIncluded = (req) => {
     return (
-        req.headers.authorization && req.headers.authorization.startsWith("Bearer")
+        req.cookies && req.cookies.token
     )
 }
 
-module.exports={getAccessTokenFromHeader,isTokenIncluded}
+module.exports = { getAccessTokenFromHeader, isTokenIncluded }

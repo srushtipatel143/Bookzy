@@ -17,28 +17,22 @@ interface MovieScreenProps {
 const AddRating = ({ movie }: MovieScreenProps) => {
     const [rateModal, setRateModal] = useState(false)
     const [rating, setRating] = useState<number>(0);
-    const router=useRouter();
-    const user = Cookies.get("token");
+    const router = useRouter();
+    const user = Cookies.get("logged_user");
     const handleSubmitRating = async () => {
         try {
             const data = {
                 movieId: movie._id,
                 ratings: rating
             }
-            if (user) {
-                if (rating>0) {
-                    const userVal = user ? JSON.parse(user) : null;
-                    const val = userVal?.token;
-                    const response = await axios.post(`${API_USER_URL}/addrating`, data, {
-                        headers: {
-                            Authorization: `Bearer ${val}`
-                        }
-                    });
-                    if (response?.data?.success) {
-                        setRateModal(false);
-                        setRating(0);
-                        toast.success(response.data.message)
-                    }
+            if (rating > 0) {
+                const response = await axios.post(`${API_USER_URL}/addrating`, data, {
+                    withCredentials: true
+                });
+                if (response?.data?.success) {
+                    setRateModal(false);
+                    setRating(0);
+                    toast.success(response.data.message)
                 }
             }
         } catch (error: any) {
@@ -49,11 +43,11 @@ const AddRating = ({ movie }: MovieScreenProps) => {
     return (
         <div className="ms-auto">
             <ToastContainer />
-            <button className="movie_rate_btn" onClick={() =>{
-                if(!user){
+            <button className="movie_rate_btn" onClick={() => {
+                if (!user) {
                     router.push("/user/userlogin")
                 }
-                else{
+                else {
                     setRateModal(true);
                 }
             }}>Rate Now</button>

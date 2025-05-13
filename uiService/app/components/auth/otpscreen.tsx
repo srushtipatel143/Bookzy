@@ -39,10 +39,12 @@ const UserOtp = () => {
                 userId: slug,
                 otp: val
             }
-            const response = await axios.post(`${API_AUTH_URL}/validateotp`, data);
+            const response = await axios.post(`${API_AUTH_URL}/validateotp`, data, {
+                withCredentials: true
+            });
             if (response.data.success) {
-                const {token,imageURL,user} = response?.data;
-                Cookies.set("token", JSON.stringify({token,imageURL,user}), { expires: 3650 });
+                const {imageURL, user } = response?.data;
+                Cookies.set("logged_user", JSON.stringify({ imageURL, user }), { expires: 3650 });
                 router.push("/user/success")
             }
         } catch (error: any) {
@@ -50,10 +52,10 @@ const UserOtp = () => {
         }
     }
 
-    const resendOTP=async()=>{
+    const resendOTP = async () => {
         try {
             await axios.post(`${API_AUTH_URL}/resendotp/${slug}`);
-        } catch (error:any) {
+        } catch (error: any) {
             toast.error(error.response.data.message);
         }
     }

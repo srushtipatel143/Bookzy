@@ -1,32 +1,30 @@
-const sendToken=async(user,statusCode,res)=>{
+const sendToken = async (user, statusCode, res) => {
     const token = user.generateJWTFromUser();
 
-    // res.cookie('token', token, {
-    //     httpOnly: true, // makes the cookie inaccessible to JavaScript (more secure)
-    //     secure: false,  // don't require HTTPS in local environment
-    //     maxAge: 24 * 60 * 60 * 1000, // expires in 1 day (adjust the time as needed)
-    //     sameSite: 'lax' // helps prevent CSRF attacks (can use 'strict' or 'none' depending on your needs)
-    // });
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: false,
+        maxAge: 10 * 24 * 60 * 60 * 1000,
+        sameSite: 'lax'
+    });
     return res.status(statusCode).json({
-        success: true ,
-        user:user.firstName,
-        email:user.email,
-        role:user.role,
-        imageURL:user.imageURL,
-        token
+        success: true,
+        user: user.firstName,
+        email: user.email,
+        role: user.role,
+        imageURL: user.imageURL,
     })
 };
 
-const getAccessTokenFromHeader=(req)=>{
-    const authorization=req.headers.authorization;
-    const access_token=authorization.split(" ")[1];
-    return access_token;
+const getAccessTokenFromHeader = (req) => {
+    const { token } = req.cookies;
+    return token;
 }
 
-const isTokenIncluded=(req)=>{
+const isTokenIncluded = (req) => {
     return (
-        req.headers.authorization && req.headers.authorization.startsWith("Bearer")
+       req.cookies && req.cookies.token
     )
 }
 
-module.exports={sendToken,getAccessTokenFromHeader,isTokenIncluded}
+module.exports = { sendToken, getAccessTokenFromHeader, isTokenIncluded }

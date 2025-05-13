@@ -10,6 +10,7 @@ const getAccessToUserRoute=async(req,res,next)=>{
     }
     const accessToken=getAccessTokenFromHeader(req);
     const decoded=jwt.verify(accessToken,JWT_SECRET_KEY);
+    
     if(!decoded || decoded.role!=='user'){
         return next(new errorHandler("You are not authorized to access this route",401));
     }

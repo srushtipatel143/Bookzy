@@ -1,5 +1,5 @@
 const errorHandler=require("../../helpers/errors/errorHandler");
-const User =require("../../models/usermodel");
+// const User =require("../../models/usermodel");
 const jwt= require("jsonwebtoken");
 const {getAccessTokenFromHeader,isTokenIncluded}=require("../../helpers/jwtToken/tokenHelper");
 

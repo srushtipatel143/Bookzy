@@ -23,7 +23,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const selectedCity = Cookies.get("selected_city");
-    const user = Cookies.get("token");
+    const user = Cookies.get("logged_user");
     if (selectedCity) {
       const city = selectedCity ? JSON.parse(selectedCity) : null;
       setSelectedCity(city.city);

@@ -3,7 +3,6 @@ import {ReactNode,createContext,useContext,useState } from "react";
 
 interface SelectedUser {
     user?: string;
-    token: string;
     imageURL:string;
   }
   

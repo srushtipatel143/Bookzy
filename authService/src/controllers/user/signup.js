@@ -41,13 +41,12 @@ const signIn = async (req, res, next) => {
         const topic = "otp";
         //produceMessage(topic, numberOfPartion, key, emailPayload)
         return res.status(200).json({
-            statusCode:200,
+            statusCode: 200,
             success: true,
             message: "OTP has been sent to the email.",
             data: !user ? savedUser : user,
         });
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 };
@@ -91,7 +90,7 @@ const resendOtp = async (req, res, next) => {
 
         const key = "1";
         const topic = "otp";
-        produceMessage(topic, numberOfPartion, key, emailPayload)
+        //produceMessage(topic, numberOfPartion, key, emailPayload)
 
         return res.status(200).json({
             success: true,
@@ -131,5 +130,17 @@ const getUserDetail = async (req, res, next) => {
     }
 }
 
+const logout = async (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax'
+        });
+        return res.status(200).json({ success: true, message: "User logout successfully" });
+    } catch (error) {
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+}
 
-module.exports = { resendOtp, validateOtp, signIn, editProfile, getUserDetail };
+module.exports = { resendOtp, validateOtp, signIn, editProfile, getUserDetail, logout };

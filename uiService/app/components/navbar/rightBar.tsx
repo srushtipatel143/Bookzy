@@ -3,6 +3,9 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { useUser } from "../context/userContext";
 import Cookies from "js-cookie";
+import axios from "axios";
+import { toast } from "react-toastify";
+import { API_AUTH_URL } from "@/app/utils/config";
 
 interface RightBarprops {
     canvasshow: boolean,
@@ -10,12 +13,19 @@ interface RightBarprops {
 }
 const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
     const router = useRouter();
-    const { selectUser,setSelectUser } = useUser();
-    const signout=()=>{
-        Cookies.remove("token");
-        router.push(("/"))
-        setSelectUser(null);
-        setCanvasShow(false)
+    const { selectUser, setSelectUser } = useUser();
+    const signout = async () => {
+        try {
+            await axios.get(`${API_AUTH_URL}/logout`, {
+                withCredentials: true
+            })
+            Cookies.remove("logged_user");
+            router.push(("/"))
+            setSelectUser(null);
+            setCanvasShow(false)
+        } catch (error: any) {
+            toast.error(error.response.data.message);
+        }
     }
     return (
         <Offcanvas
@@ -47,7 +57,6 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
                     </button>
                 </div>
             )}
-
         </Offcanvas>
     )
 }

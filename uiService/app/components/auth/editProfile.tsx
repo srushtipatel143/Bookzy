@@ -32,24 +32,18 @@ const EditProfile = () => {
     const [formData, setFormData] = useState<any>(null);
 
     const { setSelectUser } = useUser();
-    const user = Cookies.get("token");
+    const user = Cookies.get("logged_user");
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                if (user) {
-                    const userVal = user ? JSON.parse(user) : null;
-                    const val = userVal?.token;
-                    const response = await axios.get(`${API_AUTH_URL}/getuser`, {
-                        headers: {
-                            Authorization: `Bearer ${val}`
-                        }
-                    });
-                    const userDetails = response?.data?.data;
-                    setFormData({
-                        ...userDetails,
-                        ...userDetails?.address
-                    });
-                }
+                const response = await axios.get(`${API_AUTH_URL}/getuser`, {
+                    withCredentials: true
+                });
+                const userDetails = response?.data?.data;
+                setFormData({
+                    ...userDetails,
+                    ...userDetails?.address
+                });
             } catch (error: any) {
                 toast.error(error.response.data.message)
             }
@@ -82,16 +76,14 @@ const EditProfile = () => {
                 const userVal = user ? JSON.parse(user) : null;
                 const val = userVal?.token;
                 const respose = await axios.put(`${API_AUTH_URL}/editprofile`, payload, {
-                    headers: {
-                        Authorization: `Bearer ${val}`
-                    }
+                    withCredentials: true
                 });
                 if (respose?.data?.success) {
-                    setSelectUser((prev:any) => ({
+                    setSelectUser((prev: any) => ({
                         ...prev,
                         user: payload?.firstName
                     }));
-                    Cookies.set("token", JSON.stringify({ ...userVal, user: payload?.firstName }), { expires: 3650 });
+                    Cookies.set("logged_user", JSON.stringify({ ...userVal, user: payload?.firstName }), { expires: 3650 });
                 }
             }
         } catch (error: any) {
