@@ -72,7 +72,7 @@ const LatestMovieScreen = () => {
               <div className="rating_card p-2">
                 <p className="m-0 d-flex align-items-center fs-5 gap-1">
                   <FaStar size={20} color="red" />
-                  {item.ratingData ? `${item.ratingData.totalRating} / 10 ${item.ratingData.votes} Votes` : 'N / A'}
+                  {item.ratingData ? `${item.ratingData.totalRating}/10 (${item.ratingData.votes} Votes)` : 'N / A'}
                 </p>
               </div>
             </div>

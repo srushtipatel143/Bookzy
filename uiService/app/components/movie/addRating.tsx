@@ -51,7 +51,7 @@ const AddRating = ({ movie }: MovieScreenProps) => {
                     setRateModal(true);
                 }
             }}>Rate Now</button>
-            <Modal backdrop={false} centered show={rateModal} onHide={() => {
+            <Modal centered show={rateModal} onHide={() => {
                 setRateModal(false)
                 setRating(0);
             }}>

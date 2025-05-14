@@ -57,7 +57,7 @@ const Navbar = () => {
             <form className="form-inline d-none d-md-block">
               <div className="input-group">
                 <span className="input-group-text bg-white border-end-0">
-                  <IoSearch size={18} />
+                  <IoSearch size={14} />
                 </span>
                 <input
                   type="text"

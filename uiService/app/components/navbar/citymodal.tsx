@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import { useCity } from "../context/cityContext";
+import Select from "react-select";
 
 interface citymodalprops {
   topCanvas: boolean,
@@ -18,9 +19,17 @@ interface CityType {
   country: string;
 }
 
+interface CityOption {
+  label: string;
+  value: number;
+  fullData: CityType;
+}
+
 const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
   const [city, setCity] = useState<CityType[]>([]);
   const { selectCity, setSelectCity } = useCity();
+  const [cityOption, setCityOption] = useState<CityOption[]>([]);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
     const fetchCities = async () => {
@@ -45,29 +54,63 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
     setTopCanvas(false);
   };
 
+  const handleChange = (inputValue: string) => {
+    const filteredCities = city.filter((item: CityType) =>
+      item.city.toLowerCase().includes(inputValue.toLowerCase())
+    );
+    const options = filteredCities.map((item) => ({
+      label: item.city,
+      value: item.id,
+      fullData: item,
+    }));
+    setCityOption(options);
+    setIsMenuOpen(inputValue.length > 0);
+  };
+
+
   return (
     <div>
       <Modal show={topCanvas} onHide={() => setTopCanvas(false)} backdrop={true} contentClassName="custom_modal">
         <Modal.Header className="border-0" >
           <form style={{ width: "100%" }}>
             <div className="input-group">
-              <input
-                type="text"
-                className="form-control search-input"
-                placeholder="Search for Cinemas and Movies"
-                aria-label="Search"
-                style={{
-                  outline: "none",
-                  boxShadow: "none",
-                  borderRadius: "0px",
-                  height: "3rem",
+              <Select
+                className="w-100 search-input1"
+                placeholder="Search for your city"
+                options={cityOption}
+                onChange={(selectedOption: any) => {
+                  if (selectedOption) {
+                    selectCityFunction(selectedOption.fullData);
+                  }
+                }}
+                menuIsOpen={isMenuOpen}
+                onInputChange={(inputValue) => {
+                  handleChange(inputValue)
+                }}
+                noOptionsMessage={() => "No Results found"}
+                styles={{
+                  placeholder: (base) => ({
+                    ...base,
+                    fontSize: "14px"
+                  }),
+                  noOptionsMessage: (base) => ({
+                    ...base,
+                    color: "#d71921",
+                    textAlign: "left",
+                    paddingLeft: "10px",
+                    fontSize: "14px"
+                  }),
+                  option: (base) => ({
+                    ...base,
+                    fontSize: "14px"
+                  })
                 }}
               />
             </div>
           </form>
         </Modal.Header>
         <Modal.Body>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px",fontSize:"14px" }}>
             {city.map((item) => (
               <span key={item.id} className={`${item.id === selectCity?.id ? "selected_city" : "city_modal"}`} onClick={() => selectCityFunction(item)} >
                 {item.city}
