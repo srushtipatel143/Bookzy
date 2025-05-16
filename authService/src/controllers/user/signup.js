@@ -64,7 +64,6 @@ const validateOtp = async (req, res, next) => {
         if (isOtpValid) {
             const user = await User.findById({ _id: userId })
             sendToken(user, 200, res);
-            //return res.status(200).json({ message: "OTP verified successfully",data:user });
         } else {
             return res.status(400).json({ message: "Invalid OTP" });
         }
