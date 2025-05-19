@@ -164,6 +164,7 @@ const getSingleMovie = async (req, res, next) => {
             message: "Movie get successfully",
             data: data
         });
+        
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
