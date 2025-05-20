@@ -10,6 +10,7 @@ import Cookies from "js-cookie";
 import { API_USER_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
+import Select from "react-select";
 
 interface cinema {
     id: number,
@@ -35,7 +36,8 @@ const Searchfield = () => {
     const [showDivSection, setShowDivSection] = useState(true);
     const [cinema, setcinema] = useState<cinema[]>([]);
     const [movie, setMovie] = useState<movie[]>([]);
-
+    const [searchOption, setSearchOption] = useState<[]>([]);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -73,6 +75,27 @@ const Searchfield = () => {
         setShowSearch(false);
     }
 
+    const handleChange = async (inputValue: string) => {
+        try {
+            if (inputValue.length > 0) {
+                const getCityRes = await axios.get(`${API_USER_URL}/searchmoviecinema/${inputValue}`);
+                const options = getCityRes.data.data.map((item: any) => ({
+                    label: item.city,
+                    value: item.id,
+                    fullData: item,
+                }));
+                setSearchOption(options);
+                setIsMenuOpen(inputValue.length > 0);
+            }
+            else {
+                setSearchOption([])
+                setIsMenuOpen(false);
+            }
+        } catch (error: any) {
+            toast.error(error.response.data.message);
+        }
+    };
+
     return (
         <div className="container-fluid position-relative search_top_priority recommend_movie m-0 p-0" style={{ minHeight: "100vh" }}>
             <div className="d-flex align-items-center search_top justify-content-between px-3  py-5">
@@ -81,16 +104,31 @@ const Searchfield = () => {
                 </div>
                 <form style={{ width: "50%" }}>
                     <div className="input-group">
-                        <input
-                            type="text"
-                            className="form-control search-input"
-                            placeholder="Search for Cinemas and Movies"
-                            aria-label="Search"
-                            style={{
-                                outline: "none",
-                                boxShadow: "none",
-                                borderRadius: "0px",
-                                height: "3rem",
+                        <Select
+                            className="w-100 search-input1"
+                            placeholder="Search for your city"
+                            options={searchOption}
+                            menuIsOpen={isMenuOpen}
+                            onInputChange={(inputValue) => {
+                                handleChange(inputValue)
+                            }}
+                            noOptionsMessage={() => "No Results found"}
+                            styles={{
+                                placeholder: (base) => ({
+                                    ...base,
+                                    fontSize: "14px"
+                                }),
+                                noOptionsMessage: (base) => ({
+                                    ...base,
+                                    color: "#d71921",
+                                    textAlign: "left",
+                                    paddingLeft: "10px",
+                                    fontSize: "14px"
+                                }),
+                                option: (base) => ({
+                                    ...base,
+                                    fontSize: "14px"
+                                })
                             }}
                         />
                     </div>
@@ -160,9 +198,9 @@ const Searchfield = () => {
                             {cinema.map((item) => (
                                 <ul key={item.id} className="fil_cinema_name">
                                     <li onClick={() => {
-                                        const cinemaId=item.id.toString();
+                                        const cinemaId = item.id.toString();
                                         setShowSearch(false);
-                                        localStorage.setItem("selected-cinema",cinemaId);
+                                        localStorage.setItem("selected-cinema", cinemaId);
                                         router.push("/explore/show");
                                     }} className="fil_cinema_text">{item.cinemaName} : {item.cinemaLandmark}</li>
                                 </ul>

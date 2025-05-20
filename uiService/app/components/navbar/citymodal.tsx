@@ -54,19 +54,26 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
     setTopCanvas(false);
   };
 
-  const handleChange = (inputValue: string) => {
-    const filteredCities = city.filter((item: CityType) =>
-      item.city.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    const options = filteredCities.map((item) => ({
-      label: item.city,
-      value: item.id,
-      fullData: item,
-    }));
-    setCityOption(options);
-    setIsMenuOpen(inputValue.length > 0);
+  const handleChange = async (inputValue: string) => {
+    try {
+      if (inputValue.length>0) {
+        const getCityRes = await axios.get(`${API_USER_URL}/searchcity/${inputValue}`);
+        const options = getCityRes.data.data.map((item: any) => ({
+          label: item.city,
+          value: item.id,
+          fullData: item,
+        }));
+        setCityOption(options);
+        setIsMenuOpen(inputValue.length > 0);
+      }
+      else {
+        setCityOption([])
+        setIsMenuOpen(false);
+      }
+    } catch (error: any) {
+      toast.error(error.response.data.message);
+    }
   };
-
 
   return (
     <div>
@@ -110,7 +117,7 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
           </form>
         </Modal.Header>
         <Modal.Body>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px",fontSize:"14px" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", fontSize: "14px" }}>
             {city.map((item) => (
               <span key={item.id} className={`${item.id === selectCity?.id ? "selected_city" : "city_modal"}`} onClick={() => selectCityFunction(item)} >
                 {item.city}
