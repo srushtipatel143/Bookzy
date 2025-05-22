@@ -6,11 +6,13 @@ import { FiArrowLeft } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { API_USER_URL } from "../utils/config";
-import Image from 'next/image';
+import { CiHeart } from "react-icons/ci";
+import Cookies from "js-cookie";
 
 interface cinema {
     id: number;
     cinemaName: string;
+    address: string;
     cinemaLandmark: string;
     movieData: {
         movieId: string;
@@ -30,12 +32,19 @@ interface cinema {
 const Showlist = () => {
     const router = useRouter();
     const [showData, setshowData] = useState<cinema | undefined>(undefined);
+    const [selectedCity, setSelectedCity] = useState<string>("");
+    const selectedCityVal = Cookies.get("selected_city");
+
     useEffect(() => {
         const fetchDetail = async () => {
             try {
                 const cinemaId = localStorage.getItem("selected-cinema");
                 const response = await axios.get(`${API_USER_URL}/getmoviesincinema/${cinemaId}`);
                 setshowData(response?.data?.data);
+                if (selectedCityVal) {
+                    const city = selectedCityVal ? JSON.parse(selectedCityVal) : null;
+                    setSelectedCity(city.city)
+                }
             } catch (error: any) {
                 toast.error(error.response.data.message);
             }
@@ -52,9 +61,17 @@ const Showlist = () => {
                         onClick={() => router.back()} >
                         <FiArrowLeft size={20} color="black" />
                     </div>
-                    <div className="mt-1 d-flex">
-                        <Image src={"/location.svg"} alt="icons" width={30} height={30} />
-                        <p className="show_detail_title_text">{showData?.cinemaName} , {showData?.cinemaLandmark}</p>
+                    <div className="mt-2 d-flex justify-content-between">
+                        <div className="d-flex">
+                            <div className="d-flex">
+                                <CiHeart size={30} style={{ marginRight: "10px", marginTop: "2px" }} />
+                            </div>
+                            <div>
+                                <p className="show_detail_title_text m-0">{showData?.cinemaName}: {showData?.cinemaLandmark}, {selectedCity}</p>
+                                <span style={{ fontSize: "13px" }}>{showData?.address}</span>
+                            </div>
+                        </div>
+                        <div style={{ fontSize: "15px",marginTop:"auto",color:"#d71921",cursor:"pointer" }}>Details</div>
                     </div>
                 </div>
                 <div className="hrLine"></div>

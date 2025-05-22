@@ -374,7 +374,7 @@ const getMoviesInCinema = async (req, res, next) => {
     try {
         const { id } = req.params;
 
-        const query = `SELECT cinema.id,cinemaName,cinemaLandmark,facility,cinemainformation.status FROM cinema
+        const query = `SELECT cinema.id,cinemaName,cinemaLandmark,address,facility,cinemainformation.status FROM cinema
         join cinemainformation on cinemainformation.cinemaId=cinema.id
         where cinema.id=? and cinema.status=?`;
         const param = [id, 1];
@@ -388,6 +388,7 @@ const getMoviesInCinema = async (req, res, next) => {
                     id: item.id,
                     cinemaName: item.cinemaName,
                     cinemaLandmark: item.cinemaLandmark,
+                    address:item.address,
                     facility: [],
                 };
             }
