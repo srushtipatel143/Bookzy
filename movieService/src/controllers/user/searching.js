@@ -29,7 +29,7 @@ const searchMovieCinema = async (req, res, next) => {
             title: { $regex: val, $options: 'i' }
         });
         const formattedMovies = movieResults.map(item => ({
-            id: item._id,
+            movieId: item._id,
             title: item.title
         }));
         const data = [...cinemaResults,...formattedMovies]

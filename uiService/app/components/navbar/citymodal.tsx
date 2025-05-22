@@ -6,6 +6,8 @@ import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import { useCity } from "../context/cityContext";
 import Select from "react-select";
+import { debounce } from "lodash";
+import { useCallback } from "react";
 
 interface citymodalprops {
   topCanvas: boolean,
@@ -54,26 +56,45 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
     setTopCanvas(false);
   };
 
-  const handleChange = async (inputValue: string) => {
-    try {
-      if (inputValue.length>0) {
-        const getCityRes = await axios.get(`${API_USER_URL}/searchcity/${inputValue}`);
-        const options = getCityRes.data.data.map((item: any) => ({
-          label: item.city,
-          value: item.id,
-          fullData: item,
-        }));
-        setCityOption(options);
-        setIsMenuOpen(inputValue.length > 0);
+  const debouncedHandleChange = useCallback(() => {
+    let controller: AbortController;
+    return debounce(async (inputValue: string) => {
+      if (controller) {
+        controller.abort();
       }
-      else {
-        setCityOption([])
-        setIsMenuOpen(false);
+      controller = new AbortController();
+      try {
+        if (inputValue.length > 0) {
+          const getCityRes = await axios.get(`${API_USER_URL}/searchcity/${inputValue}`, { signal: controller.signal });
+          const options = getCityRes.data.data.map((item: any) => ({
+            label: item.city,
+            value: item.id,
+            fullData: item,
+          }));
+          setCityOption(options);
+          setIsMenuOpen(inputValue.length > 0);
+        }
+        else {
+          setCityOption([])
+          setIsMenuOpen(false);
+        }
+      } catch (error: any) {
+        if (axios.isCancel(error) || error.name === 'CanceledError') {
+        } else {
+          toast.error(error?.response?.data?.message || "Something went wrong");
+        }
       }
-    } catch (error: any) {
-      toast.error(error.response.data.message);
-    }
-  };
+    }, 300)
+  }, []);
+
+  const debouncedSearch = debouncedHandleChange();
+
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
 
   return (
     <div>
@@ -92,7 +113,7 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
                 }}
                 menuIsOpen={isMenuOpen}
                 onInputChange={(inputValue) => {
-                  handleChange(inputValue)
+                  debouncedSearch(inputValue)
                 }}
                 noOptionsMessage={() => "No Results found"}
                 styles={{

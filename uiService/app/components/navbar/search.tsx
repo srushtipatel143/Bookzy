@@ -11,6 +11,9 @@ import { API_USER_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import Select from "react-select";
+import Image from 'next/image';
+import { useCallback } from "react";
+import { debounce } from "lodash";
 
 interface cinema {
     id: number,
@@ -75,26 +78,48 @@ const Searchfield = () => {
         setShowSearch(false);
     }
 
-    const handleChange = async (inputValue: string) => {
-        try {
-            if (inputValue.length > 0) {
-                const getCityRes = await axios.get(`${API_USER_URL}/searchmoviecinema/${inputValue}`);
-                const options = getCityRes.data.data.map((item: any) => ({
-                    label: item.city,
-                    value: item.id,
-                    fullData: item,
-                }));
-                setSearchOption(options);
-                setIsMenuOpen(inputValue.length > 0);
+    const debouncedHandleChange = useCallback(() => {
+        let controller: AbortController;
+        return debounce(async (inputValue: string) => {
+            if (controller) {
+                controller.abort();
             }
-            else {
-                setSearchOption([])
-                setIsMenuOpen(false);
+            controller = new AbortController();
+            try {
+                if (inputValue.length > 0) {
+                    const response = await axios.get(
+                        `${API_USER_URL}/searchmoviecinema/${inputValue}`,
+                        { signal: controller.signal }
+                    );
+
+                    const options = response.data.data.map((item: any) => ({
+                        label: item.cinemaname ? item.cinemaname : item.title,
+                        value: item.id ? item.id : item.movieId,
+                        movieId: item.movieId,
+                    }));
+
+                    setSearchOption(options);
+                    setIsMenuOpen(inputValue.length > 0);
+                } else {
+                    setSearchOption([]);
+                    setIsMenuOpen(false);
+                }
+            } catch (error: any) {
+                if (axios.isCancel(error) || error.name === 'CanceledError') {
+                } else {
+                    toast.error(error?.response?.data?.message || "Something went wrong");
+                }
             }
-        } catch (error: any) {
-            toast.error(error.response.data.message);
-        }
-    };
+        }, 300);
+    }, []);
+
+    const debouncedSearch = debouncedHandleChange();
+
+    useEffect(() => {
+        return () => {
+            debouncedSearch.cancel();
+        };
+    }, [debouncedSearch]);
 
     return (
         <div className="container-fluid position-relative search_top_priority recommend_movie m-0 p-0" style={{ minHeight: "100vh" }}>
@@ -109,9 +134,27 @@ const Searchfield = () => {
                             placeholder="Search for your city"
                             options={searchOption}
                             menuIsOpen={isMenuOpen}
-                            onInputChange={(inputValue) => {
-                                handleChange(inputValue)
+                            onChange={(selectedOption: any) => {
+                                if (selectedOption) {
+                                    if (selectedOption.movieId && selectedOption.movieId !== undefined) {
+                                        setShowSearch(false);
+                                        router.push(`/explore/movie/${selectedOption.movieId}`);
+                                    } else {
+                                        setShowSearch(false);
+                                        localStorage.setItem("selected-cinema", selectedOption.value);
+                                        router.push("/explore/show");
+                                    }
+                                }
                             }}
+                            onInputChange={(inputValue) => {
+                                debouncedSearch(inputValue);
+                            }}
+                            formatOptionLabel={(option: any) => (
+                                <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px', gap: "12px", color: "darkgray", cursor: "pointer" }}>
+                                    <Image src={option.movieId ? "/movie.svg" : "/location.svg"} alt="icons" width={20} height={20} />
+                                    {option.label}
+                                </div>
+                            )}
                             noOptionsMessage={() => "No Results found"}
                             styles={{
                                 placeholder: (base) => ({
