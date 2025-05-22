@@ -6,6 +6,7 @@ import { FiArrowLeft } from "react-icons/fi";
 import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import { API_USER_URL } from "../utils/config";
+import Image from 'next/image';
 
 interface cinema {
     id: number;
@@ -51,7 +52,8 @@ const Showlist = () => {
                         onClick={() => router.back()} >
                         <FiArrowLeft size={20} color="black" />
                     </div>
-                    <div className="mt-1">
+                    <div className="mt-1 d-flex">
+                        <Image src={"/location.svg"} alt="icons" width={30} height={30} />
                         <p className="show_detail_title_text">{showData?.cinemaName} , {showData?.cinemaLandmark}</p>
                     </div>
                 </div>
