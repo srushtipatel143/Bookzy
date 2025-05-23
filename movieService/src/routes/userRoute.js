@@ -11,7 +11,7 @@ router.get("/getsinglemovie/:id",getSingleMovie);
 router.get("/getshowinfo/:id",getShow)
 router.get("/getmovieforcinema",getMovieforcinema);
 router.get("/getmoviesincity/:id",getMoviesInCity);
-router.get("/getmoviesincinema/:id",getMoviesInCinema);
+router.get("/getmoviesincinema",getMoviesInCinema);
 router.get("/getlatestmovie/:id",getLatestMovie);
 router.get("/upcomingmovie/:id",getUpCommingMovie)
 router.get("/getallcinemabyfilter",getAllCinemaByFilter)

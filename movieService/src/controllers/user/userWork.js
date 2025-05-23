@@ -372,12 +372,12 @@ const getMoviesInCity = async (req, res, next) => {
 
 const getMoviesInCinema = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { cinemaId, todayTime } = req.query;
 
         const query = `SELECT cinema.id,cinemaName,cinemaLandmark,address,facility,cinemainformation.status FROM cinema
         join cinemainformation on cinemainformation.cinemaId=cinema.id
         where cinema.id=? and cinema.status=?`;
-        const param = [id, 1];
+        const param = [cinemaId, 1];
         const [CinemaResponse] = await pool.execute(query, param);
 
         let cinema = null;
@@ -388,7 +388,7 @@ const getMoviesInCinema = async (req, res, next) => {
                     id: item.id,
                     cinemaName: item.cinemaName,
                     cinemaLandmark: item.cinemaLandmark,
-                    address:item.address,
+                    address: item.address,
                     facility: [],
                 };
             }
@@ -406,17 +406,74 @@ const getMoviesInCinema = async (req, res, next) => {
                 .json({ success: false, message: "Cinema not found" });
         }
 
-
-        const now = new Date();
+        const selectedDate = new Date(todayTime);
         const istOffset = 5.5 * 60 * 60 * 1000;
-        const istToday = new Date(now.getTime() + istOffset);
-        istToday.setHours(0, 0, 0, 0);
-        const today = new Date(istToday.getTime() - istOffset);
+        const nowUTC = new Date();
+        const nowIST = new Date(nowUTC.getTime() + istOffset);
+        const selectedISTStart = new Date(selectedDate);
+        selectedISTStart.setHours(0, 0, 0, 0);
+        const selectedISTEnd = new Date(selectedISTStart);
+        selectedISTEnd.setHours(23, 59, 59, 999);
+
+        const isTodayIST =
+            selectedISTStart.toDateString() === nowIST.toDateString();
+
+        let startUTC, endUTC;
+
+        if (isTodayIST) {
+            startUTC = nowUTC;
+            endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+        } else {
+            startUTC = new Date(selectedISTStart.getTime() - istOffset);
+            endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+        }
 
         const getdata = await Show.find({
-            cinemaId: id,
-            showStartTime: { $gte: today },
+            cinemaId: cinemaId,
+            showStartTime: {
+                $gte: startUTC,
+                $lte: endUTC,
+            },
         });
+
+        const currenttime = new Date();
+
+        const shows = await Show.find(
+            {
+                cinemaId: cinemaId,
+                showStartTime: { $gte: currenttime }
+            },
+            {
+                showDate: 1,
+                _id: 0
+            }
+        );
+
+        const existingDateStrings = shows.map(s => s.showDate.toISOString().split("T")[0]);
+        const sortedDates = [...existingDateStrings].sort();
+        const startDate = new Date(sortedDates[0]);
+        const endDate = new Date(sortedDates[sortedDates.length - 1]);
+
+        const allDates = [];
+        let current = new Date(startDate);
+
+        while (current <= endDate) {
+            const dateStr = current.toISOString().split("T")[0];
+            const weekday = current.toLocaleDateString("en-GB", { weekday: "short" }).toUpperCase();
+            const day = current.getDate().toString().padStart(2, "0");
+            const month = current.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
+            const formattedDate = `${weekday} ${day} ${month}`;
+
+            allDates.push({
+                formattedDate: formattedDate,
+                rawDate: new Date(current),
+                weekday: weekday,
+                day: day,
+                month: month,
+                hasShow: existingDateStrings.includes(dateStr)
+            });
+            current.setDate(current.getDate() + 1);
+        }
 
         const movieShowMap = new Map();
         getdata.forEach((show) => {
@@ -437,7 +494,7 @@ const getMoviesInCinema = async (req, res, next) => {
                 timeZone: "UTC",
             });
             const formattedTimeFull = showDate.toLocaleTimeString("en-US", {
-                weekday: "long",
+                weekday: "short",
                 month: "short",
                 day: "numeric",
                 year: "numeric",
@@ -456,6 +513,7 @@ const getMoviesInCinema = async (req, res, next) => {
 
         const finalData = {
             ...cinema,
+            allDates: allDates,
             movieData: Array.from(movieShowMap.values()),
         };
 
@@ -463,6 +521,7 @@ const getMoviesInCinema = async (req, res, next) => {
             success: true,
             data: finalData,
         });
+
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
