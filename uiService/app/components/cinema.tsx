@@ -27,6 +27,15 @@ interface cinema {
     }[];
 }
 
+interface dateDetails {
+    weekday: string;
+    day: string;
+    month: string;
+    hasShow: boolean;
+    formattedDate: string;
+    rawDate: string;
+}
+
 interface SelectMovie {
     movieId: string;
     movieName: string;
@@ -41,7 +50,9 @@ interface SelectMovie {
 const Cinemascreen = () => {
     const router = useRouter();
     const [cinema, setcinema] = useState<cinema[]>([]);
-    const [selectMovie, setSelectMovie] = useState<SelectMovie | null>(null)
+    const [selectMovie, setSelectMovie] = useState<SelectMovie | null>(null);
+    const [selectDate, setSelectDate] = useState<string>("");
+    const [allDates, setAllDates] = useState<dateDetails[]>([]);
     useEffect(() => {
         const fetchDetails = async () => {
             try {
@@ -55,18 +66,22 @@ const Cinemascreen = () => {
                     return;
                 }
                 const cityData = JSON.parse(selectedCity);
+                const todayTime = new Date();
                 const bodydata = {
                     cityId: cityData?.id,
                     movieId: getSelectMovieData?.movieId,
                     language: getSelectMovieData?.selectLanguage,
-                    selectScreen: getSelectMovieData?.selectScreen
+                    selectScreen: getSelectMovieData?.selectScreen,
+                    todayTime
                 }
                 const getCinemaRes = await axios.get(`${API_USER_URL}/getallcinemabyfilter`, {
                     params: bodydata
                 });
-                const cinemaDetails = getCinemaRes?.data?.data;
+                const cinemaDetails = getCinemaRes?.data?.data?.showData;
                 setcinema(cinemaDetails);
-
+                const datesData = getCinemaRes?.data?.data?.allDates;
+                setAllDates(datesData);
+                setSelectDate(getCinemaRes?.data?.data?.allDates[0].formattedDate);
             } catch (error: any) {
                 toast.error(error.response.data.message)
             }
@@ -94,7 +109,7 @@ const Cinemascreen = () => {
                         <p className="show_detail_title_text">{selectMovie?.movieName} - ({selectMovie?.selectLanguage})</p>
                     </div>
                     <div className="d-flex gap-2">
-                        {selectMovie?.type?.map((item, index) => (
+                        {selectMovie?.type?.map((item) => (
                             <div className="show_detail_type" key={item._id}><span>{item.type}</span></div>
                         ))}
                     </div>
@@ -103,11 +118,40 @@ const Cinemascreen = () => {
                 <div className="d-flex show_detail_title show_detail_title_ext">
                     <div className="show_detail_sec2 w-100">
                         <div className="d-flex show_Date_sec">
-                            {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((item, index) => (
-                                <div key={index} className="show_detail_date px-3 py-2 text-center flex-column">
-                                    <div className="date-day">fri</div>
-                                    <div className="date-date">04</div>
-                                    <div className="date-month">apr</div>
+                            {allDates.map((item, index) => (
+                                <div key={index} onClick={async () => {
+                                    if (item.hasShow) {
+                                        setSelectDate(item.formattedDate)
+                                        const getSelectMovie = localStorage.getItem("select-movie");
+                                        const getSelectMovieData: SelectMovie | null = getSelectMovie ? JSON.parse(getSelectMovie) : null;
+                                        setSelectMovie(getSelectMovieData)
+
+                                        const selectedCity = Cookies.get("selected_city");
+                                        if (!selectedCity) {
+                                            toast.error("City is not selected");
+                                            return;
+                                        }
+
+                                        const cityData = JSON.parse(selectedCity);
+                                        const todayTime = new Date();
+                                        const bodydata = {
+                                            cityId: cityData?.id,
+                                            movieId: getSelectMovieData?.movieId,
+                                            language: getSelectMovieData?.selectLanguage,
+                                            selectScreen: getSelectMovieData?.selectScreen,
+                                            todayTime
+                                        }
+                                        const getCinemaRes = await axios.get(`${API_USER_URL}/getallcinemabyfilter`, {
+                                            params: bodydata
+                                        });
+                                        const cinemaDetails = getCinemaRes?.data?.data?.showData;
+                                        setcinema(cinemaDetails);
+                                    }
+                                }} className={`${item.hasShow ? 'show_detail_date' : 'show_detail_date1'
+                                    } ${item.formattedDate === selectDate ? 'selectdate_cinema' : ''}`}>
+                                    <div className="date-day">{item.weekday}</div>
+                                    <div className='date-date'>{item.day}</div>
+                                    <div className={`${item.formattedDate === selectDate ? 'date-month1' : 'date-month'}`}>{item.month}</div>
                                 </div>
                             ))}
                         </div>
@@ -122,12 +166,16 @@ const Cinemascreen = () => {
             </div>
             <div className="p-0 mt-3 show_detail_title show_data">
                 <div className="d-flex flex-column">
-                    {cinema.map((item, index) => (
-                        <div key={index} className="show_movie_name">
+                    {cinema.map((item) => (
+                        <div key={item.id} className="show_movie_name">
                             <div className="d-flex show_movie_name_small my-3 mx-3">
                                 <div className="show_movie_name_left">
                                     <CiHeart size={20} />
-                                    <span className="cinema_text">{item.cinemaName} : {item.cinemaLandmark}</span></div>
+                                    <span onClick={() => {
+                                        localStorage.setItem("selected-cinema", String(item.id));
+                                        router.push("/explore/show");
+                                    }} className="cinema_text">{item.cinemaName} : {item.cinemaLandmark}</span>
+                                </div>
                                 <div className="show_movie_name_right">
                                     {item?.show?.map((val) => (
                                         <div key={val._id} className="show_time_container">

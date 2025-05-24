@@ -34,19 +34,78 @@ const getAllCinemaByCity = async (req, res, next) => {
 const getAllCinemaByFilter = async (req, res, next) => {
     try {
         const data = req.query;
-
-        const now = new Date();
+        const now = new Date(data.todayTime);
         const istOffset = 5.5 * 60 * 60 * 1000;
-        const istToday = new Date(now.getTime() + istOffset);
-        istToday.setHours(0, 0, 0, 0);
-        const today = new Date(istToday.getTime() - istOffset);
+        const nowUTC = new Date();
+        const nowIST = new Date(nowUTC.getTime() + istOffset);
+        const selectedISTStart = new Date(now);
+        selectedISTStart.setHours(0, 0, 0, 0);
+        const selectedISTEnd = new Date(selectedISTStart);
+        selectedISTEnd.setHours(23, 59, 59, 999);
+
+        const isTodayIST =
+            selectedISTStart.toDateString() === nowIST.toDateString();
+
+        let startUTC, endUTC;
+
+        if (isTodayIST) {
+            startUTC = nowUTC;
+            endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+        } else {
+            startUTC = new Date(selectedISTStart.getTime() - istOffset);
+            endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+        }
 
         const getdata = await Show.find({
             movieId: data.movieId,
             movieLanguage: data.language,
             screenType: data.selectScreen,
-            showStartTime: { $gte: today },
+            showStartTime: {
+                $gte: startUTC,
+                $lte: endUTC,
+            },
         });
+
+        const currenttime = new Date();
+
+        const shows = await Show.find(
+            {
+                movieId: data.movieId,
+                movieLanguage: data.language,
+                screenType: data.selectScreen,
+                showStartTime: { $gte: currenttime }
+            },
+            {
+                showDate: 1,
+                _id: 0
+            }
+        );
+
+        const existingDateStrings = shows.map(s => s.showDate.toISOString().split("T")[0]);
+        const sortedDates = [...existingDateStrings].sort();
+        const startDate = new Date(sortedDates[0]);
+        const endDate = new Date(sortedDates[sortedDates.length - 1]);
+
+        const allDates = [];
+        let current = new Date(startDate);
+
+        while (current <= endDate) {
+            const dateStr = current.toISOString().split("T")[0];
+            const weekday = current.toLocaleDateString("en-GB", { weekday: "short" }).toUpperCase();
+            const day = current.getDate().toString().padStart(2, "0");
+            const month = current.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
+            const formattedDate = `${weekday} ${day} ${month}`;
+
+            allDates.push({
+                formattedDate: formattedDate,
+                rawDate: new Date(current),
+                weekday: weekday,
+                day: day,
+                month: month,
+                hasShow: existingDateStrings.includes(dateStr)
+            });
+            current.setDate(current.getDate() + 1);
+        }
 
         const getCinemaId = getdata.map((item) => item.cinemaId);
         const uniqueCinemaId = [...new Set(getCinemaId)];
@@ -98,9 +157,12 @@ const getAllCinemaByFilter = async (req, res, next) => {
             show: cinemaShowMap.get(cinema.id.toString()) || [],
         }));
 
-        return res
-            .status(200)
-            .json({ message: "Get cinema successfully", data: finalData });
+        return res.status(200).json({
+            message: "Get cinema successfully", data: {
+                allDates,
+                showData: finalData
+            }
+        });
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }

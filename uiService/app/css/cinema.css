@@ -42,3 +42,8 @@
     font-size: 14px;
     font-weight: 400;
 }
+
+.cinema_text:hover{
+    text-decoration: underline;
+    cursor: pointer;
+}
