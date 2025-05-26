@@ -83,7 +83,7 @@ const Cinemascreen = () => {
                 setAllDates(datesData);
                 setSelectDate(getCinemaRes?.data?.data?.allDates[0].formattedDate);
             } catch (error: any) {
-                toast.error(error.response.data.message)
+                toast.error(error?.response?.data?.message)
             }
         }
         fetchDetails();
@@ -114,11 +114,13 @@ const Cinemascreen = () => {
                         ))}
                     </div>
                 </div>
-                <div className="hrLine"></div>
+                {allDates?.length > 0 && (
+                    <div className="hrLine"></div>
+                )}
                 <div className="d-flex show_detail_title show_detail_title_ext">
                     <div className="show_detail_sec2 w-100">
                         <div className="d-flex show_Date_sec">
-                            {allDates.map((item, index) => (
+                            {allDates?.map((item, index) => (
                                 <div key={index} onClick={async () => {
                                     if (item.hasShow) {
                                         setSelectDate(item.formattedDate)
@@ -155,18 +157,18 @@ const Cinemascreen = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="show_filter_sec">
+                        {/* <div className="show_filter_sec">
                             <div className="show_detail_ext ms-auto">Hindi-2D</div>
                             <div className="show_detail_ext">Price Range</div>
                             <div className="show_detail_ext"> <IoSearch size={18} /></div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="hrLine1"></div>
             </div>
             <div className="p-0 mt-3 show_detail_title show_data">
                 <div className="d-flex flex-column">
-                    {cinema.map((item) => (
+                    {cinema?.map((item) => (
                         <div key={item.id} className="show_movie_name">
                             <div className="d-flex show_movie_name_small my-3 mx-3">
                                 <div className="show_movie_name_left">

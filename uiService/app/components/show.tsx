@@ -26,7 +26,7 @@ interface cinema {
         month: string;
         hasShow: boolean;
         formattedDate: string;
-        rawDate:string;
+        rawDate: string;
     }[];
     movieData: {
         movieId: string;
@@ -123,12 +123,14 @@ const Showlist = () => {
                         </div>
                     </div>
                 )}
-                <div className="hrLine"></div>
+                {showData !== undefined && showData?.allDates?.length > 0 && (
+                    <div className="hrLine"></div>
+                )}
                 <div className="d-flex show_detail_title show_detail_title_ext">
                     <div className="show_detail_sec2 w-100">
                         <div className="d-flex show_Date_sec">
                             {showData?.allDates.map((item, index) => (
-                                <div key={index} onClick={async() => {
+                                <div key={index} onClick={async () => {
                                     if (item.hasShow) {
                                         setSelectDate(item.formattedDate)
                                         const cinemaId = localStorage.getItem("selected-cinema");
@@ -149,11 +151,11 @@ const Showlist = () => {
                                 </div>
                             ))}
                         </div>
-                        <div className="show_filter_sec">
+                        {/* <div className="show_filter_sec">
                             <div className="show_detail_ext ms-auto">Hindi-2D</div>
                             <div className="show_detail_ext">Price Range</div>
                             <div className="show_detail_ext"> <IoSearch size={18} /></div>
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 <div className="hrLine1"></div>

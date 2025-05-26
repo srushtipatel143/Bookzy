@@ -38,6 +38,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
         const istOffset = 5.5 * 60 * 60 * 1000;
         const nowUTC = new Date();
         const nowIST = new Date(nowUTC.getTime() + istOffset);
+        
         const selectedISTStart = new Date(now);
         selectedISTStart.setHours(0, 0, 0, 0);
         const selectedISTEnd = new Date(selectedISTStart);
@@ -163,6 +164,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
                 showData: finalData
             }
         });
+        
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
