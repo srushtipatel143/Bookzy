@@ -33,29 +33,69 @@ const getAllCinemaByCity = async (req, res, next) => {
 
 const getAllCinemaByFilter = async (req, res, next) => {
     try {
+        // const data = req.query;
+        // console.log(data.todayTime)
+        // const now = new Date(data.todayTime);
+        // const istOffset = 5.5 * 60 * 60 * 1000;
+        // const nowUTC = new Date();
+        // const nowIST = new Date(nowUTC.getTime() + istOffset);
+
+        // const selectedISTStart = new Date(now);
+        // selectedISTStart.setHours(0, 0, 0, 0);
+        // const selectedISTEnd = new Date(selectedISTStart);
+        // selectedISTEnd.setHours(23, 59, 59, 999);
+
+        // const isTodayIST =
+        //     selectedISTStart.toDateString() === nowIST.toDateString();
+
+        // let startUTC, endUTC;
+
+        // if (isTodayIST) {
+        //     startUTC = nowUTC;
+        //     endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+        // } else {
+        //     startUTC = new Date(selectedISTStart.getTime() - istOffset);
+        //     endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+        // }
+
         const data = req.query;
-        const now = new Date(data.todayTime);
         const istOffset = 5.5 * 60 * 60 * 1000;
+
+        const inputUTC = new Date(data.todayTime); // already in UTC
         const nowUTC = new Date();
+
+        // Convert input and current UTC time to IST for date comparison
+        const inputIST = new Date(inputUTC.getTime() + istOffset);
         const nowIST = new Date(nowUTC.getTime() + istOffset);
-        
-        const selectedISTStart = new Date(now);
-        selectedISTStart.setHours(0, 0, 0, 0);
-        const selectedISTEnd = new Date(selectedISTStart);
-        selectedISTEnd.setHours(23, 59, 59, 999);
 
-        const isTodayIST =
-            selectedISTStart.toDateString() === nowIST.toDateString();
+        // Get start and end of the IST day based on input date
+        const istDayStart = new Date(inputIST);
+        istDayStart.setHours(0, 0, 0, 0);
 
+        const istDayEnd = new Date(istDayStart);
+        istDayEnd.setHours(23, 59, 59, 999);
+
+        // Convert back to UTC
+        const utcDayStart = new Date(istDayStart.getTime() - istOffset);
+        const utcDayEnd = new Date(istDayEnd.getTime() - istOffset);
+
+        // Check if the selected day is "today" in IST
+        const isTodayIST = istDayStart.toDateString() === nowIST.toDateString();
+
+        // Final UTC range
         let startUTC, endUTC;
 
         if (isTodayIST) {
-            startUTC = nowUTC;
-            endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+            startUTC = nowUTC;       // current moment in UTC
+            endUTC = utcDayEnd;      // end of today in UTC
         } else {
-            startUTC = new Date(selectedISTStart.getTime() - istOffset);
-            endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+            startUTC = utcDayStart;  // full day in UTC
+            endUTC = utcDayEnd;
         }
+
+        console.log("Start UTC:", startUTC.toISOString());
+        console.log("End UTC:", endUTC.toISOString());
+
 
         const getdata = await Show.find({
             movieId: data.movieId,
@@ -164,7 +204,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
                 showData: finalData
             }
         });
-        
+
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
