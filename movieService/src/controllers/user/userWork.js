@@ -33,69 +33,29 @@ const getAllCinemaByCity = async (req, res, next) => {
 
 const getAllCinemaByFilter = async (req, res, next) => {
     try {
-        // const data = req.query;
-        // console.log(data.todayTime)
-        // const now = new Date(data.todayTime);
-        // const istOffset = 5.5 * 60 * 60 * 1000;
-        // const nowUTC = new Date();
-        // const nowIST = new Date(nowUTC.getTime() + istOffset);
-
-        // const selectedISTStart = new Date(now);
-        // selectedISTStart.setHours(0, 0, 0, 0);
-        // const selectedISTEnd = new Date(selectedISTStart);
-        // selectedISTEnd.setHours(23, 59, 59, 999);
-
-        // const isTodayIST =
-        //     selectedISTStart.toDateString() === nowIST.toDateString();
-
-        // let startUTC, endUTC;
-
-        // if (isTodayIST) {
-        //     startUTC = nowUTC;
-        //     endUTC = new Date(selectedISTEnd.getTime() - istOffset);
-        // } else {
-        //     startUTC = new Date(selectedISTStart.getTime() - istOffset);
-        //     endUTC = new Date(selectedISTEnd.getTime() - istOffset);
-        // }
-
         const data = req.query;
         const istOffset = 5.5 * 60 * 60 * 1000;
-
-        const inputUTC = new Date(data.todayTime); // already in UTC
+        const inputUTC = new Date(data.todayTime);
         const nowUTC = new Date();
 
-        // Convert input and current UTC time to IST for date comparison
-        const inputIST = new Date(inputUTC.getTime() + istOffset);
         const nowIST = new Date(nowUTC.getTime() + istOffset);
 
-        // Get start and end of the IST day based on input date
-        const istDayStart = new Date(inputIST);
-        istDayStart.setHours(0, 0, 0, 0);
+        const istDayStart = new Date(inputUTC);
 
         const istDayEnd = new Date(istDayStart);
-        istDayEnd.setHours(23, 59, 59, 999);
-
-        // Convert back to UTC
-        const utcDayStart = new Date(istDayStart.getTime() - istOffset);
-        const utcDayEnd = new Date(istDayEnd.getTime() - istOffset);
-
-        // Check if the selected day is "today" in IST
+        istDayEnd.setHours(18, 29, 59, 999);
+        const utcDayEnd = new Date(istDayEnd.getTime() + istOffset);
         const isTodayIST = istDayStart.toDateString() === nowIST.toDateString();
 
-        // Final UTC range
         let startUTC, endUTC;
 
         if (isTodayIST) {
-            startUTC = nowUTC;       // current moment in UTC
-            endUTC = utcDayEnd;      // end of today in UTC
+            startUTC = nowUTC;
+            endUTC = utcDayEnd;
         } else {
-            startUTC = utcDayStart;  // full day in UTC
+            startUTC = inputUTC;
             endUTC = utcDayEnd;
         }
-
-        console.log("Start UTC:", startUTC.toISOString());
-        console.log("End UTC:", endUTC.toISOString());
-
 
         const getdata = await Show.find({
             movieId: data.movieId,
@@ -131,21 +91,25 @@ const getAllCinemaByFilter = async (req, res, next) => {
         let current = new Date(startDate);
 
         while (current <= endDate) {
-            const dateStr = current.toISOString().split("T")[0];
-            const weekday = current.toLocaleDateString("en-GB", { weekday: "short" }).toUpperCase();
-            const day = current.getDate().toString().padStart(2, "0");
-            const month = current.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
+            const utcDateStr = current.toISOString().split("T")[0];
+            const previousDay = new Date(current.getTime());
+            previousDay.setUTCDate(previousDay.getUTCDate() - 1);
+            previousDay.setUTCHours(18, 30, 0, 0);
+            const formatDay = new Date(current.getTime());
+            const weekday = formatDay.toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" }).toUpperCase();
+            const day = formatDay.getUTCDate().toString().padStart(2, "0");
+            const month = formatDay.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC", }).toUpperCase();
             const formattedDate = `${weekday} ${day} ${month}`;
 
             allDates.push({
-                formattedDate: formattedDate,
-                rawDate: new Date(current),
-                weekday: weekday,
-                day: day,
-                month: month,
-                hasShow: existingDateStrings.includes(dateStr)
+                formattedDate,
+                rawDate: new Date(previousDay),
+                weekday,
+                day,
+                month,
+                hasShow: existingDateStrings.includes(utcDateStr),
             });
-            current.setDate(current.getDate() + 1);
+            current.setUTCDate(current.getUTCDate() + 1);
         }
 
         const getCinemaId = getdata.map((item) => item.cinemaId);
@@ -172,7 +136,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
                 hour: "numeric",
                 minute: "2-digit",
                 hour12: true,
-                timeZone: "UTC",
+                timeZone: "Asia/Kolkata",
             });
 
             const formattedTimeFull = showDate.toLocaleTimeString("en-US", {
@@ -183,7 +147,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
                 hour: "numeric",
                 minute: "2-digit",
                 hour12: true,
-                timeZone: "UTC",
+                timeZone: "Asia/Kolkata",
             });
 
             cinemaShowMap.get(cinemaId).push({
@@ -505,33 +469,31 @@ const getMoviesInCinema = async (req, res, next) => {
         });
 
         if (CinemaResponse.length === 0) {
-            return res
-                .status(404)
-                .json({ success: false, message: "Cinema not found" });
+            return res.status(404).json({ success: false, message: "Cinema not found" });
         }
 
-        const selectedDate = new Date(todayTime);
         const istOffset = 5.5 * 60 * 60 * 1000;
+        const inputUTC = new Date(todayTime);
         const nowUTC = new Date();
-        const nowIST = new Date(nowUTC.getTime() + istOffset);
-        const selectedISTStart = new Date(selectedDate);
-        selectedISTStart.setHours(0, 0, 0, 0);
-        const selectedISTEnd = new Date(selectedISTStart);
-        selectedISTEnd.setHours(23, 59, 59, 999);
 
-        const isTodayIST =
-            selectedISTStart.toDateString() === nowIST.toDateString();
+        const nowIST = new Date(nowUTC.getTime() + istOffset);
+
+        const istDayStart = new Date(inputUTC);
+
+        const istDayEnd = new Date(istDayStart);
+        istDayEnd.setHours(18, 29, 59, 999);
+        const utcDayEnd = new Date(istDayEnd.getTime() + istOffset);
+        const isTodayIST = istDayStart.toDateString() === nowIST.toDateString();
 
         let startUTC, endUTC;
 
         if (isTodayIST) {
             startUTC = nowUTC;
-            endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+            endUTC = utcDayEnd;
         } else {
-            startUTC = new Date(selectedISTStart.getTime() - istOffset);
-            endUTC = new Date(selectedISTEnd.getTime() - istOffset);
+            startUTC = inputUTC;
+            endUTC = utcDayEnd;
         }
-
         const getdata = await Show.find({
             cinemaId: cinemaId,
             showStartTime: {
@@ -561,22 +523,27 @@ const getMoviesInCinema = async (req, res, next) => {
         const allDates = [];
         let current = new Date(startDate);
 
+
         while (current <= endDate) {
-            const dateStr = current.toISOString().split("T")[0];
-            const weekday = current.toLocaleDateString("en-GB", { weekday: "short" }).toUpperCase();
-            const day = current.getDate().toString().padStart(2, "0");
-            const month = current.toLocaleDateString("en-GB", { month: "short" }).toUpperCase();
+            const utcDateStr = current.toISOString().split("T")[0];
+            const previousDay = new Date(current.getTime());
+            previousDay.setUTCDate(previousDay.getUTCDate() - 1);
+            previousDay.setUTCHours(18, 30, 0, 0);
+            const formatDay = new Date(current.getTime());
+            const weekday = formatDay.toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" }).toUpperCase();
+            const day = formatDay.getUTCDate().toString().padStart(2, "0");
+            const month = formatDay.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC", }).toUpperCase();
             const formattedDate = `${weekday} ${day} ${month}`;
 
             allDates.push({
-                formattedDate: formattedDate,
-                rawDate: new Date(current),
-                weekday: weekday,
-                day: day,
-                month: month,
-                hasShow: existingDateStrings.includes(dateStr)
+                formattedDate,
+                rawDate: new Date(previousDay),
+                weekday,
+                day,
+                month,
+                hasShow: existingDateStrings.includes(utcDateStr),
             });
-            current.setDate(current.getDate() + 1);
+            current.setUTCDate(current.getUTCDate() + 1);
         }
 
         const movieShowMap = new Map();
@@ -595,8 +562,9 @@ const getMoviesInCinema = async (req, res, next) => {
                 hour: "numeric",
                 minute: "2-digit",
                 hour12: true,
-                timeZone: "UTC",
+                timeZone: "Asia/Kolkata", // IST
             });
+
             const formattedTimeFull = showDate.toLocaleTimeString("en-US", {
                 weekday: "short",
                 month: "short",
@@ -605,7 +573,7 @@ const getMoviesInCinema = async (req, res, next) => {
                 hour: "numeric",
                 minute: "2-digit",
                 hour12: true,
-                timeZone: "UTC",
+                timeZone: "Asia/Kolkata",
             });
 
             movieShowMap.get(movieId).shows.push({

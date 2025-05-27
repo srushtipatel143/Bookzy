@@ -135,7 +135,7 @@ const Cinemascreen = () => {
                                         }
 
                                         const cityData = JSON.parse(selectedCity);
-                                        const todayTime = new Date();
+                                        const todayTime = new Date(item.rawDate);
                                         const bodydata = {
                                             cityId: cityData?.id,
                                             movieId: getSelectMovieData?.movieId,
