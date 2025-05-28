@@ -3,12 +3,13 @@
 import { useRouter } from 'next/navigation';
 import { RiArrowLeftWideFill } from "react-icons/ri";
 import { RxCross2 } from "react-icons/rx";
-import "../css/seat.css";
+import "../../css/seat.css";
 import { useEffect, useState } from 'react';
-import { API_USER_URL } from "../utils/config";
+import { API_USER_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import Cookies from 'js-cookie';
 import axios from 'axios';
+import SeatNomodal from './noOfSeat';
 
 interface showDetails {
     cinemaLandmark: string,
@@ -85,6 +86,7 @@ const Seatscreen = () => {
 
     return (
         <div className="container-fluid p-0" style={{ minHeight: "100vh" }}>
+            <SeatNomodal />
             <div className="d-flex seat_top align-items-center justify-content-between px-3 pb-2">
                 <div className="d-flex justify-content-center align-items-center">
                     <div style={{ cursor: "pointer" }} onClick={() => router.back()}> <RiArrowLeftWideFill size={40} /></div>
@@ -127,6 +129,7 @@ const Seatscreen = () => {
                 </div>
             </div>
             <ToastContainer />
+
         </div>
     );
 };
