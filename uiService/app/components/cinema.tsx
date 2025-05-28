@@ -77,11 +77,16 @@ const Cinemascreen = () => {
                 const getCinemaRes = await axios.get(`${API_USER_URL}/getallcinemabyfilter`, {
                     params: bodydata
                 });
+
                 const cinemaDetails = getCinemaRes?.data?.data?.showData;
+
                 setcinema(cinemaDetails);
                 const datesData = getCinemaRes?.data?.data?.allDates;
                 setAllDates(datesData);
-                setSelectDate(getCinemaRes?.data?.data?.allDates[0].formattedDate);
+                if (cinemaDetails !== undefined && cinemaDetails.length > 0) {
+                    setSelectDate(getCinemaRes?.data?.data?.allDates[0].formattedDate);
+                }
+
             } catch (error: any) {
                 toast.error(error?.response?.data?.message)
             }
@@ -135,7 +140,14 @@ const Cinemascreen = () => {
                                         }
 
                                         const cityData = JSON.parse(selectedCity);
-                                        const todayTime = new Date(item.rawDate);
+                                        let todayTime;
+                                        if (index === 0) {
+                                            todayTime = new Date();
+                                        }
+                                        else {
+                                            todayTime = new Date(item.rawDate);
+                                        }
+
                                         const bodydata = {
                                             cityId: cityData?.id,
                                             movieId: getSelectMovieData?.movieId,

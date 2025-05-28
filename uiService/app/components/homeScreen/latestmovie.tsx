@@ -5,7 +5,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import { FaStar } from "react-icons/fa";
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import Cookies from "js-cookie";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
@@ -18,8 +18,11 @@ const LatestMovieScreen = () => {
 
   const router = useRouter();
   const dispatch = useDispatch();
+  const fetched = useRef(false);
   const [latestMovies, setLatestMoviesdata] = useState<LatestMovie[]>([]);
   useEffect(() => {
+    if (fetched.current) return;
+    fetched.current = true;
     const fetchDetails = async () => {
       try {
         const selectedCity = Cookies.get("selected_city");

@@ -63,13 +63,15 @@ const Showlist = () => {
                     }
                 });
                 setshowData(response?.data?.data);
-                setSelectDate(response?.data?.data?.allDates[0].formattedDate)
+                if (response?.data?.data?.movieData.length > 0) {
+                    setSelectDate(response?.data?.data?.allDates[0].formattedDate)
+                }
                 if (selectedCityVal) {
                     const city = selectedCityVal ? JSON.parse(selectedCityVal) : null;
                     setSelectedCity(city.city)
                 }
             } catch (error: any) {
-                toast.error(error.response.data.message);
+                toast.error(error?.response?.data?.message);
             }
         }
         fetchDetail();
@@ -134,7 +136,13 @@ const Showlist = () => {
                                     if (item.hasShow) {
                                         setSelectDate(item.formattedDate)
                                         const cinemaId = localStorage.getItem("selected-cinema");
-                                        const todayTime = new Date(item.rawDate);
+                                        let todayTime;
+                                        if (index === 0) {
+                                            todayTime = new Date();
+                                        }
+                                        else {
+                                            todayTime = new Date(item.rawDate);
+                                        }
                                         const response = await axios.get(`${API_USER_URL}/getmoviesincinema`, {
                                             params: {
                                                 cinemaId,
