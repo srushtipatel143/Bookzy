@@ -32,8 +32,8 @@ interface selectSeat {
     rowName: string,
     seatName: string,
     price: number;
-    rowType:string;
-    screenName:string;
+    rowType: string;
+    screenName: string;
 }
 
 interface PaymentModalProps {
@@ -45,18 +45,30 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
     const [selectShow, setSelectshow] = useState<showDetails | undefined>(undefined);
     const router = useRouter();
 
-    const groupedByRowType = Object.values(
-        selectSeats.reduce((acc:any, seat) => {
-            if (!acc[seat.rowType]) {
-                acc[seat.rowType] = {
-                    rowType: seat.rowType,
-                    seats: []
-                };
-            }
-            acc[seat.rowType].seats.push(seat);
-            return acc;
-        }, {})
-    );
+    const rowTypeMap = new Map();
+
+    selectSeats.forEach(({rowType, seatName, price }) => {
+        if (!rowTypeMap.has(rowType)) {
+            rowTypeMap.set(rowType, {
+                rowType,
+                seats: []
+            });
+        }
+
+        rowTypeMap.get(rowType).seats.push({ seatName, price });
+    });
+
+    const grouped = {
+        cinemaId: selectSeats[0]?.cinemaId,
+        movieId: selectSeats[0]?.movieId,
+        screenId: selectSeats[0]?.screenId,
+        screenName: selectSeats[0]?.screenName,
+        showId: selectSeats[0]?.showId,
+        ticket: Array.from(rowTypeMap.values())
+    };
+
+
+    console.log(grouped)
 
     useEffect(() => {
         const fetchDetails = async () => {
