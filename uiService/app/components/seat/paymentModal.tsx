@@ -24,10 +24,39 @@ interface showDetails {
     }[];
 }
 
-const Paymentmodal = () => {
+interface selectSeat {
+    cinemaId: number,
+    movieId: string,
+    screenId: number,
+    showId: string,
+    rowName: string,
+    seatName: string,
+    price: number;
+    rowType:string;
+    screenName:string;
+}
+
+interface PaymentModalProps {
+    selectSeats: selectSeat[];
+}
+
+const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
 
     const [selectShow, setSelectshow] = useState<showDetails | undefined>(undefined);
     const router = useRouter();
+
+    const groupedByRowType = Object.values(
+        selectSeats.reduce((acc:any, seat) => {
+            if (!acc[seat.rowType]) {
+                acc[seat.rowType] = {
+                    rowType: seat.rowType,
+                    seats: []
+                };
+            }
+            acc[seat.rowType].seats.push(seat);
+            return acc;
+        }, {})
+    );
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -52,11 +81,12 @@ const Paymentmodal = () => {
     }, []);
 
     return (
-        <div className="container-fluid p-0 position-relative" style={{ minHeight: "100vh" }}>
-
+        <div className="container-fluid p-0 d-flex flex-column" style={{ minHeight: "100vh" }}>
             <div className="d-flex seat_top align-items-center justify-content-between px-3 pb-2">
                 <div className="d-flex justify-content-center align-items-center">
-                    <div style={{ cursor: "pointer" }} onClick={() => router.back()}> <RiArrowLeftWideFill size={40} /></div>
+                    <div style={{ cursor: "pointer" }} onClick={() => router.back()}>
+                        <RiArrowLeftWideFill size={40} />
+                    </div>
                     <div>
                         <span className="fs-5 fw-bold">{selectShow?.movieName}</span>
                         <br />
@@ -68,7 +98,13 @@ const Paymentmodal = () => {
                 </div>
             </div>
 
+            <div className="payment_summary">
+                <div className='payment_sec'>
+                    <div className='payment_sec_heading'>BOOKING SUMMARY</div>
+                </div>
+            </div>
         </div>
+
     )
 }
 

@@ -37,6 +37,8 @@ interface selectSeat {
     rowName: string,
     seatName: string,
     price: number;
+    rowType:string;
+    screenName:string;
 }
 
 interface showTimeChart {
@@ -167,9 +169,11 @@ const Seatscreen = () => {
                                                                     movieId: selectShow?.movieId!,
                                                                     screenId: selectShow?.screenId!,
                                                                     showId: selectShowChart?.selectshow!,
+                                                                    screenName:selectShow?.screenName!,
                                                                     rowName: row.rowName,
                                                                     seatName: seatName,
-                                                                    price: section.price
+                                                                    price: section.price,
+                                                                    rowType:section.rowType
                                                                 };
 
                                                                 setSelectSeats(prev => {
@@ -202,7 +206,7 @@ const Seatscreen = () => {
                     </div>
                 </div>
             ):(
-                <Paymentmodal/>
+                <Paymentmodal selectSeats={selectSeats}/>
             )}
 
             <ToastContainer />

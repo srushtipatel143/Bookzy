@@ -137,3 +137,23 @@
   position: absolute;
   bottom: 0%;
 }
+
+.payment_summary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+}
+
+.payment_sec {
+  width: 50%;
+  background-color: var(--secondary-sub-color);
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.payment_sec_heading {
+  color: var(--primary-main-color);
+  letter-spacing:3px;
+  font-size: 20px;
+}
