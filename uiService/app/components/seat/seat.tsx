@@ -20,6 +20,7 @@ interface showDetails {
     screenId: number;
     formattedTimeFull: string;
     movieName: String;
+    screenName:string;
     city: string;
     _id: string;
     priceInfoForShow: {
