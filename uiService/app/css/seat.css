@@ -143,17 +143,50 @@
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  background-color: rgb(243, 243, 243)
 }
 
 .payment_sec {
   width: 50%;
-  background-color: var(--secondary-sub-color);
-  padding: 20px;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+.payment_box_Color {
+  background-color: var(--secondary-sub-color);
 }
 
 .payment_sec_heading {
   color: var(--primary-main-color);
-  letter-spacing:3px;
+  letter-spacing: 3px;
   font-size: 20px;
+}
+
+.booking_details_text {
+  font-size: 14px;
+}
+
+.booking_screen {
+  font-size: 14px;
+  color: grey;
+}
+
+.hrLine3 {
+  box-shadow: 0 3px 3px -2px lightgrey;
+  height: 0.1px;
+  background-color: lightgray;
+}
+
+.amount_total_text {
+  font-size: 20px;
+  background-color: #fffcdc;
+}
+
+.amount_total_text_pay {
+  font-size: 20px;
+  background-color: var(--primary-main-color);
+  opacity: 0.9;
+  color: var(--secondary-sub-color);
+  border-radius: 10px;
 }

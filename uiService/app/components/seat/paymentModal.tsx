@@ -47,7 +47,7 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
 
     const rowTypeMap = new Map();
 
-    selectSeats.forEach(({rowType, seatName, price }) => {
+    selectSeats.forEach(({ rowType, seatName, price }) => {
         if (!rowTypeMap.has(rowType)) {
             rowTypeMap.set(rowType, {
                 rowType,
@@ -67,8 +67,7 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
         ticket: Array.from(rowTypeMap.values())
     };
 
-
-    console.log(grouped)
+    const amount = selectSeats.reduce((acc: number, v: any) => acc + (v.price || 0), 0) + selectSeats.length * 20;
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -112,11 +111,65 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
 
             <div className="payment_summary">
                 <div className='payment_sec'>
-                    <div className='payment_sec_heading'>BOOKING SUMMARY</div>
+                    <div className='payment_box_Color'>
+                        <div className='p-4'>
+                            <div className='payment_sec_heading'>BOOKING SUMMARY</div>
+                            <div className='booking_details_text mt-4'>
+                                {grouped.ticket.map((item, index) => (
+                                    <div key={index} className='d-flex justify-content-between'>
+                                        <div>
+                                            {item.rowType} -{" "}
+                                            {item.seats.map((v: any, i: number) => (
+                                                <span key={v.seatName}>{v.seatName}{i < item.seats.length - 1 ? ", " : ""}</span>
+                                            ))}{" "}
+                                            ( {item.seats.length} {item.seats.length > 1 ? "Tickets" : "Ticket"} )
+                                        </div>
+                                        <div>
+                                            Rs. {item.seats.reduce((acc: number, v: any) => acc + (v.price || 0), 0)}.00
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            <div className='booking_screen mt-1'>{grouped.screenName}</div>
+                            <div className='booking_details_text mt-4'>
+                                <div className='d-flex justify-content-between'>
+                                    <div>
+                                        Convenience fees
+                                    </div>
+                                    <div>
+                                        Rs. {selectSeats.length * 20}.00
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="hrLine3 mt-2"></div>
+                            <div className='booking_details_text mt-2'>
+                                <div className='d-flex justify-content-between'>
+                                    <div>
+                                        Sub total
+                                    </div>
+                                    <div>
+                                        Rs. {amount}.00
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='mt-4 amount_total_text'>
+                            <div className='p-3 d-flex justify-content-between' >
+                                <div>Amount Payable </div>
+                                <div>Rs. {amount}.00</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='mt-4 amount_total_text_pay'>
+                        <div className='py-2 px-4 d-flex justify-content-between' >
+                            <div>Total: Rs. {amount}.00</div>
+                            <div>Proceed</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     )
 }
 
