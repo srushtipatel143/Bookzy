@@ -4,6 +4,7 @@ const {getAllCity,getAllCinemaByCity,getSingleMovie,getShow,getMovieforcinema,ge
 const {addRating,getSingleMovieRatings}=require("../controllers/user/userRating");
 const {getAccessToUserRoute}=require("../middlewares/authorization/authUser");
 const {searchCity,searchMovieCinema}=require("../controllers/user/searching");
+const {CreateOrder,verifyOrder} =require("../controllers/user/payment");
 
 router.get("/getallcity",getAllCity);
 router.get("/getallcinemabycity/:id",getAllCinemaByCity);
@@ -20,6 +21,10 @@ router.post("/addrating",getAccessToUserRoute,addRating);
 router.get("/getsinglemovieratings/:id",getSingleMovieRatings)
 
 router.get("/searchcity/:val",searchCity);
-router.get("/searchmoviecinema/:val",searchMovieCinema)
+router.get("/searchmoviecinema/:val",searchMovieCinema);
+
+router.post("/createorder",CreateOrder);
+router.post("/verify",verifyOrder)
+
 
 module.exports=router;

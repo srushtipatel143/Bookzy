@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { RiArrowLeftWideFill } from "react-icons/ri";
 import { RxCross2 } from "react-icons/rx";
-
+import axios from 'axios';
+import { API_USER_URL } from "../../utils/config";
 
 interface showDetails {
     cinemaLandmark: string,
@@ -40,6 +41,12 @@ interface PaymentModalProps {
     selectSeats: selectSeat[];
 }
 
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
 
     const [selectShow, setSelectshow] = useState<showDetails | undefined>(undefined);
@@ -67,7 +74,7 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
         ticket: Array.from(rowTypeMap.values())
     };
 
-    const amount = selectSeats.reduce((acc: number, v: any) => acc + (v.price || 0), 0) + selectSeats.length * 20;
+    const amount = selectSeats.reduce((acc: number, v: any) => acc + (v.price || 0), 0) + selectSeats.length * 1;
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -90,6 +97,68 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
         }
         fetchDetails();
     }, []);
+
+    const loadRazorpayScript = () => {
+        return new Promise((resolve) => {
+            const script = document.createElement("script");
+            script.src = "https://checkout.razorpay.com/v1/checkout.js";
+            script.onload = () => {
+                resolve(true);
+            };
+            script.onerror = () => {
+                resolve(false);
+            };
+            document.body.appendChild(script);
+        });
+    };
+
+    const createOrder = async (val: any) => {
+        try {
+            const res = await loadRazorpayScript();
+
+            if (!res) {
+                alert("Razorpay SDK failed to load.");
+                return;
+            }
+            const result = await axios.post(`${API_USER_URL}/createorder`, val);
+
+            const data = result.data;
+            if (!data.success) {
+                toast.error("Failed to create order");
+                return;
+            }
+            const { order } = data;
+
+            const options = {
+                key: "rzp_test_OU26TltQvSs7Qi",
+                amount: order.amount,
+                currency: "INR",
+                name: "Bookzy",
+                description: "Test Transaction",
+                order_id: order.id,
+                handler: async function (response:any) {
+                    const verifyRes = await axios.post(`${API_USER_URL}/verify`,response);
+
+                    const verifyData = verifyRes.data;
+                    alert(verifyData.message);
+                },
+                prefill: {
+                    name: "Srushti Patel",
+                    email: "srushtip579@gmail.com",
+                    contact: "8200218798",
+                },
+                theme: {
+                    color: "#d71921",
+                },
+            };
+
+            const rzp = new window.Razorpay(options);
+            rzp.open();
+
+        } catch (error: any) {
+            toast.error(error.response.data.message)
+        }
+    }
 
     return (
         <div className="container-fluid p-0 d-flex flex-column" style={{ minHeight: "100vh" }}>
@@ -161,14 +230,13 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
                         </div>
                     </div>
                     <div className='mt-4 amount_total_text_pay'>
-                        <div className='py-2 px-4 d-flex justify-content-between' >
+                        <div className='py-2 px-4 d-flex justify-content-between' onClick={() => createOrder({ amount: amount })} >
                             <div>Total: Rs. {amount}.00</div>
                             <div>Proceed</div>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
     )
 }
