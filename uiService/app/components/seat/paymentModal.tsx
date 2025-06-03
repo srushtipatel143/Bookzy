@@ -25,7 +25,11 @@ interface showDetails {
     }[];
 }
 
-interface selectSeat {
+interface selectSeatData {
+    userId: string;
+    firstName: string;
+    email: string;
+    mobile: number;
     cinemaId: number,
     movieId: string,
     screenId: number,
@@ -35,46 +39,33 @@ interface selectSeat {
     price: number;
     rowType: string;
     screenName: string;
+    amount: number,
+    convenienceFee: number,
+    totalAmount: number,
+    ticket: {
+        rowType: string;
+        seats: {
+            seatName: string;
+            price: number;
+            rowName: string;
+
+        }[];
+    }[];
 }
 
-interface PaymentModalProps {
-    selectSeats: selectSeat[];
+interface PaymentmodalProps {
+    selectSeatData: selectSeatData | undefined;
 }
 
 declare global {
-  interface Window {
-    Razorpay: any;
-  }
+    interface Window {
+        Razorpay: any;
+    }
 }
-
-const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
+const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
 
     const [selectShow, setSelectshow] = useState<showDetails | undefined>(undefined);
     const router = useRouter();
-
-    const rowTypeMap = new Map();
-
-    selectSeats.forEach(({ rowType, seatName, price }) => {
-        if (!rowTypeMap.has(rowType)) {
-            rowTypeMap.set(rowType, {
-                rowType,
-                seats: []
-            });
-        }
-
-        rowTypeMap.get(rowType).seats.push({ seatName, price });
-    });
-
-    const grouped = {
-        cinemaId: selectSeats[0]?.cinemaId,
-        movieId: selectSeats[0]?.movieId,
-        screenId: selectSeats[0]?.screenId,
-        screenName: selectSeats[0]?.screenName,
-        showId: selectSeats[0]?.showId,
-        ticket: Array.from(rowTypeMap.values())
-    };
-
-    const amount = selectSeats.reduce((acc: number, v: any) => acc + (v.price || 0), 0) + selectSeats.length * 1;
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -115,7 +106,6 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
     const createOrder = async (val: any) => {
         try {
             const res = await loadRazorpayScript();
-
             if (!res) {
                 alert("Razorpay SDK failed to load.");
                 return;
@@ -130,22 +120,34 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
             const { order } = data;
 
             const options = {
-                key: "rzp_test_OU26TltQvSs7Qi",
+                key: "rzp_test_kkZRAllbTtEquJ",
                 amount: order.amount,
                 currency: "INR",
                 name: "Bookzy",
                 description: "Test Transaction",
                 order_id: order.id,
-                handler: async function (response:any) {
-                    const verifyRes = await axios.post(`${API_USER_URL}/verify`,response);
+                handler: async function (response: any) {
+                    const verifyRes = await axios.post(`${API_USER_URL}/verify`, response);
 
                     const verifyData = verifyRes.data;
-                    alert(verifyData.message);
+                    if(verifyData.success){
+                        const bookingData={
+                            ...selectSeatData,
+                            order_id:verifyData.data.order_id,
+                            payment_id:verifyData.data.payment_id,
+                            method:verifyData.data.method,
+                            currency:verifyData.data.currency
+                        }
+                        const bookingDataApi=await axios.post(`${API_USER_URL}/bookingdata`,bookingData);
+                        if(bookingDataApi.data.success){
+                            router.push("/")
+                        }
+                    }
                 },
                 prefill: {
-                    name: "Srushti Patel",
-                    email: "srushtip579@gmail.com",
-                    contact: "8200218798",
+                    name: selectSeatData?.firstName || 'Unknown',
+                    email: selectSeatData?.email,
+                    contact: selectSeatData?.mobile,
                 },
                 theme: {
                     color: "#d71921",
@@ -184,7 +186,7 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
                         <div className='p-4'>
                             <div className='payment_sec_heading'>BOOKING SUMMARY</div>
                             <div className='booking_details_text mt-4'>
-                                {grouped.ticket.map((item, index) => (
+                                {selectSeatData?.ticket.map((item, index) => (
                                     <div key={index} className='d-flex justify-content-between'>
                                         <div>
                                             {item.rowType} -{" "}
@@ -193,45 +195,35 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
                                             ))}{" "}
                                             ( {item.seats.length} {item.seats.length > 1 ? "Tickets" : "Ticket"} )
                                         </div>
-                                        <div>
-                                            Rs. {item.seats.reduce((acc: number, v: any) => acc + (v.price || 0), 0)}.00
-                                        </div>
+                                        <div>Rs. {item.seats.reduce((acc: number, v: any) => acc + (v.price || 0), 0)}</div>
                                     </div>
                                 ))}
                             </div>
-                            <div className='booking_screen mt-1'>{grouped.screenName}</div>
+                            <div className='booking_screen mt-1'>{selectSeatData?.screenName}</div>
                             <div className='booking_details_text mt-4'>
                                 <div className='d-flex justify-content-between'>
-                                    <div>
-                                        Convenience fees
-                                    </div>
-                                    <div>
-                                        Rs. {selectSeats.length * 20}.00
-                                    </div>
+                                    <div>Convenience fees</div>
+                                    <div>Rs. {selectSeatData?.convenienceFee}</div>
                                 </div>
                             </div>
                             <div className="hrLine3 mt-2"></div>
                             <div className='booking_details_text mt-2'>
                                 <div className='d-flex justify-content-between'>
-                                    <div>
-                                        Sub total
-                                    </div>
-                                    <div>
-                                        Rs. {amount}.00
-                                    </div>
+                                    <div> Sub total </div>
+                                    <div>Rs. {selectSeatData?.totalAmount}</div>
                                 </div>
                             </div>
                         </div>
                         <div className='mt-4 amount_total_text'>
                             <div className='p-3 d-flex justify-content-between' >
                                 <div>Amount Payable </div>
-                                <div>Rs. {amount}.00</div>
+                                <div>Rs. {selectSeatData?.totalAmount}</div>
                             </div>
                         </div>
                     </div>
-                    <div className='mt-4 amount_total_text_pay'>
-                        <div className='py-2 px-4 d-flex justify-content-between' onClick={() => createOrder({ amount: amount })} >
-                            <div>Total: Rs. {amount}.00</div>
+                    <div className='mt-4 amount_total_text_pay '>
+                        <div className='py-2 px-4 d-flex justify-content-between' onClick={() => createOrder({ amount: selectSeatData?.totalAmount })} >
+                            <div>Total: Rs. {selectSeatData?.totalAmount}</div>
                             <div>Proceed</div>
                         </div>
                     </div>

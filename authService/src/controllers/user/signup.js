@@ -142,4 +142,35 @@ const logout = async (req, res) => {
     }
 }
 
-module.exports = { resendOtp, validateOtp, signIn, editProfile, getUserDetail, logout };
+const adduserduringpayment = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const mobile = Number(data.mobile)
+
+        let resVal, userId;
+        const userData = await User.findOne({ email: data.email });
+
+        if (userData) {
+            resVal = await User.updateOne({ _id: data._id }, { $set: { mobile: mobile } });
+            userId = userData._id;
+        } else {
+            const newUser = new User({ email: data.email, mobile: mobile });
+            resVal = await newUser.save();
+            userId = resVal._id;
+        }
+
+        return res.status(200).json({
+            statusCode: 200,
+            success: true,
+            data: { 
+                userId: userId,
+                email:data.email,
+                mobile: mobile
+             },
+        });
+    } catch (error) {
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+}
+
+module.exports = { resendOtp, validateOtp, signIn, editProfile, getUserDetail, logout, adduserduringpayment };

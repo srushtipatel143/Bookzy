@@ -5,12 +5,14 @@ import { RiArrowLeftWideFill } from "react-icons/ri";
 import { RxCross2 } from "react-icons/rx";
 import "../../css/seat.css";
 import { useEffect, useState } from 'react';
-import { API_USER_URL } from "../../utils/config";
+import { API_USER_URL, API_AUTH_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import SeatNomodal from './noOfSeat';
 import Paymentmodal from './paymentModal';
+import { Modal } from 'react-bootstrap';
+import Image from 'next/image';
 
 interface showDetails {
     cinemaLandmark: string,
@@ -20,7 +22,7 @@ interface showDetails {
     screenId: number;
     formattedTimeFull: string;
     movieName: String;
-    screenName:string;
+    screenName: string;
     city: string;
     _id: string;
     priceInfoForShow: {
@@ -38,8 +40,8 @@ interface selectSeat {
     rowName: string,
     seatName: string,
     price: number;
-    rowType:string;
-    screenName:string;
+    rowType: string;
+    screenName: string;
 }
 
 interface showTimeChart {
@@ -70,6 +72,41 @@ interface SeatLayout {
     }[];
 }
 
+interface userdata {
+    email: string;
+    mobile: string;
+}
+
+interface selectSeatData {
+    userId: string;
+    firstName: string;
+    email: string;
+    mobile: number;
+    cinemaId: number,
+    movieId: string,
+    screenId: number,
+    showId: string,
+    rowName: string,
+    seatName: string,
+    price: number;
+    rowType: string;
+    screenName: string;
+    amount: number,
+    convenienceFee: number,
+    totalAmount: number,
+    ticket: {
+        rowType: string;
+        seats: {
+            seatName: string;
+            price: number;
+            rowName: string;
+
+        }[];
+    }[];
+}
+
+
+
 const Seatscreen = () => {
     const router = useRouter();
     const [selectShowChart, setSelectshowChart] = useState<showTimeChart | undefined>(undefined);
@@ -79,6 +116,9 @@ const Seatscreen = () => {
     const [selectNoOfSeatModal, setSelectNoOfSeatModal] = useState<boolean | false>(false);
     const [showPayment, setShowPayment] = useState<boolean | false>(false);
     const [selectSeats, setSelectSeats] = useState<selectSeat[]>([]);
+    const [userDetailConfirmModal, setUserDetailConfirmModal] = useState<boolean | false>(false);
+    const [dataValue, setDataValue] = useState<userdata | undefined>(undefined);
+    const [selectSeatData, setSelectSeatData] = useState<selectSeatData | undefined>(undefined);
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -107,8 +147,62 @@ const Seatscreen = () => {
         fetchDetails();
     }, []);
 
+    const handlechange = (e: any) => {
+        const { name, value } = e.target;
+        setDataValue((prev: any) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
     const payBtnFunction = async () => {
         try {
+            const user = Cookies.get("logged_user");
+            if (user) {
+                const response = await axios.get(`${API_AUTH_URL}/getuser`, {
+                    withCredentials: true
+                });
+                const isUserHaveEmailPhone = response?.data?.data;
+                setDataValue(isUserHaveEmailPhone)
+                if (isUserHaveEmailPhone.email === undefined || isUserHaveEmailPhone.mobile === undefined) {
+                    setUserDetailConfirmModal(true)
+                }
+                else {
+                    const data = {
+                        userId: response?.data?.data?._id,
+                        email: response?.data?.data?.email,
+                        mobile: response?.data?.data?.mobile,
+                        firstName: response?.data?.data?.response?.data?.data?._id,
+                        selectSeats: selectSeats
+                    }
+                    const selectSeatPay = await axios.post(`${API_USER_URL}/selectSeat`, data);
+                    setSelectSeatData(selectSeatPay?.data?.data);
+                    setUserDetailConfirmModal(false)
+                    setShowPayment(true);
+                }
+            } else {
+                setUserDetailConfirmModal(true)
+            }
+
+        } catch (error: any) {
+            toast.error(error.response.data.message)
+        }
+    }
+
+    const submitFunctionCall = async () => {
+        try {
+
+            const userData = await axios.post(`${API_AUTH_URL}/adduserduringpayment`, dataValue);
+
+            const data = {
+                userId: userData?.data?.data?.userId,
+                email: userData?.data?.data?.email,
+                mobile: userData?.data?.data?.mobile,
+                selectSeats: selectSeats
+            }
+            const selectSeatPay = await axios.post(`${API_USER_URL}/selectSeat`, data);
+            setSelectSeatData(selectSeatPay?.data?.data)
+            setUserDetailConfirmModal(false)
             setShowPayment(true)
         } catch (error: any) {
             toast.error(error.response.data.message)
@@ -170,11 +264,11 @@ const Seatscreen = () => {
                                                                     movieId: selectShow?.movieId!,
                                                                     screenId: selectShow?.screenId!,
                                                                     showId: selectShowChart?.selectshow!,
-                                                                    screenName:selectShow?.screenName!,
+                                                                    screenName: selectShow?.screenName!,
                                                                     rowName: row.rowName,
                                                                     seatName: seatName,
                                                                     price: section.price,
-                                                                    rowType:section.rowType
+                                                                    rowType: section.rowType
                                                                 };
 
                                                                 setSelectSeats(prev => {
@@ -206,9 +300,32 @@ const Seatscreen = () => {
                         )}
                     </div>
                 </div>
-            ):(
-                <Paymentmodal selectSeats={selectSeats}/>
+            ) : (
+                <Paymentmodal selectSeatData={selectSeatData} />
             )}
+
+            <Modal show={userDetailConfirmModal} onHide={() => setUserDetailConfirmModal(false)} centered contentClassName="custom_modal">
+                <Modal.Header className="border-0" closeButton >
+                </Modal.Header>
+                <Modal.Body>
+                    <div className="card p-4 form_styling">
+                        <div className='d-flex justify-content-center'>
+                            <Image src="/booking_logo.png" alt="web_logo" width={75} height={75} className="mb-3" />
+                        </div>
+                        <div className="my-3">
+                            <label className='mb-1'>Enter your email</label>
+                            <input type="email" name='email' onChange={handlechange} value={dataValue?.email || ''} className="form-control" placeholder="Enter email address" />
+                        </div>
+                        <div className="my-3">
+                            <label className='mb-1'>Phone number</label>
+                            <input type="text" name='mobile' onChange={handlechange} value={dataValue?.mobile || ''} className="form-control" placeholder="Enter phone number" />
+                        </div>
+                        <div className="mt-5">
+                            <button className="button-primary w-100" onClick={submitFunctionCall}>Submit</button>
+                        </div>
+                    </div>
+                </Modal.Body>
+            </Modal>
 
             <ToastContainer />
         </div>
