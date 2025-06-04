@@ -74,7 +74,7 @@ const selectSeatBeforePayment = async (req, res, next) => {
         });
 
         const amount = selectSeats.reduce((acc, v) => acc + (v.price || 0), 0);
-        const convenienceFee = +(amount * 0.18).toFixed(2); // 18% GST
+        const convenienceFee = +(amount * 0.18).toFixed(2);
         const totalAmount = +(amount + convenienceFee).toFixed(2);
 
         const grouped = {
