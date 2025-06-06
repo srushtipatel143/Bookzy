@@ -33,6 +33,7 @@ interface showDetails {
 }
 
 interface selectSeat {
+    id: number;
     cinemaId: number,
     movieId: string,
     screenId: number,
@@ -67,6 +68,7 @@ interface SeatLayout {
             seats: {
                 seatId: number;
                 seatName: string;
+                id: number;
             }[];
         }[];
     }[];
@@ -126,6 +128,8 @@ const Seatscreen = () => {
                 const selectShowdata = localStorage.getItem("select-show");
                 if (selectShowdata) {
                     const selectedCity = Cookies.get("selected_city");
+                    const token = Cookies.get("token");
+                    console.log("token",token)
                     if (selectedCity) {
                         const city = selectedCity ? JSON.parse(selectedCity) : null;
                         const selectShowDetail = JSON.parse(selectShowdata);
@@ -135,7 +139,15 @@ const Seatscreen = () => {
                         const data = { ...selectShowInfo, city: city.city, cinemaLandmark: selectShowDetail.cinemaLandmark };
                         setSelectshow(data);
 
-                        const responseSeats = await axios.get(`${API_USER_URL}/getshowinfo/${selectShowDetail?.selectshow}`);
+                        let responseSeats;
+
+                        if (token) {
+                            responseSeats = await axios.get(`${API_USER_URL}/getshowinfo/${selectShowDetail?.selectshow}`,
+                                { withCredentials: true }
+                            );
+                        } else {
+                            responseSeats = await axios.get(`${API_USER_URL}/getshowinfo/${selectShowDetail?.selectshow}`);
+                        }
                         setSeatLAyout(responseSeats.data.data)
                         setSelectNoOfSeatModal(true)
                     }
@@ -251,6 +263,7 @@ const Seatscreen = () => {
                                             <div className="d-flex row_seat">
                                                 {Array.from({ length: row.seats.length }).map((_, seatIndex) => {
                                                     const seatName = row.seats[seatIndex]?.seatName;
+                                                    const id = row.seats[seatIndex]?.id;
                                                     const isSelected = selectSeats.some(
                                                         seat => seat.rowName === row.rowName && seat.seatName === seatName
                                                     );
@@ -268,7 +281,8 @@ const Seatscreen = () => {
                                                                     rowName: row.rowName,
                                                                     seatName: seatName,
                                                                     price: section.price,
-                                                                    rowType: section.rowType
+                                                                    rowType: section.rowType,
+                                                                    id: id,
                                                                 };
 
                                                                 setSelectSeats(prev => {

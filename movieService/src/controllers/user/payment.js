@@ -2,8 +2,16 @@ const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const errorHandler = require("../../helpers/errors/errorHandler");
 const { Razor_Key_ID, Razor_Secret_Key } = process.env;
-const Booking=require("../../models/bookingModel");
-const Payment=require("../../models/payment");
+const Booking = require("../../models/bookingModel");
+const Payment = require("../../models/payment");
+const { connect } = require("http2");
+const { pool } = require("../../config/dbConn");
+
+function prepareInClause(baseQuery, arrayParams) {
+    const placeholders = arrayParams.map(() => '?').join(',');
+    return baseQuery.replace('(?)', `(${placeholders})`);
+}
+
 
 const razorpay = new Razorpay({
     key_id: Razor_Key_ID,
@@ -55,11 +63,18 @@ const selectSeatBeforePayment = async (req, res, next) => {
     try {
         const data = req.body;
         const selectSeats = data.selectSeats;
+        const conn = await pool.getConnection();
 
         if (!Array.isArray(selectSeats) || selectSeats.length === 0) {
             return res.status(400).json({ success: false, message: "No seats selected" });
         }
 
+        const seatVal = selectSeats.map(val => val.id);
+        const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        const baseQuery = 'UPDATE seatbooking SET selectTime=?, userId = ?, status = ? WHERE id IN (?)';
+        const finalQuery = prepareInClause(baseQuery, seatVal);
+        await conn.execute(finalQuery, [time, data.userId, 'processing', ...seatVal]);
+    
         const rowTypeMap = new Map();
 
         selectSeats.forEach(({ rowType, seatName, price, rowName }) => {
@@ -98,6 +113,7 @@ const selectSeatBeforePayment = async (req, res, next) => {
             data: grouped,
         });
     } catch (error) {
+        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 };
@@ -129,7 +145,7 @@ const bookingData = async (req, res, next) => {
         const savedBooking = await new Booking(bookingDataValue).save();
 
         const paymentData = {
-            bookingId:savedBooking._id,
+            bookingId: savedBooking._id,
             orderId: data.order_id,
             paymentId: data.payment_id,
             currency: data.currency,
@@ -139,8 +155,8 @@ const bookingData = async (req, res, next) => {
         await new Payment(paymentData).save();
 
         return res.status(200).json({
-            success:true,
-            message:"data inser successfully"
+            success: true,
+            message: "data inser successfully"
         })
 
     } catch (error) {
