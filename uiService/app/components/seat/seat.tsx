@@ -69,6 +69,7 @@ interface SeatLayout {
                 seatId: number;
                 seatName: string;
                 id: number;
+                status: string;
             }[];
         }[];
     }[];
@@ -102,7 +103,8 @@ interface selectSeatData {
             seatName: string;
             price: number;
             rowName: string;
-
+            id: number;
+            status: string;
         }[];
     }[];
 }
@@ -128,8 +130,8 @@ const Seatscreen = () => {
                 const selectShowdata = localStorage.getItem("select-show");
                 if (selectShowdata) {
                     const selectedCity = Cookies.get("selected_city");
-                    const token = Cookies.get("token");
-                    console.log("token",token)
+                    const isUserLoggedIn = Cookies.get("logged_user");
+                    console.log("isUserLoggedIn", isUserLoggedIn)
                     if (selectedCity) {
                         const city = selectedCity ? JSON.parse(selectedCity) : null;
                         const selectShowDetail = JSON.parse(selectShowdata);
@@ -141,7 +143,7 @@ const Seatscreen = () => {
 
                         let responseSeats;
 
-                        if (token) {
+                        if (isUserLoggedIn) {
                             responseSeats = await axios.get(`${API_USER_URL}/getshowinfo/${selectShowDetail?.selectshow}`,
                                 { withCredentials: true }
                             );
@@ -195,7 +197,6 @@ const Seatscreen = () => {
             } else {
                 setUserDetailConfirmModal(true)
             }
-
         } catch (error: any) {
             toast.error(error.response.data.message)
         }
@@ -261,40 +262,43 @@ const Seatscreen = () => {
                                         <div key={row.rowId} className="d-flex seat_row">
                                             <div className="row_label">{row.rowName}</div>
                                             <div className="d-flex row_seat">
-                                                {Array.from({ length: row.seats.length }).map((_, seatIndex) => {
-                                                    const seatName = row.seats[seatIndex]?.seatName;
-                                                    const id = row.seats[seatIndex]?.id;
+                                                {row.seats.map((seat, seatIndex) => {
+                                                    const seatName = seat.seatName;
+                                                    const id = seat.id;
+                                                    const status = seat.status;
                                                     const isSelected = selectSeats.some(
-                                                        seat => seat.rowName === row.rowName && seat.seatName === seatName
+                                                        s => s.rowName === row.rowName && s.seatName === seatName
                                                     );
+                                                    const isBooked = status === 'Booked';
+                                                    const handleClick = () => {
+                                                        if (isBooked) return;
+                                                        const data: selectSeat = {
+                                                            cinemaId: selectShow?.cinemaId!,
+                                                            movieId: selectShow?.movieId!,
+                                                            screenId: selectShow?.screenId!,
+                                                            showId: selectShowChart?.selectshow!,
+                                                            screenName: selectShow?.screenName!,
+                                                            rowName: row.rowName,
+                                                            seatName: seatName,
+                                                            price: section.price,
+                                                            rowType: section.rowType,
+                                                            id: id
+                                                        };
+                                                        setSelectSeats(prev => {
+                                                            const updatedSeats = [...prev];
+                                                            if (updatedSeats.length === selectNoOfSeat) {
+                                                                updatedSeats.shift();
+                                                            }
+                                                            updatedSeats.push(data);
+                                                            return updatedSeats;
+                                                        });
+                                                    };
 
                                                     return (
                                                         <div
                                                             key={seatIndex}
-                                                            onClick={() => {
-                                                                const data: selectSeat = {
-                                                                    cinemaId: selectShow?.cinemaId!,
-                                                                    movieId: selectShow?.movieId!,
-                                                                    screenId: selectShow?.screenId!,
-                                                                    showId: selectShowChart?.selectshow!,
-                                                                    screenName: selectShow?.screenName!,
-                                                                    rowName: row.rowName,
-                                                                    seatName: seatName,
-                                                                    price: section.price,
-                                                                    rowType: section.rowType,
-                                                                    id: id,
-                                                                };
-
-                                                                setSelectSeats(prev => {
-                                                                    const updatedSeats = [...prev];
-                                                                    if (updatedSeats.length === selectNoOfSeat) {
-                                                                        updatedSeats.shift();
-                                                                    }
-                                                                    updatedSeats.push(data);
-                                                                    return updatedSeats;
-                                                                });
-                                                            }}
-                                                            className={`seat ${isSelected ? 'selected-seat' : ''}`}
+                                                            onClick={handleClick}
+                                                            className={`seat ${isBooked ? 'booked-seat' : ''} ${isSelected ? 'selected-seat' : ''}`}
                                                         >
                                                             {seatIndex + 1}
                                                         </div>
@@ -340,7 +344,6 @@ const Seatscreen = () => {
                     </div>
                 </Modal.Body>
             </Modal>
-
             <ToastContainer />
         </div>
     );

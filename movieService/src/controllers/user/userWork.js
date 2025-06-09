@@ -4,7 +4,8 @@ const Movie = require("../../models/movieInfoModel");
 const Show = require("../../models/showInformationModel");
 const cityMovieMapping = require("../../models/cityMovieMappingCollection");
 const Rating = require("../../models/userMovieRatingModel");
-const { isTokenIncluded } = require("../../helpers/jwtToken/tokenHelper");
+const { isTokenIncluded, getAccessTokenFromHeader } = require("../../helpers/jwtToken/tokenHelper");
+const jwt = require("jsonwebtoken");
 
 const getAllCity = async (req, res, next) => {
     try {
@@ -191,47 +192,62 @@ const getShow = async (req, res, next) => {
         const showData = await Show.findOne({ _id: showId });
 
         const { JWT_SECRET_KEY } = process.env;
-        if (!isTokenIncluded(req)) {
-            return next(new errorHandler("Token is not available", 401));
+        let decoded = null;
+        let userId = null;
+
+        if (isTokenIncluded(req)) {
+            const accessToken = getAccessTokenFromHeader(req);
+            decoded = jwt.verify(accessToken, JWT_SECRET_KEY);
+            userId = decoded.id;
         }
-        const accessToken = getAccessTokenFromHeader(req);
-        const decoded = jwt.verify(accessToken, JWT_SECRET_KEY);
-        console.log(decoded._id)
+
 
         // const query = `SELECT seatinfo.screenId as screenId,screenName,screen.noOfRows as screenRow,screen.noOfSeats as screenSeat,seatinfo.RowId as rowId,
         // rowName,rowType,rowsinfo.noOfRowSeat as rowSeat,seatinfo.id as seatId,seatName FROM seatinfo
         // join rowsinfo on rowsinfo.id=seatinfo.RowId
         // join screen on seatinfo.screenId=screen.id where screen.id=?`;
 
-        const query = `SELECT 
-        seatbooking.id,
-        seatinfo.screenId AS screenId,
-        screen.screenName,
-        screen.noOfRows AS screenRow,
-        screen.noOfSeats AS screenSeat,
-        seatinfo.RowId AS rowId,
-        rowsinfo.rowName,
-        rowsinfo.rowType,
-        rowsinfo.noOfRowSeat AS rowSeat,
-        seatinfo.id AS seatId,
-        seatinfo.seatName,
-  
-        CASE 
+        let seatStatusCase = `
             WHEN seatbooking.status = 'booked' THEN 'booked'
-            WHEN seatbooking.status = 'processing' AND seatbooking.userId = 'abc123' THEN 'processing'
-            WHEN seatbooking.status = 'processing' AND seatbooking.userId != 'abc123' THEN 'available'
             ELSE 'available'
-        END AS seatStatus
+        `;
 
+        if (userId) {
+            seatStatusCase = `
+                WHEN seatbooking.status = 'booked' THEN 'booked'
+                WHEN seatbooking.status = 'processing' AND seatbooking.userId != '${userId}' THEN 'processing'
+                WHEN seatbooking.status = 'processing' AND seatbooking.userId = '${userId}' THEN 'available'
+                ELSE 'available'
+            `;
+        }
+
+        const query = `
+        SELECT 
+            seatbooking.id,
+            seatbooking.status,
+            seatinfo.screenId AS screenId,
+            screen.screenName,
+            screen.noOfRows AS screenRow,
+            screen.noOfSeats AS screenSeat,
+            seatinfo.RowId AS rowId,
+            rowsinfo.rowName,
+            rowsinfo.rowType,
+            rowsinfo.noOfRowSeat AS rowSeat,
+            seatinfo.id AS seatId,
+            seatinfo.seatName,
+            CASE 
+                ${seatStatusCase}
+            END AS seatStatus
         FROM seatinfo
         JOIN rowsinfo ON rowsinfo.id = seatinfo.RowId
         JOIN screen ON screen.id = seatinfo.screenId
         LEFT JOIN seatbooking 
-           ON seatbooking.screenId = seatinfo.screenId 
-           AND seatbooking.rowName = rowsinfo.rowName 
-           AND seatbooking.seatName = seatinfo.seatName 
-           AND seatbooking.showId =?
-        WHERE screen.id = ?`
+            ON seatbooking.screenId = seatinfo.screenId 
+            AND seatbooking.rowName = rowsinfo.rowName 
+            AND seatbooking.seatName = seatinfo.seatName 
+            AND seatbooking.showId = ?
+        WHERE screen.id = ?`;
+
         const [response] = await pool.execute(query, [showId, showData.screenId]);
         const screenMap = new Map();
         const screenData = [];
@@ -284,6 +300,7 @@ const getShow = async (req, res, next) => {
             if (!existingRow.seats.some((s) => s.seatId === item.seatId)) {
                 existingRow.seats.push({
                     id: item.id,
+                    status: item.status,
                     seatId: item.seatId,
                     seatName: item.seatName,
                 });

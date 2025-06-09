@@ -4,14 +4,12 @@ const errorHandler = require("../../helpers/errors/errorHandler");
 const { Razor_Key_ID, Razor_Secret_Key } = process.env;
 const Booking = require("../../models/bookingModel");
 const Payment = require("../../models/payment");
-const { connect } = require("http2");
 const { pool } = require("../../config/dbConn");
 
 function prepareInClause(baseQuery, arrayParams) {
     const placeholders = arrayParams.map(() => '?').join(',');
     return baseQuery.replace('(?)', `(${placeholders})`);
 }
-
 
 const razorpay = new Razorpay({
     key_id: Razor_Key_ID,
@@ -73,19 +71,18 @@ const selectSeatBeforePayment = async (req, res, next) => {
         const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
         const baseQuery = 'UPDATE seatbooking SET selectTime=?, userId = ?, status = ? WHERE id IN (?)';
         const finalQuery = prepareInClause(baseQuery, seatVal);
-        await conn.execute(finalQuery, [time, data.userId, 'processing', ...seatVal]);
-    
+        await conn.execute(finalQuery, [time, data.userId, 'Processing', ...seatVal]);
+
         const rowTypeMap = new Map();
 
-        selectSeats.forEach(({ rowType, seatName, price, rowName }) => {
+        selectSeats.forEach(({ rowType, seatName, price, rowName, id }) => {
             if (!rowTypeMap.has(rowType)) {
                 rowTypeMap.set(rowType, {
                     rowType,
                     seats: []
                 });
             }
-
-            rowTypeMap.get(rowType).seats.push({ seatName, price, rowName });
+            rowTypeMap.get(rowType).seats.push({ seatName, price, rowName, id });
         });
 
         const amount = selectSeats.reduce((acc, v) => acc + (v.price || 0), 0);
@@ -107,7 +104,6 @@ const selectSeatBeforePayment = async (req, res, next) => {
             totalAmount: totalAmount,
             ticket: Array.from(rowTypeMap.values())
         };
-
         return res.status(200).json({
             success: true,
             data: grouped,
@@ -121,6 +117,12 @@ const selectSeatBeforePayment = async (req, res, next) => {
 const bookingData = async (req, res, next) => {
     try {
         const data = req.body;
+        const conn = await pool.getConnection();
+        const seatData = data.ticket.flatMap(item => item.seats.map(seat => seat.id));
+        const baseQuery = 'UPDATE seatbooking SET status = ? WHERE id IN (?)';
+        const finalQuery = prepareInClause(baseQuery, seatData);
+        await conn.execute(finalQuery, ['Booked', ...seatData]);
+
         const ticketData = data.ticket.flatMap(item =>
             item.seats.map(seat => ({
                 seatName: seat.seatName,
@@ -156,11 +158,10 @@ const bookingData = async (req, res, next) => {
 
         return res.status(200).json({
             success: true,
-            message: "data inser successfully"
+            message: "data insert successfully"
         })
 
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }

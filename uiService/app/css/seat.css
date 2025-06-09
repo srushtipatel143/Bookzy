@@ -40,6 +40,7 @@
   color: rgb(64, 216, 64);
   border: 1px solid rgb(64, 216, 64);
   margin: 5px 7px;
+  cursor: pointer;
 }
 
 .selected-seat {
@@ -200,4 +201,11 @@
   border-radius: 40px;
   cursor: pointer;
   text-decoration: none;
+}
+
+.seat.booked-seat {
+  background-color: lightgray;
+  cursor: not-allowed;
+  color: var(--secondary-sub-color);
+  border-color: lightgray;
 }
