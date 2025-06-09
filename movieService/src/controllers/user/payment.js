@@ -109,7 +109,6 @@ const selectSeatBeforePayment = async (req, res, next) => {
             data: grouped,
         });
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 };

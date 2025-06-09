@@ -131,7 +131,6 @@ const Seatscreen = () => {
                 if (selectShowdata) {
                     const selectedCity = Cookies.get("selected_city");
                     const isUserLoggedIn = Cookies.get("logged_user");
-                    console.log("isUserLoggedIn", isUserLoggedIn)
                     if (selectedCity) {
                         const city = selectedCity ? JSON.parse(selectedCity) : null;
                         const selectShowDetail = JSON.parse(selectShowdata);
