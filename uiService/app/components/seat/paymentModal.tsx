@@ -130,7 +130,7 @@ const Paymentmodal: React.FC<PaymentModalProps> = ({ selectSeats }) => {
             const { order } = data;
 
             const options = {
-                key: "rzp_test_OU26TltQvSs7Qi",
+                key: "rzp_test_kkZRAllbTtEquJ",
                 amount: order.amount,
                 currency: "INR",
                 name: "Bookzy",
