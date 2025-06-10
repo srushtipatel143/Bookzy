@@ -130,16 +130,16 @@ const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
                     const verifyRes = await axios.post(`${API_USER_URL}/verify`, response);
 
                     const verifyData = verifyRes.data;
-                    if(verifyData.success){
-                        const bookingData={
+                    if (verifyData.success) {
+                        const bookingData = {
                             ...selectSeatData,
-                            order_id:verifyData.data.order_id,
-                            payment_id:verifyData.data.payment_id,
-                            method:verifyData.data.method,
-                            currency:verifyData.data.currency
+                            order_id: verifyData.data.order_id,
+                            payment_id: verifyData.data.payment_id,
+                            method: verifyData.data.method,
+                            currency: verifyData.data.currency
                         }
-                        const bookingDataApi=await axios.post(`${API_USER_URL}/bookingdata`,bookingData);
-                        if(bookingDataApi.data.success){
+                        const bookingDataApi = await axios.post(`${API_USER_URL}/bookingdata`, bookingData);
+                        if (bookingDataApi.data.success) {
                             router.push("/")
                         }
                     }
@@ -157,7 +157,8 @@ const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
             const rzp = new window.Razorpay(options);
             rzp.open();
 
-        } catch (error: any) {
+        }
+        catch (error: any) {
             toast.error(error.response.data.message)
         }
     }

@@ -68,7 +68,23 @@ const selectSeatBeforePayment = async (req, res, next) => {
         }
 
         const seatVal = selectSeats.map(val => val.id);
-        const time = new Date().toISOString().slice(0, 19).replace('T', ' ')
+        const time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+        const seatPlaceholders = seatVal.map(() => '?').join(', ');
+        const sql = `
+            SELECT id, ABS(TIMESTAMPDIFF(MINUTE, ?, selectTime)) AS diffMinutes
+            FROM seatbooking
+            WHERE userId != ? AND id IN (${seatPlaceholders})
+            HAVING diffMinutes < 10`;
+
+        const [rows] = await pool.execute(sql, [time, data.userId, ...seatVal]);
+
+        console.log(rows)
+
+        if (rows.length > 0) {
+            return res.status(429).json({ message: "Another process is running" });
+        }
+
         const baseQuery = 'UPDATE seatbooking SET selectTime=?, userId = ?, status = ? WHERE id IN (?)';
         const finalQuery = prepareInClause(baseQuery, seatVal);
         await conn.execute(finalQuery, [time, data.userId, 'Processing', ...seatVal]);
@@ -104,11 +120,14 @@ const selectSeatBeforePayment = async (req, res, next) => {
             totalAmount: totalAmount,
             ticket: Array.from(rowTypeMap.values())
         };
+
         return res.status(200).json({
             success: true,
             data: grouped,
         });
+        
     } catch (error) {
+        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 };

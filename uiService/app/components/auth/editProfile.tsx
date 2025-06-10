@@ -30,7 +30,6 @@ interface UserDetails {
 
 const EditProfile = () => {
     const [formData, setFormData] = useState<any>(null);
-
     const { setSelectUser } = useUser();
     const user = Cookies.get("logged_user");
     useEffect(() => {
@@ -74,7 +73,6 @@ const EditProfile = () => {
             };
             if (user) {
                 const userVal = user ? JSON.parse(user) : null;
-                const val = userVal?.token;
                 const respose = await axios.put(`${API_AUTH_URL}/editprofile`, payload, {
                     withCredentials: true
                 });
@@ -90,7 +88,6 @@ const EditProfile = () => {
             toast.error(error.response.data.message)
         }
     }
-
 
     return (
         <div className="container-fluid edit_profile pt-3">
