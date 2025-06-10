@@ -13,7 +13,8 @@ const bookingSchema = new mongoose.Schema({
     },
     bookingDate: {
         type: Date,
-        required: true
+        required: true,
+        default:mongoose.now()
     },
     paymentStatus: {
         type: String,
@@ -36,7 +37,7 @@ const bookingSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    ticketes: [{
+    tickets: [{
         seatName: {
             type: String,
             required: true,
