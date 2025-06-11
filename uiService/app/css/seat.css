@@ -209,3 +209,11 @@
   color: var(--secondary-sub-color);
   border-color: lightgray;
 }
+
+.back_btn_1{
+  background-color: var(--primary-main-color);
+  border: none;
+  color: var(--secondary-sub-color);
+  border-radius: 5px;
+  padding: 10px 20px;
+}

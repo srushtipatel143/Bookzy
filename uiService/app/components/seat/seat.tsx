@@ -109,8 +109,6 @@ interface selectSeatData {
     }[];
 }
 
-
-
 const Seatscreen = () => {
     const router = useRouter();
     const [selectShowChart, setSelectshowChart] = useState<showTimeChart | undefined>(undefined);
@@ -203,9 +201,7 @@ const Seatscreen = () => {
 
     const submitFunctionCall = async () => {
         try {
-
             const userData = await axios.post(`${API_AUTH_URL}/adduserduringpayment`, dataValue);
-
             const data = {
                 userId: userData?.data?.data?.userId,
                 email: userData?.data?.data?.email,
@@ -320,7 +316,6 @@ const Seatscreen = () => {
             ) : (
                 <Paymentmodal selectSeatData={selectSeatData} />
             )}
-
             <Modal show={userDetailConfirmModal} onHide={() => setUserDetailConfirmModal(false)} centered contentClassName="custom_modal">
                 <Modal.Header className="border-0" closeButton >
                 </Modal.Header>
