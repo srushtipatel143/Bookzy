@@ -44,7 +44,6 @@ const CreateOrder = async (req, res, next) => {
             currency: "INR",
             receipt: "receipt#1",
         });
-
         return res.json({ success: true, order });
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));

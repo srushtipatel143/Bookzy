@@ -69,6 +69,14 @@
     color: var(--secondary-main-color);
     font-weight: 400;
     cursor: pointer;
+    user-select: none;
+}
+.blurred1 {
+    text-decoration: none;
+    font-size: 11px;
+    color: var(--secondary-main-color);
+    font-weight: 400;
+    user-select: none;
 }
 
 .fil_cinema_text:hover{
@@ -107,12 +115,14 @@
 
   .language_title{
     color: var(--primary-main-color);
+    user-select: none;
   }
 
- .fil_cinema_type{
+ .fil_cinema_type,.blurred{
     font-size: 10px;
     border: 1px solid darkgray;
     padding: 0px 5px;
+    user-select: none;
  }
 
  .fil_cinema_type:hover{
@@ -121,3 +131,11 @@
     color: var(--secondary-sub-color);
     
  }
+
+ .filter_Sec1RightLan.selected {
+    border: 1px solid var(--primary-main-color);
+    padding: 5px 10px;
+    background-color: var(--primary-main-color);
+    color: var(--secondary-sub-color);
+    border-radius: 20px;
+}
