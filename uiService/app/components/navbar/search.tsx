@@ -41,6 +41,8 @@ const Searchfield = () => {
     const [movie, setMovie] = useState<movie[]>([]);
     const [searchOption, setSearchOption] = useState<[]>([]);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [selectedLanguages, setSelectedLanguages] = useState<string[]>([]);
+
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -190,49 +192,66 @@ const Searchfield = () => {
                         <div style={{ display: "flex", gap: "5px", fontSize: "12px" }}>
                             <div style={{ padding: "5px 10px" }}>Filter</div>
                             {movie.map((item, index) => (
-                                <span key={index} className="filter_Sec1RightLan" >
+                                <span
+                                    key={index}
+                                    className={`filter_Sec1RightLan ${selectedLanguages.includes(item.language) ? 'selected' : ''}`}
+                                    onClick={() => {
+                                        setSelectedLanguages(prev =>
+                                            prev.includes(item.language)
+                                                ? prev.filter(l => l !== item.language)
+                                                : [...prev, item.language]
+                                        );
+                                    }}
+                                >
                                     {item.language}
                                 </span>
                             ))}
+
                         </div>
                     )}
                 </div>
 
                 {showDivSection ? (
                     <div className="filter_Sec3 mt-3">
-                        {movie.map((section) => (
-                            <div key={section.language} className="fil_movie_list1 mt-1">
-                                <div className="fil_movie_list">
-                                    <div className="language_title my-3">{section.language}</div>
-                                    {section.movies.map((row) => (
-                                        <div key={row.movieId} onClick={(e) => {
-                                            e.preventDefault()
-                                            setShowSearch(false);
-                                            router.push(`/explore/movie/${row.movieId}`);
-                                        }}>
-                                            <div className="fil_cinema_text">{row.movieName}</div>
-                                            {row.screenTypes.length > 1 && (
-                                                <div className='d-flex my-1'>
-                                                    {row.screenTypes.map((val) => (
-                                                        <div className='fil_cinema_type' onClick={(e) => {
-                                                            e.stopPropagation();
-                                                            e.preventDefault()
-                                                            typeSelect({
-                                                                movieId: row.movieId,
-                                                                movieName: row.movieName,
-                                                                movieType: row.movieType,
-                                                                selectLanguage: section.language,
-                                                                selectScreen: val
-                                                            })
-                                                        }} key={val}>{val}</div>
-                                                    ))}
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
+                        {movie.map((section) => {
+                            const isLanguageSelected = selectedLanguages.length === 0 || selectedLanguages.includes(section.language);
+
+                            return (
+                                <div key={section.language} className="fil_movie_list1 mt-1" style={{ filter: isLanguageSelected ? "none" : "blur(1px)", opacity: isLanguageSelected ? 1 : 0.5 }}>
+                                    <div className="fil_movie_list">
+                                        <div className="language_title my-3">{section.language}</div>
+                                        {section.movies.map((row) => (
+                                            <div key={row.movieId} onClick={(e) => {
+                                                e.preventDefault();
+                                                if (!isLanguageSelected) return;
+                                                setShowSearch(false);
+                                                router.push(`/explore/movie/${row.movieId}`);
+                                            }}>
+                                                <div className={isLanguageSelected ? 'fil_cinema_text' : 'blurred1'}>{row.movieName}</div>
+                                                {row.screenTypes.length > 1 && (
+                                                    <div className='d-flex my-1'>
+                                                        {row.screenTypes.map((val) => (
+                                                            <div className={isLanguageSelected ? 'fil_cinema_type' : 'blurred'} onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                e.preventDefault();
+                                                                if (!isLanguageSelected) return;
+                                                                typeSelect({
+                                                                    movieId: row.movieId,
+                                                                    movieName: row.movieName,
+                                                                    movieType: row.movieType,
+                                                                    selectLanguage: section.language,
+                                                                    selectScreen: val
+                                                                });
+                                                            }} key={val}>{val}</div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
 
                     </div>
                 ) : (

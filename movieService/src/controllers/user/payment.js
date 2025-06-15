@@ -16,11 +16,31 @@ const razorpay = new Razorpay({
     key_secret: Razor_Secret_Key,
 });
 
-const CreateOrder = async (req, res) => {
+const CreateOrder = async (req, res, next) => {
     try {
-        const { amount } = req.body;
+        const data = req.body;
+        const selectSeats = data.ticket;
+
+        const seatVal = selectSeats.flatMap(val => val.seats.map(item => item.id));
+
+        const time = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+        const seatPlaceholders = seatVal.map(() => '?').join(', ');
+        const sql = `
+            SELECT id, ABS(TIMESTAMPDIFF(MINUTE, ?, selectTime)) AS diffMinutes
+            FROM seatbooking
+            WHERE userId = ? AND id IN (${seatPlaceholders})
+            HAVING diffMinutes > 10`;
+
+        const [rows] = await pool.execute(sql, [time, data.userId, ...seatVal]);
+
+
+        if (rows.length > 0) {
+            return res.status(429).json({ message: "Time is expired" });
+        }
+
         const order = await razorpay.orders.create({
-            amount: amount * 100,
+            amount: data.totalAmount * 100,
             currency: "INR",
             receipt: "receipt#1",
         });
@@ -30,7 +50,7 @@ const CreateOrder = async (req, res) => {
     }
 };
 
-const verifyOrder = async (req, res) => {
+const verifyOrder = async (req, res, next) => {
     try {
         const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
             req.body;
@@ -49,7 +69,8 @@ const verifyOrder = async (req, res) => {
                     currency: payment.currency
                 }
             });
-        } else {
+        }
+        else {
             return res.status(400).json({ success: false, message: "Payment verification failed" });
         }
     } catch (error) {
@@ -78,8 +99,6 @@ const selectSeatBeforePayment = async (req, res, next) => {
             HAVING diffMinutes < 10`;
 
         const [rows] = await pool.execute(sql, [time, data.userId, ...seatVal]);
-
-        console.log(rows)
 
         if (rows.length > 0) {
             return res.status(429).json({ message: "Another process is running" });
@@ -125,9 +144,8 @@ const selectSeatBeforePayment = async (req, res, next) => {
             success: true,
             data: grouped,
         });
-        
+
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 };
@@ -183,6 +201,5 @@ const bookingData = async (req, res, next) => {
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
-
 
 module.exports = { CreateOrder, verifyOrder, selectSeatBeforePayment, bookingData };

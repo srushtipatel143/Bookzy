@@ -7,6 +7,7 @@ import { RiArrowLeftWideFill } from "react-icons/ri";
 import { RxCross2 } from "react-icons/rx";
 import axios from 'axios';
 import { API_USER_URL } from "../../utils/config";
+import { Modal } from 'react-bootstrap';
 
 interface showDetails {
     cinemaLandmark: string,
@@ -65,6 +66,7 @@ declare global {
 const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
 
     const [selectShow, setSelectshow] = useState<showDetails | undefined>(undefined);
+    const [backModal, setBackModal] = useState<boolean>(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -103,7 +105,7 @@ const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
         });
     };
 
-    const createOrder = async (val: any) => {
+    const createOrder = async (val: selectSeatData) => {
         try {
             const res = await loadRazorpayScript();
             if (!res) {
@@ -156,10 +158,14 @@ const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
 
             const rzp = new window.Razorpay(options);
             rzp.open();
-
         }
         catch (error: any) {
-            toast.error(error.response.data.message)
+            if (error.response.data.message === 'Time is expired') {
+                setBackModal(true)
+            }
+            else {
+                toast.error(error.response.data.message)
+            }
         }
     }
 
@@ -223,13 +229,28 @@ const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
                         </div>
                     </div>
                     <div className='mt-4 amount_total_text_pay '>
-                        <div className='py-2 px-4 d-flex justify-content-between' onClick={() => createOrder({ amount: selectSeatData?.totalAmount })} >
+                        <div className='py-2 px-4 d-flex justify-content-between' onClick={() => {
+                            if (selectSeatData) {
+                                createOrder(selectSeatData);
+                            }
+                        }} >
                             <div>Total: Rs. {selectSeatData?.totalAmount}</div>
                             <div>Proceed</div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <Modal centered show={backModal}>
+                <Modal.Body className="p-0 m-3">
+                    <div className='d-flex flex-column justify-content-center align-items-center'>
+                        <p>Please select seat again</p>
+                        <button className='back_btn_1' onClick={() => router.back()}>Back</button>
+                    </div>
+                </Modal.Body>
+            </Modal>
+
+
         </div>
     )
 }
