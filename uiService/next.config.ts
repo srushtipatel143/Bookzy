@@ -43,6 +43,12 @@ const nextConfig: NextConfig = {
         hostname: 'www.transparentpng.com',
         port: '',
         pathname: '/**',
+      },
+       {
+        protocol: 'https',
+        hostname: 'cdn.pixabay.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },

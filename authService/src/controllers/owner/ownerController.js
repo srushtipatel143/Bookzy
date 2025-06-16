@@ -34,7 +34,7 @@ const resetPassword = async (req, res, next) => {
         return next(new errorHandler("There is no owner with this email", 400, error));
     }
     const resetPasswordToken = await owner.getResetPasswordTokenFromOwner();
-    
+
     const resetPasswordUrl = `${URL}/resetpassword?resetPasswordToken=${resetPasswordToken}`
     const emailTemplate = `
         <h3 style="color : red "> Reset Your Password </h3>
@@ -62,21 +62,21 @@ const setForgotPassword = async (req, res, next) => {
         const checkLink = await forgetPasswordLinkOwnerCollection.findOne({
             token: token
         })
-        if(!token) {
-            return next(new errorHandler("Please provide a valid token ",400))
+        if (!token) {
+            return next(new errorHandler("Please provide a valid token ", 400));
         }
         if (!checkLink) {
             return next(new errorHandler("Your link is expire", 400));
         }
-        const owner=await Owner.findOne({_id:checkLink.userId})
-        owner.set({ 
+        const owner = await Owner.findOne({ _id: checkLink.userId });
+        owner.set({
             password: password,
         });
         const changeFgtPwd = await owner.save();
-        return res.status(200).json({ success: true, message: "Password Reset Successfully", data: changeFgtPwd })
+        return res.status(200).json({ success: true, message: "Password Reset Successfully", data: changeFgtPwd });
     } catch (error) {
         return next(new errorHandler("Error during passsword reset", 500, error));
     }
 }
 
-module.exports = {ownerLogin,resetPassword, setForgotPassword };
+module.exports = { ownerLogin, resetPassword, setForgotPassword };

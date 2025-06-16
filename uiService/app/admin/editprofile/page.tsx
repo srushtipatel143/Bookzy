@@ -1,4 +1,4 @@
-import EditProfile from "../../components/userauth/editProfile";
+import EditProfile from "../../components/adminauth/editProfile";
 
 const Profile=()=>{
     return(

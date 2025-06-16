@@ -1,6 +1,6 @@
 'use client';
 
-import SuccessPage from "../../components/auth/success";
+import SuccessPage from "../../components/userauth/success";
 
 const Success=()=>{
     return(
