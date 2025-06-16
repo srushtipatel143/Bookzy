@@ -36,7 +36,6 @@
   font-weight: bold;
 }
 
-
 .navbar-wrapper {
   width: 90%;
 }
@@ -119,7 +118,6 @@
   border: 1px solid var(--primary-main-color);
 }
 
-
 .sign_outBtn{
   cursor: pointer;
   background-color:var(--secondary-sub-color);
@@ -135,4 +133,14 @@
 
 .css-1wy0on6{
   display: none !important;
+}
+
+.forgot_password_admin{
+  font-size: 12px;
+  color: grey;
+}
+
+.forgot_password_admin:hover{
+  color:var(--secondary-main-color);
+  cursor: pointer;
 }

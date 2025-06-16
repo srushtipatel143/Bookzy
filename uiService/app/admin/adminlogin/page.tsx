@@ -1,4 +1,4 @@
-import UserLogin from "../../components/userauth/userlogin";
+import UserLogin from "../../components/adminauth/adminlogin";
 
 const Login=()=>{
     return(
