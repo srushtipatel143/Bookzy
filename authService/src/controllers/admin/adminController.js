@@ -89,4 +89,33 @@ const logout = async (req, res) => {
     }
 }
 
-module.exports = {adminLogin,resetPassword, setForgotPassword,logout };
+const editProfile = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const { id } = req.user;
+        await Admin.updateOne({ _id: id }, { $set: data });
+        return res.status(200).json({
+            success: true,
+            message: "Profile Update Successfully"
+        });
+    } catch (error) {
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+}
+
+const getUserDetail = async (req, res, next) => {
+    try {
+        const { id } = req.user;
+        const user = await Admin.findById({ _id: id });
+        return res.status(200).json({
+            success: true,
+            data: user,
+            message: "User get Successfully"
+        });
+    } catch (error) {
+        console.log(error)
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+}
+
+module.exports = {adminLogin,resetPassword, setForgotPassword,logout,editProfile,getUserDetail };

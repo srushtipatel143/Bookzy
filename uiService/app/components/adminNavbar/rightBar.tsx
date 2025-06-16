@@ -33,13 +33,13 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
             onHide={() => setCanvasShow(false)}
             placement="end"
         >
-            <div className="d-flex justify-content-between align-items-center px-3 py-2">
+            <div className="d-flex justify-content-between align-items-center px-4 py-2">
                 <div>
                     <p className="fs-3 fw-bold m-0">Hey!</p>
                     {selectUser !== null && (
                         <span style={{ fontSize: "14px", cursor: "pointer" }} onClick={() => {
                             setCanvasShow(false);
-                            router.push("/user/editprofile")
+                            router.push("/admin/editprofile")
                         }}>Edit Profile</span>
                     )}
                 </div>
@@ -49,6 +49,15 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
                     </div>
                 )}
             </div>
+
+            {selectUser !== null && (
+                <div className="d-flex flex-column px-3 py-2 gap-2">
+                    <div className="side_menu_admin px-2">Access Management</div>
+                    <div className="side_menu_admin px-2">City Management</div>
+                    <div className="side_menu_admin px-2">Movie Mangement</div>
+                    <div className="side_menu_admin px-2">Change Password</div>
+                </div>
+            )}
 
             {selectUser !== null && (
                 <div className="">

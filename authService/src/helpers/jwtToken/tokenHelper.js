@@ -1,6 +1,5 @@
 const sendToken = async (user, statusCode, res) => {
     const token = user.generateJWTFromUser();
-
     res.cookie('token', token, {
         httpOnly: true,
         secure: false,

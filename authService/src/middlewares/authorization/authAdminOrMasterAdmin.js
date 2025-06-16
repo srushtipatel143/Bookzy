@@ -2,7 +2,6 @@ const errorHandler=require("../../helpers/errors/errorHandler");
 const Admin =require("../../models/adminModel");
 const jwt= require("jsonwebtoken");
 const {getAccessTokenFromHeader,isTokenIncluded}=require("../../helpers/jwtToken/tokenHelper");
-const { decode } = require("punycode");
 
 const getAccessToRouteBoth=async(req,res,next)=>{
    try {

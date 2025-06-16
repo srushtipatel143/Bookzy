@@ -5,7 +5,7 @@ const {getSingleAdmin}=require("../controllers/admin/getSingleAdmin");
 const {getAllAdmin}=require("../controllers/admin/getAllAdmin");
 const {deleteAdmin}=require("../controllers/admin/deleteAdmin");
 const {editAdmin}=require("../controllers/admin/editAdmin");
-const {adminLogin,resetPassword,setForgotPassword,logout}=require("../controllers/admin/adminController");
+const {adminLogin,resetPassword,setForgotPassword,logout,editProfile,getUserDetail}=require("../controllers/admin/adminController");
 const {getAccessToRoute}=require("../middlewares/authorization/authMasterAdmin");
 const {getAccessToRouteBoth}=require("../middlewares/authorization/authAdminOrMasterAdmin")
 
@@ -15,6 +15,8 @@ router.post("/createadmin",getAccessToRoute,createAdmin);
 router.get("/getalladmin",getAccessToRoute,getAllAdmin);
 router.put("/deleteadmin/:id",getAccessToRoute,deleteAdmin);
 router.get("/getsingleadmin/:id",getAccessToRoute,getSingleAdmin);
+router.put("/editprofile",getAccessToRouteBoth,editProfile);
+router.get("/getuser",getAccessToRouteBoth,getUserDetail)
 
 //this can be done by both master admin and admin
 router.put("/resetpassword",resetPassword)
