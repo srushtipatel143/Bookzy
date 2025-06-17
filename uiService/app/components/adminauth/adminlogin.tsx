@@ -27,10 +27,7 @@ const UserLogin = () => {
       if (password !== cpassword) {
         return toast.error("Password do not match");
       }
-      const response = await axios.post(
-        `${API_ADMIN_AUTH_URL}/adminlogin`,
-        data
-      );
+      const response = await axios.post(`${API_ADMIN_AUTH_URL}/adminlogin`, data, { withCredentials: true });
       if (response.data.success) {
         const { imageURL, user, role } = response?.data;
         Cookies.set("logged_user", JSON.stringify({ imageURL, user, role }), {

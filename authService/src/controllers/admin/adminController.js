@@ -34,7 +34,7 @@ const resetPassword = async (req, res, next) => {
     if (!admin) {
         return next(new errorHandler("There is no admin with this email", 400));
     }
-    const resetPasswordToken = await  admin.getResetPasswordTokenFromAdmin();
+    const resetPasswordToken = await admin.getResetPasswordTokenFromAdmin();
     const resetPasswordUrl = `${URL}/resetpassword?resetPasswordToken=${resetPasswordToken}`
     const emailTemplate = `
         <h3 style="color : red "> Reset Your Password </h3>
@@ -59,14 +59,14 @@ const setForgotPassword = async (req, res, next) => {
         const checkLink = await forgetPasswordAdminLinkCollection.findOne({
             token: token
         })
-        if(!token) {
-            return next(new errorHandler("Please provide a valid token",400))
+        if (!token) {
+            return next(new errorHandler("Please provide a valid token", 400))
         }
         if (!checkLink) {
             return next(new errorHandler("Your link is expire", 400));
         }
-        const admin=await Admin.findOne({_id:checkLink.userId})
-        admin.set({ 
+        const admin = await Admin.findOne({ _id: checkLink.userId })
+        admin.set({
             password: password
         });
         const changeFgtPwd = await admin.save();
@@ -92,7 +92,7 @@ const logout = async (req, res) => {
 const editProfile = async (req, res, next) => {
     try {
         const data = req.body;
-        const { id } = req.user;
+        const { id } = req.admin;
         await Admin.updateOne({ _id: id }, { $set: data });
         return res.status(200).json({
             success: true,
@@ -105,7 +105,7 @@ const editProfile = async (req, res, next) => {
 
 const getUserDetail = async (req, res, next) => {
     try {
-        const { id } = req.user;
+        const { id } = req.admin;
         const user = await Admin.findById({ _id: id });
         return res.status(200).json({
             success: true,
@@ -113,9 +113,28 @@ const getUserDetail = async (req, res, next) => {
             message: "User get Successfully"
         });
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
-module.exports = {adminLogin,resetPassword, setForgotPassword,logout,editProfile,getUserDetail };
+const changePassword = async (req, res, next) => {
+    try {
+        const { password, oldpassword } = req.body;
+        const { id } = req.admin;
+        const admin = await Admin.findOne({ _id: id })
+        const dbPassword = admin.password;
+        const isPasswordMatch = await bcrypt.compare(oldpassword, dbPassword);
+        if (!isPasswordMatch) {
+            return res.status(200).json({ success: false, message: "Your current password is wrong" })
+        }
+        admin.set({
+            password: password
+        });
+        const changeFgtPwd = await admin.save();
+        return res.status(200).json({ success: true, message: "Password Reset Successfully", data: changeFgtPwd })
+    } catch (error) {
+        return next(new errorHandler("Error during passsword reset", 500, error));
+    }
+}
+
+module.exports = { adminLogin, resetPassword, setForgotPassword, logout, editProfile, getUserDetail, changePassword };

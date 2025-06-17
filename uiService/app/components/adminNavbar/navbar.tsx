@@ -15,7 +15,6 @@ const AdminNavbar = () => {
 
   useEffect(() => {
     const user = Cookies.get("logged_user");
-    console.log("val",user)
     if (user) {
       const userVal = user ? JSON.parse(user) : null;
       setSelectUser(userVal)

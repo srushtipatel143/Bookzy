@@ -49,16 +49,21 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
                     </div>
                 )}
             </div>
-
             {selectUser !== null && (
                 <div className="d-flex flex-column px-3 py-2 gap-2">
+                    <div onClick={() => {
+                        router.push("/admin/dashboard")
+                        setCanvasShow(false)
+                    }} className="side_menu_admin px-2">Dashboard</div>
                     <div className="side_menu_admin px-2">Access Management</div>
                     <div className="side_menu_admin px-2">City Management</div>
                     <div className="side_menu_admin px-2">Movie Mangement</div>
-                    <div className="side_menu_admin px-2">Change Password</div>
+                    <div onClick={() => {
+                        router.push("/admin/adminpasswordchange")
+                        setCanvasShow(false)
+                    }} className="side_menu_admin px-2">Change Password</div>
                 </div>
             )}
-
             {selectUser !== null && (
                 <div className="">
                     <button className="sign_outBtn py-1" onClick={signout}>
