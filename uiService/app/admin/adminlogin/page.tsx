@@ -1,8 +1,8 @@
-import UserLogin from "../../components/adminauth/adminlogin";
+import AdminLogin from "../../components/adminauth/adminlogin";
 
 const Login=()=>{
     return(
-        <UserLogin/>
+        <AdminLogin/>
     )
 }
 

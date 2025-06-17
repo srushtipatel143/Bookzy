@@ -1,9 +1,9 @@
 import ChangePasswordAdmin from "../../components/adminauth/changepwdadmin";
 
-const AdminPAsswordChangePage=()=>{
+const AdminPasswordChangePage=()=>{
     return(
         <ChangePasswordAdmin/>
     )
 }
 
-export default AdminPAsswordChangePage;
+export default AdminPasswordChangePage;

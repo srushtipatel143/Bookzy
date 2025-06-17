@@ -13,8 +13,6 @@ const ForgotPasswordAdmin = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
 
-
-
   const submitForm = async () => {
     try {
       const data = {

@@ -11,7 +11,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { useUser } from "../context/userContext";
 
-const AdminLogin = () => {
+const OwnerLogin = () => {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +34,7 @@ const AdminLogin = () => {
           expires: 3650,
         });
         setSelectUser(response.data);
-        router.push(`/admin/dashboard`);
+        router.push(`/owner/dashboard`);
       }
     } catch (error: any) {
       return toast.error(error.response.data.message);
@@ -90,7 +90,7 @@ const AdminLogin = () => {
         </div>
         <div
           className="d-flex ms-auto forgot_password_admin"
-          onClick={() => router.push("/admin/forgotpasswordadmin")}
+          onClick={() => router.push("/owner/forgotpasswordowner")}
         >
           <span>Forgot password?</span>
         </div>
@@ -105,4 +105,4 @@ const AdminLogin = () => {
   );
 };
 
-export default AdminLogin;
+export default OwnerLogin;

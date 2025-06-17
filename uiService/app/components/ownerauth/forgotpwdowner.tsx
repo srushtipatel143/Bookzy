@@ -4,30 +4,24 @@ import "../../css/userlogin.css";
 import { useRouter } from 'next/navigation';
 import { FiArrowLeft } from "react-icons/fi";
 import Image from 'next/image';
-import {API_ADMIN_AUTH_URL } from "../../../utils/config";
+import { API_AUTH_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
 import axios from "axios";
 
-const AdminPasswordChange = () => {
+const ForgotPasswordOwner = () => {
   const router = useRouter();
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [cpassword, setCpassword] = useState('');
-
 
   const submitForm = async () => {
     try {
       const data = {
-        email: email,
-        password: password
+        email: email
       }
-      if (password !== cpassword) {
-        return toast.error("Password do not match")
-      }
-      const response = await axios.post(`${API_ADMIN_AUTH_URL}/adminlogin`, data);
+      const response = await axios.post(`${API_AUTH_URL}/signin`, data);
       if (response.data.success) {
-        router.push(`/admin/dashboard`)
+        const id = response?.data?.data?._id;
+        router.push(`/user/userotp/${id}`)
       }
     } catch (error: any) {
       return toast.error(error.response.data.message)
@@ -51,17 +45,8 @@ const AdminPasswordChange = () => {
         <div className="my-3">
           <input onChange={(e) => setEmail(e.target.value)} type="email" className="form-control" placeholder="Enter email address" />
         </div>
-        <div className="my-3">
-          <input onChange={(e) => setPassword(e.target.value)} type="password" className="form-control" placeholder="Enter password" />
-        </div>
-        <div className="my-3">
-          <input onChange={(e) => setCpassword(e.target.value)} type="password" className="form-control" placeholder="Confirm password" />
-        </div>
-         <div className="d-flex ms-auto forgot_password_admin" onClick={()=>router.push("/admin/forgotpasswordadmin")}>
-          <span>Forgot password?</span>
-        </div>
         <div className="mt-5">
-          <button className="button-primary w-100" onClick={submitForm}>Sign in</button>
+          <button className="button-primary w-100" onClick={submitForm}>Submit</button>
         </div>
       </div>
       <ToastContainer />
@@ -69,4 +54,4 @@ const AdminPasswordChange = () => {
   );
 };
 
-export default AdminPasswordChange;
+export default ForgotPasswordOwner;
