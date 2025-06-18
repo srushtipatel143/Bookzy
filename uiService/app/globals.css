@@ -24,3 +24,29 @@ body {
 .search-input::placeholder {
   font-size: 14px !important;
 }
+
+.p-datatable .p-datatable-thead > tr > th {
+  padding: 0.5rem !important;
+  background-color:rgb(242, 242, 242);
+  color: var(--secondary-main-color);
+}
+
+.p-datatable .p-sortable-column .p-sortable-column-icon{
+  color: var(--secondary-main-color);
+}
+
+.p-datatable .p-datatable-tbody > tr > td { 
+  padding: 0.5rem !important;
+  text-align: center;
+}
+.p-datatable .p-datatable-tbody > tr:nth-child(odd) > td {
+  background-color: #f9f9f9;
+}
+
+/* For even rows */
+.p-datatable .p-datatable-tbody > tr:nth-child(even) > td {
+  background-color:rgb(242, 242, 242);;
+}
+.p-datatable .p-column-header-content{
+  justify-content: center;
+}
