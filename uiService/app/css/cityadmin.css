@@ -1,0 +1,25 @@
+.admin_div {
+    background-color: var(--secondary-sub-color);
+    border-radius: 10px;
+}
+
+.admin_div_mainsec {
+    font-size: 22px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.admin_city_add {
+    background-color: var(--primary-main-color);
+    color: var(--secondary-sub-color);
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 7px 20px;
+    opacity: 0.9;
+}
+
+.admin_city_add:hover {
+    opacity: 1;
+}

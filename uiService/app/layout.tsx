@@ -1,5 +1,6 @@
 'use client'
 import "./globals.css";
+import "primereact/resources/themes/lara-light-cyan/theme.css";
 import { SearchProvider } from "./components/context/searchContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
