@@ -78,7 +78,6 @@ const EditProfile = () => {
                     withCredentials: true
                 });
                 if (respose?.data?.success) {
-                
                     setSelectUser((prev: any) => ({
                         ...prev,
                         user: payload?.firstName
