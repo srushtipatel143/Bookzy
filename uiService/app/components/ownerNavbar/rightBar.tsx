@@ -6,6 +6,8 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { API_Owner_AUTH_URL } from "@/app/utils/config";
+import { MdDashboardCustomize } from "react-icons/md";
+import { RiLockPasswordFill } from "react-icons/ri";
 
 interface RightBarprops {
     canvasshow: boolean,
@@ -54,11 +56,11 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
                     <div onClick={() => {
                         router.push("/owner/dashboard")
                         setCanvasShow(false)
-                    }} className="side_menu_admin px-2">Dashboard</div>
+                    }} className="side_menu_admin px-2 gap-3"><MdDashboardCustomize size={24} />Dashboard</div>
                     <div onClick={() => {
                         router.push("/owner/ownerpasswordchange")
                         setCanvasShow(false)
-                    }} className="side_menu_admin px-2">Change Password</div>
+                    }} className="side_menu_admin px-2 gap-3"> <RiLockPasswordFill size={24} />Change Password</div>
                 </div>
             )}
             {selectUser !== null && (

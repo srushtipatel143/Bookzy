@@ -6,6 +6,12 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { API_ADMIN_AUTH_URL } from "@/app/utils/config";
+import { MdDashboardCustomize } from "react-icons/md";
+import { RiLockPasswordFill } from "react-icons/ri";
+import { FaUserFriends } from "react-icons/fa";
+import { FaCity } from "react-icons/fa";
+import { BiSolidMoviePlay } from "react-icons/bi";
+
 
 interface RightBarprops {
     canvasshow: boolean,
@@ -51,17 +57,32 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
             </div>
             {selectUser !== null && (
                 <div className="d-flex flex-column px-3 py-2 gap-2">
+
                     <div onClick={() => {
                         router.push("/admin/dashboard")
                         setCanvasShow(false)
-                    }} className="side_menu_admin px-2">Dashboard</div>
-                    <div className="side_menu_admin px-2">Access Management</div>
-                    <div className="side_menu_admin px-2">City Management</div>
-                    <div className="side_menu_admin px-2">Movie Mangement</div>
+                    }} className="side_menu_admin px-2 gap-3"><MdDashboardCustomize size={24} />Dashboard</div>
+
+                    <div onClick={() => {
+                        router.push("/admin/access")
+                        setCanvasShow(false)
+                    }} className="side_menu_admin px-2 gap-3" ><FaUserFriends size={24} />Access Management</div>
+
+                    <div onClick={() => {
+                        router.push("/admin/city")
+                        setCanvasShow(false)
+                    }} className="side_menu_admin px-2 gap-3"><FaCity size={24} />City Management</div>
+
+                    <div onClick={() => {
+                        router.push("/admin/movie")
+                        setCanvasShow(false)
+                    }} className="side_menu_admin px-2 gap-3"><BiSolidMoviePlay size={24} />Movie Mangement</div>
+
                     <div onClick={() => {
                         router.push("/admin/adminpasswordchange")
                         setCanvasShow(false)
-                    }} className="side_menu_admin px-2">Change Password</div>
+                    }} className="side_menu_admin px-2 gap-3"> <RiLockPasswordFill size={24} />Change Password</div>
+
                 </div>
             )}
             {selectUser !== null && (
