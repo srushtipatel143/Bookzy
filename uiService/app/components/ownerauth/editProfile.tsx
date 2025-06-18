@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import "../../css/editprofile.css";
 import Footer from "../homeScreen/footer";
 import Image from 'next/image';
-import { API_ADMIN_AUTH_URL } from "../../utils/config";
+import { API_Owner_AUTH_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import Cookies from "js-cookie";
 import axios from "axios";
@@ -35,7 +35,8 @@ const EditProfile = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const response = await axios.get(`${API_ADMIN_AUTH_URL}/getuser`, {
+                console.log("u",API_Owner_AUTH_URL)
+                const response = await axios.get(`${API_Owner_AUTH_URL}/getuser`, {
                     withCredentials: true
                 });
                 const userDetails = response?.data?.data;
@@ -73,14 +74,16 @@ const EditProfile = () => {
             };
             if (user) {
                 const userVal = user ? JSON.parse(user) : null;
-                const respose = await axios.put(`${API_ADMIN_AUTH_URL}/editprofile`, payload, {
+                const respose = await axios.put(`${API_Owner_AUTH_URL}/editprofile`, payload, {
                     withCredentials: true
                 });
                 if (respose?.data?.success) {
+                
                     setSelectUser((prev: any) => ({
                         ...prev,
                         user: payload?.firstName
                     }));
+                    toast.success(respose.data.message)
                     Cookies.set("logged_user", JSON.stringify({ ...userVal, user: payload?.firstName }), { expires: 3650 });
                 }
             }

@@ -81,6 +81,7 @@ const EditProfile = () => {
                         ...prev,
                         user: payload?.firstName
                     }));
+                    toast.success(respose.data.message)
                     Cookies.set("logged_user", JSON.stringify({ ...userVal, user: payload?.firstName }), { expires: 3650 });
                 }
             }

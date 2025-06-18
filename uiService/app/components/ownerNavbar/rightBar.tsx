@@ -5,7 +5,7 @@ import { useUser } from "../context/userContext";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { API_ADMIN_AUTH_URL } from "@/app/utils/config";
+import { API_Owner_AUTH_URL } from "@/app/utils/config";
 
 interface RightBarprops {
     canvasshow: boolean,
@@ -16,7 +16,7 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
     const { selectUser, setSelectUser } = useUser();
     const signout = async () => {
         try {
-            await axios.get(`${API_ADMIN_AUTH_URL}/logout`, {
+            await axios.get(`${API_Owner_AUTH_URL}/logout`, {
                 withCredentials: true
             })
             Cookies.remove("logged_user");
@@ -39,7 +39,7 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
                     {selectUser !== null && (
                         <span style={{ fontSize: "14px", cursor: "pointer" }} onClick={() => {
                             setCanvasShow(false);
-                            router.push("/admin/editprofile")
+                            router.push("/owner/editprofile")
                         }}>Edit Profile</span>
                     )}
                 </div>

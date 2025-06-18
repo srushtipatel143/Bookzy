@@ -79,4 +79,65 @@ const setForgotPassword = async (req, res, next) => {
     }
 }
 
-module.exports = { ownerLogin, resetPassword, setForgotPassword };
+const logout = async (req, res) => {
+    try {
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax'
+        });
+        return res.status(200).json({ success: true, message: "User logout successfully" });
+    } catch (error) {
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+}
+
+const editProfile = async (req, res, next) => {
+    try {
+        const data = req.body;
+        const { id } = req.owner;
+        await Owner.updateOne({ _id: id }, { $set: data });
+        return res.status(200).json({
+            success: true,
+            message: "Profile Update Successfully"
+        });
+    } catch (error) {
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+}
+
+const getUserDetail = async (req, res, next) => {
+    try {
+        const { id } = req.owner;
+        const user = await Owner.findById({ _id: id });
+        return res.status(200).json({
+            success: true,
+            data: user,
+            message: "User get Successfully"
+        });
+    } catch (error) {
+        return next(new errorHandler("Something went wrong", 500, error));
+    }
+}
+
+const changePassword = async (req, res, next) => {
+    try {
+        const { password, oldpassword } = req.body;
+        const { id } = req.owner;
+        const owner = await Owner.findOne({ _id: id })
+        const dbPassword = owner.password;
+        const isPasswordMatch = await bcrypt.compare(oldpassword, dbPassword);
+        if (!isPasswordMatch) {
+            return res.status(200).json({ success: false, message: "Your current password is wrong" })
+        }
+        owner.set({
+            password: password
+        });
+        const changeFgtPwd = await owner.save();
+        return res.status(200).json({ success: true, message: "Password Reset Successfully", data: changeFgtPwd })
+    } catch (error) {
+        return next(new errorHandler("Error during passsword reset", 500, error));
+    }
+}
+
+module.exports = { ownerLogin, resetPassword, setForgotPassword,logout,editProfile,getUserDetail,changePassword };
