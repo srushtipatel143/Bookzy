@@ -55,6 +55,6 @@
 .admin_val_Add {
     background-color:rgb(231, 173, 48);
     border-radius: 5px;
-    padding: 2px;
+    padding: 2px 4px;
     color: var(--primary-sub-color);
 }

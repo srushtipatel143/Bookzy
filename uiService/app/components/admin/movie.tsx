@@ -24,7 +24,11 @@ interface movieLanguage {
 }
 
 interface movieType {
-    type: string
+    type: String
+}
+interface cast {
+    actor: String,
+    role: String;
 }
 
 
@@ -35,7 +39,12 @@ const AdminMovie = () => {
     const [movieLanguage, setMovieLanguage] = useState<movieLanguage[]>([]);
     const [movieType, setMovieType] = useState<movieType[]>([]);
     const [movieTypeVal, setMovieTypVal] = useState('');
-
+    const [movieLanguageVal, setMovieLanguageVal] = useState('');
+    const [cast, setCast] = useState<cast[]>([]);
+    const [castVal, setCastVal] = useState<cast>({
+        actor: '',
+        role: '',
+    });
     useEffect(() => {
         const fetchDetails = async () => {
             try {
@@ -55,6 +64,28 @@ const AdminMovie = () => {
         setMovieType(prev => [...prev, { type: movieTypeVal }]);
         setMovieTypVal('');
     };
+
+    const addMovieLanguage = () => {
+        if (movieLanguageVal.trim() === '') return;
+        setMovieLanguage(prev => [...prev, { language: movieLanguageVal }]);
+        setMovieLanguageVal('');
+    };
+
+    const handleChange = (e: any) => {
+        const { name, value } = e.target;
+        setCastVal((prev) => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const addMovieCast = () => {
+        console.log("poo")
+        if (castVal.actor.trim() === '' || castVal.role.trim() === '') return;
+        setCast(prev => [...prev, { actor: castVal.actor, role: castVal.role }]);
+        setCastVal({ actor: '', role: '' });
+    };
+
 
 
     return (
@@ -136,9 +167,9 @@ const AdminMovie = () => {
                                         </div>
 
                                         {movieType.length > 0 && (
-                                            <div className="mb-3">
+                                            <div className="mt-3 d-flex flex-wrap align-items-center gap-2">
                                                 {movieType.map((item, index) => (
-                                                    <span className="admin_val_Add" key={index}>{item.type} <IoMdCloseCircle /> </span>
+                                                    <div className="admin_val_Add" key={index}>{item.type} <IoMdCloseCircle /> </div>
                                                 ))}
                                             </div>
                                         )}
@@ -148,12 +179,21 @@ const AdminMovie = () => {
                                         <label className="form-label admin_form_label">Movie Language</label>
                                         <div className="d-flex gap-2">
                                             <div className="col-md-10">
-                                                <input type="text" className="form-control" placeholder="Enter movie type" />
+                                                <input type="text" value={movieLanguageVal || ''} name="language" onChange={(e) => {
+                                                    setMovieLanguageVal(e.target.value)
+                                                }} className="form-control" placeholder="Enter movie type" />
                                             </div>
                                             <div className="col-md-2">
-                                                <button type="button" className="btn btn-secondary">Add</button>
+                                                <button type="button" onClick={addMovieLanguage} className="btn btn-secondary">Add</button>
                                             </div>
                                         </div>
+                                        {movieLanguage.length > 0 && (
+                                            <div className="mt-3 d-flex flex-wrap align-items-center gap-2">
+                                                {movieLanguage.map((item, index) => (
+                                                    <div className="admin_val_Add" key={index}>{item.language} <IoMdCloseCircle /> </div>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </>
@@ -164,18 +204,30 @@ const AdminMovie = () => {
                                 <div className="row mb-3">
                                     <div className="d-flex align-items-end gap-2 w-100 my-2">
                                         <div className="flex-grow-1 d-flex flex-column">
-                                            <label className="form-label">Character Real Name</label>
-                                            <input type="text" className="form-control" placeholder="Enter Character real name" />
+                                            <label className="form-label">Actor/Actress Name</label>
+                                            <input type="text" name="actor" value={castVal?.actor?.toString() || ''} onChange={handleChange} className="form-control" placeholder="Enter Character real name" />
                                         </div>
                                         <div className="flex-grow-1 d-flex flex-column">
                                             <label className="form-label">Role</label>
-                                            <input type="text" className="form-control" placeholder="Enter role" />
+                                            <input type="text" name="role" value={castVal?.role?.toString() || ''} onChange={handleChange} className="form-control" placeholder="Enter role" />
                                         </div>
                                         <div>
-                                            <button type="button" className="btn btn-secondary"> Add </button>
+                                            <button type="button" className="btn btn-secondary" onClick={addMovieCast}> Add </button>
                                         </div>
-
                                     </div>
+                                    {cast.length > 0 && (
+                                        <div className="mt-3 d-flex flex-wrap align-items-center gap-2">
+                                            <DataTable value={cast} rows={10} tableStyle={{ minWidth: '50rem' }}>
+                                                <Column header="No." body={(rowData, options) => options.rowIndex + 1}   ></Column>
+                                                <Column field="actor" header="Actor/Actress Name" ></Column>
+                                                <Column field="role" header="Role" ></Column>
+                                                <Column header="Action" body={(rowData) => (
+                                                    <IoMdCloseCircle />
+                                                )} ></Column>
+                                            </DataTable>
+                                        </div>
+                                    )}
+
                                 </div>
 
                             </>
