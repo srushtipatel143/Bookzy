@@ -7,7 +7,8 @@ import { API_ADMIN_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
-
+import { Modal } from "react-bootstrap";
+import { CgClose } from "react-icons/cg";
 
 interface CityData {
     id: Number,
@@ -20,6 +21,7 @@ interface CityData {
 
 const AdminCity = () => {
     const [city, setCity] = useState<CityData[]>([]);
+    const [cityAddFormShow, setCityAddFormShow] = useState<boolean>(false)
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -39,7 +41,7 @@ const AdminCity = () => {
             <div className="admin_div_mainsec m-3">
                 <div>City Management</div>
                 <div>
-                    <button className="admin_city_add">Add City</button>
+                    <button className="admin_city_add" onClick={() => setCityAddFormShow(true)}>Add City</button>
                 </div>
             </div>
 
@@ -48,15 +50,54 @@ const AdminCity = () => {
                 <Column field="city" header="City" sortable></Column>
                 <Column field="state" header="State" sortable></Column>
                 <Column field="country" header="Country" sortable ></Column>
-                <Column header="Action" body={(rowData)=>(
-                    rowData.isUserMatch? <FaEdit/>:null
+                <Column header="Action" body={(rowData) => (
+                    rowData.isUserMatch ? <FaEdit /> : null
                 )} ></Column>
             </DataTable>
+
+            <Modal
+                show={cityAddFormShow}
+                onHide={() => setCityAddFormShow(false)}
+                contentClassName="admin_form"
+                centered
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header className="border-0 d-flex justify-content-between align-items-center">
+                    <h5 className="mb-0 admin_form_heading">Add City</h5>
+                    <CgClose size={24} onClick={() => setCityAddFormShow(false)} style={{cursor:"pointer"}}/>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <div className="admin_form_line w-100 mb-3"></div>
+                    <form>
+                        <div className="mb-3">
+                            <label className="form-label admin_form_label">City</label>
+                            <input type="text" className="form-control" placeholder="Enter city name" />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label admin_form_label">State</label>
+                            <input type="text" className="form-control" placeholder="Enter state name" />
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label admin_form_label">Country</label>
+                            <input type="text" className="form-control" placeholder="Enter country name" />
+                        </div>
+
+                        <div className="text-end mt-4">
+                            <button type="submit" className="admin_form_btn px-4 py-2">
+                                Submit
+                            </button>
+                        </div>
+                    </form>
+                </Modal.Body>
+            </Modal>
 
             <ToastContainer />
         </div>
     )
 }
-
 
 export default AdminCity;

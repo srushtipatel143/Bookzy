@@ -23,3 +23,31 @@
 .admin_city_add:hover {
     opacity: 1;
 }
+
+.admin_form {
+    background: linear-gradient(135deg,
+            rgb(0, 0, 0) 0%,
+            rgb(0, 0, 0) 20%,
+            rgb(151, 8, 15) 100%);
+    color: var(--secondary-sub-color);
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.admin_form_btn {
+    background-color: var(--secondary-sub-color);
+    border-radius: 5px;
+    border: none;
+}
+
+.admin_form_line {
+    height: 1px;
+    background-color: var(--secondary-sub-color);
+}
+
+.custom-textarea {
+  height: 150px;           
+  resize: none;         
+  overflow-y: auto;         
+  white-space: pre-wrap;    
+}
