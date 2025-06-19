@@ -29,7 +29,10 @@ const getSingleCity = async (req, res, next) => {
 const getCityByUSer = async (req, res, next) => {
     try {
         const { id } = req.admin;
-        const getCityQuery = `SELECT id, city, state, country, CASE WHEN userId = ? THEN TRUE ELSE FALSE END AS isUserMatch FROM city`;
+        const getCityQuery = `SELECT id, city, state, country, 
+        CASE WHEN userId = ? THEN TRUE 
+        ELSE FALSE END AS isUserMatch FROM city`;
+        
         const [getCityRes] = await pool.execute(getCityQuery, [id]);
         return res.status(200).json({ success: true, message: "city get successfully", data: getCityRes })
     } catch (error) {
