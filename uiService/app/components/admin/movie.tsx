@@ -9,6 +9,7 @@ import axios from "axios";
 import { FaEdit } from "react-icons/fa";
 import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
+import { IoMdCloseCircle } from "react-icons/io";
 
 interface CityData {
     id: Number,
@@ -18,11 +19,22 @@ interface CityData {
     isUserMatch: Boolean
 }
 
+interface movieLanguage {
+    language: String
+}
+
+interface movieType {
+    type: string
+}
+
 
 const AdminMovie = () => {
     const [city, setCity] = useState<CityData[]>([]);
     const [formStep, setFormStep] = useState(1);
-    const [cityAddFormShow, setCityAddFormShow] = useState<boolean>(false)
+    const [cityAddFormShow, setCityAddFormShow] = useState<boolean>(false);
+    const [movieLanguage, setMovieLanguage] = useState<movieLanguage[]>([]);
+    const [movieType, setMovieType] = useState<movieType[]>([]);
+    const [movieTypeVal, setMovieTypVal] = useState('');
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -37,6 +49,14 @@ const AdminMovie = () => {
         }
         fetchDetails()
     }, []);
+
+    const addMovieType = () => {
+        if (movieTypeVal.trim() === '') return;
+        setMovieType(prev => [...prev, { type: movieTypeVal }]);
+        setMovieTypVal('');
+    };
+
+
     return (
         <div className="container-fluid m-3 admin_div">
             <div className="admin_div_mainsec m-3">
@@ -106,12 +126,23 @@ const AdminMovie = () => {
                                         <label className="form-label admin_form_label">Movie Type</label>
                                         <div className="d-flex gap-2">
                                             <div className="col-md-10">
-                                                <input type="text" className="form-control" placeholder="Enter movie type" />
+                                                <input type="text" className="form-control" value={movieTypeVal || ''} name="type" onChange={(e) => {
+                                                    setMovieTypVal(e.target.value)
+                                                }} placeholder="Enter movie type" />
                                             </div>
                                             <div className="col-md-2">
-                                                <button type="button" className="btn btn-secondary">Add</button>
+                                                <button type="button" onClick={addMovieType} className="btn btn-secondary">Add</button>
                                             </div>
                                         </div>
+
+                                        {movieType.length > 0 && (
+                                            <div className="mb-3">
+                                                {movieType.map((item, index) => (
+                                                    <span className="admin_val_Add" key={index}>{item.type} <IoMdCloseCircle /> </span>
+                                                ))}
+                                            </div>
+                                        )}
+
                                     </div>
                                     <div className="col-md-6 mb-3 d-flex flex-column">
                                         <label className="form-label admin_form_label">Movie Language</label>
