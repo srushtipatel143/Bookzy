@@ -5,9 +5,7 @@ const editAdmin = async (req, res, next) => {
     try {
         const id = req.body._id;
         const data = req.body;
-        if (data.email) {
-            return next(new errorHandler("Email can not be changed", 400));
-        }
+        
         const admin = await Admin.findOne({ _id: id });
         if (!!admin.isDelete) {
             return next(new errorHandler("This admin is deleted", 400));
