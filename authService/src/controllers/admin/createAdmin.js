@@ -5,7 +5,6 @@ const sendEmail = require("../../helpers/libraries/sendEmail");
 const createAdmin = async (req, res, next) => {
     try {
         const data = req.body;
-        const admin = req.admin;
         let savedAdmin;
 
         if (data.password) {

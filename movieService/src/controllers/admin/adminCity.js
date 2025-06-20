@@ -7,8 +7,17 @@ const addCity = async (req, res, next) => {
         const { id } = req.admin;
         const callProcedure = `CALL addCity(?, ?, ?, ?)`;
         const param = [id, city, state, country];
-        await pool.execute(callProcedure, param)
-        return res.status(200).json({ success: true, message: "city added successfully", data: req.body })
+        const [rows] = await pool.execute(callProcedure, param);
+        const insertedId = rows[0][0].insertedId;
+
+        const data = {
+            id: insertedId,
+            city: city,
+            state: state,
+            country: country,
+            isUserMatch: true,
+        }
+        return res.status(200).json({ success: true, message: "city added successfully", data: data })
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
@@ -17,9 +26,9 @@ const addCity = async (req, res, next) => {
 const getSingleCity = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const userId=req.admin.id;
-        const getCityQuery = `select userId,city,state,country from city where id=? and userId=?`;
-        const [getCityRes] = await pool.execute(getCityQuery, [id,userId]);
+        const userId = req.admin.id;
+        const getCityQuery = `select id,userId,city,state,country from city where id=? and userId=?`;
+        const [getCityRes] = await pool.execute(getCityQuery, [id, userId]);
         return res.status(200).json({ success: true, message: "city get successfully", data: getCityRes })
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
@@ -32,7 +41,7 @@ const getCityByUSer = async (req, res, next) => {
         const getCityQuery = `SELECT id, city, state, country, 
         CASE WHEN userId = ? THEN TRUE 
         ELSE FALSE END AS isUserMatch FROM city`;
-        
+
         const [getCityRes] = await pool.execute(getCityQuery, [id]);
         return res.status(200).json({ success: true, message: "city get successfully", data: getCityRes })
     } catch (error) {
@@ -43,9 +52,9 @@ const getCityByUSer = async (req, res, next) => {
 const editCity = async (req, res, next) => {
     try {
         const { id, city, state, country } = req.body;
-        const userId=req.admin.id;
+        const userId = req.admin.id;
         const callProcedure = `CALL updateCity(?, ?, ?, ?,?)`;
-        const param = [id, city, state, country,userId];
+        const param = [id, city, state, country, userId];
         await pool.execute(callProcedure, param);
         return res.status(200).json({ success: true, message: "city update successfully", data: req.body })
     } catch (error) {

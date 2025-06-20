@@ -11,17 +11,24 @@ import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
 
 interface CityData {
-    id: Number,
-    city: String,
-    state: String,
-    country: String,
-    isUserMatch: Boolean
+    id: number,
+    city: string,
+    state: string,
+    country: string,
+    isUserMatch: boolean
 }
 
+interface CityDataObject {
+    id?: number;
+    city?: string;
+    state?: string;
+    country?: string;
+}
 
 const AdminCity = () => {
     const [city, setCity] = useState<CityData[]>([]);
-    const [cityAddFormShow, setCityAddFormShow] = useState<boolean>(false)
+    const [cityAddFormShow, setCityAddFormShow] = useState<boolean>(false);
+    const [cityDataObj, setCityDataObj] = useState<CityDataObject>({});
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -36,6 +43,46 @@ const AdminCity = () => {
         }
         fetchDetails()
     }, []);
+
+    const submitForm = async () => {
+        try {
+            if (cityDataObj?.id) {
+                const editCityRes = await axios.put(`${API_ADMIN_URL}/editcity`, cityDataObj, {
+                    withCredentials: true
+                });
+                const data = editCityRes?.data?.data;
+                setCity((prevCity) =>
+                    prevCity.map((item) =>
+                        item.id === cityDataObj.id ? { ...item, ...data } : item
+                    )
+                );
+                setCityAddFormShow(false)
+                setCityDataObj({})
+                return toast.success("City update successfully");
+            }
+            else {
+                const createCityRes = await axios.post(`${API_ADMIN_URL}/addcity`, cityDataObj, {
+                    withCredentials: true
+                });
+                const data = createCityRes?.data?.data;
+                setCity((prevCity) => [...prevCity, data]);
+                setCityAddFormShow(false)
+                setCityDataObj({})
+                return toast.success("City add successfully");
+            }
+        } catch (error: any) {
+            return toast.error(error.response.data.message);
+        }
+    }
+
+    const handleChange = (e: any) => {
+        const { name, value } = e.target;
+        setCityDataObj((prev) => ({
+            ...(prev || {}),
+            [name]: value
+        }))
+    }
+
     return (
         <div className="container-fluid m-3 admin_div">
             <div className="admin_div_mainsec m-3">
@@ -51,13 +98,22 @@ const AdminCity = () => {
                 <Column field="state" header="State" sortable></Column>
                 <Column field="country" header="Country" sortable ></Column>
                 <Column header="Action" body={(rowData) => (
-                    rowData.isUserMatch ? <FaEdit /> : null
+                    rowData.isUserMatch ? <FaEdit onClick={async () => {
+                        setCityAddFormShow(true);
+                        const editModeRes = await axios.get(`${API_ADMIN_URL}/getcity/${rowData.id}`, {
+                            withCredentials: true
+                        });
+                        setCityDataObj(editModeRes?.data?.data[0])
+                    }} /> : null
                 )} ></Column>
             </DataTable>
 
             <Modal
                 show={cityAddFormShow}
-                onHide={() => setCityAddFormShow(false)}
+                onHide={() => {
+                    setCityAddFormShow(false);
+                    setCityDataObj({});
+                }}
                 contentClassName="admin_form"
                 centered
                 backdrop="static"
@@ -65,7 +121,10 @@ const AdminCity = () => {
             >
                 <Modal.Header className="border-0 d-flex justify-content-between align-items-center">
                     <h5 className="mb-0 admin_form_heading">Add City</h5>
-                    <CgClose size={24} onClick={() => setCityAddFormShow(false)} style={{cursor:"pointer"}}/>
+                    <CgClose size={24} onClick={() => {
+                        setCityAddFormShow(false);
+                        setCityDataObj({});
+                    }} style={{ cursor: "pointer" }} />
                 </Modal.Header>
 
                 <Modal.Body>
@@ -73,28 +132,27 @@ const AdminCity = () => {
                     <form>
                         <div className="mb-3">
                             <label className="form-label admin_form_label">City</label>
-                            <input type="text" className="form-control" placeholder="Enter city name" />
+                            <input type="text" name="city" onChange={handleChange} value={cityDataObj?.city || ''} className="form-control" placeholder="Enter city name" />
                         </div>
 
                         <div className="mb-3">
                             <label className="form-label admin_form_label">State</label>
-                            <input type="text" className="form-control" placeholder="Enter state name" />
+                            <input type="text" name="state" onChange={handleChange} value={cityDataObj?.state || ''} className="form-control" placeholder="Enter state name" />
                         </div>
 
                         <div className="mb-3">
                             <label className="form-label admin_form_label">Country</label>
-                            <input type="text" className="form-control" placeholder="Enter country name" />
+                            <input type="text" name="country" onChange={handleChange} value={cityDataObj?.country || ''} className="form-control" placeholder="Enter country name" />
                         </div>
 
                         <div className="text-end mt-4">
-                            <button type="submit" className="admin_form_btn px-4 py-2">
+                            <button type="button" className="admin_form_btn px-4 py-2" onClick={submitForm} >
                                 Submit
                             </button>
                         </div>
                     </form>
                 </Modal.Body>
             </Modal>
-
             <ToastContainer />
         </div>
     )

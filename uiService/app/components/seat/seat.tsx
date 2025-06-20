@@ -21,7 +21,7 @@ interface showDetails {
     movieId: string;
     screenId: number;
     formattedTimeFull: string;
-    movieName: String;
+    movieName: string;
     screenName: string;
     city: string;
     _id: string;

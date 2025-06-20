@@ -12,23 +12,24 @@ import { CgClose } from "react-icons/cg";
 import { IoMdCloseCircle } from "react-icons/io";
 
 interface CityData {
-    id: Number,
-    city: String,
-    state: String,
-    country: String,
-    isUserMatch: Boolean
+    id: number,
+    city: string,
+    state: string,
+    country: string,
+    isUserMatch: boolean
 }
 
 interface movieLanguage {
-    language: String
+    language: string
 }
 
 interface movieType {
-    type: String
+    type: string
 }
 interface cast {
-    actor: String,
-    role: String;
+    actor: string,
+    role: string;
+    imageUrl:string
 }
 
 
@@ -44,6 +45,7 @@ const AdminMovie = () => {
     const [castVal, setCastVal] = useState<cast>({
         actor: '',
         role: '',
+        imageUrl:''
     });
     useEffect(() => {
         const fetchDetails = async () => {
@@ -82,8 +84,8 @@ const AdminMovie = () => {
     const addMovieCast = () => {
         console.log("poo")
         if (castVal.actor.trim() === '' || castVal.role.trim() === '') return;
-        setCast(prev => [...prev, { actor: castVal.actor, role: castVal.role }]);
-        setCastVal({ actor: '', role: '' });
+        setCast(prev => [...prev, { actor: castVal.actor, role: castVal.role,imageUrl:castVal?.imageUrl }]);
+        setCastVal({ actor: '', role: '',imageUrl:'' });
     };
 
 
@@ -210,6 +212,10 @@ const AdminMovie = () => {
                                         <div className="flex-grow-1 d-flex flex-column">
                                             <label className="form-label">Role</label>
                                             <input type="text" name="role" value={castVal?.role?.toString() || ''} onChange={handleChange} className="form-control" placeholder="Enter role" />
+                                        </div>
+                                         <div className="flex-grow-1 d-flex flex-column">
+                                            <label className="form-label">Image</label>
+                                            <input type="file" name="imageUrl" value={castVal?.imageUrl?.toString() || ''} onChange={handleChange} className="form-control" placeholder="Enter role" />
                                         </div>
                                         <div>
                                             <button type="button" className="btn btn-secondary" onClick={addMovieCast}> Add </button>

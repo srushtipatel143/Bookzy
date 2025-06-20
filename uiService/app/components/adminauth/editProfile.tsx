@@ -10,23 +10,6 @@ import Cookies from "js-cookie";
 import axios from "axios";
 import { useUser } from "../context/userContext";
 
-interface Address {
-    country: string;
-    state: string;
-    city: string;
-    street: string;
-    pincode: number | string;
-}
-
-interface UserDetails {
-    firstName: string;
-    lastName: string;
-    email: string;
-    countryCode: number;
-    mobile: number;
-    imageURL: string;
-    address: Address;
-}
 
 const EditProfile = () => {
     const [formData, setFormData] = useState<any>(null);

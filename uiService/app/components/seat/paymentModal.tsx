@@ -16,7 +16,7 @@ interface showDetails {
     movieId: string;
     screenId: number;
     formattedTimeFull: string;
-    movieName: String;
+    movieName: string;
     city: string;
     _id: string;
     priceInfoForShow: {
@@ -59,7 +59,7 @@ interface PaymentmodalProps {
 }
 
 declare global {
-    interface Window {
+    interface window {
         Razorpay: any;
     }
 }
