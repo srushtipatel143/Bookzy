@@ -4,10 +4,7 @@ const editOwner = async (req, res, next) => {
     try {
         const id = req.body._id;
         const data = req.body;
-
-        if (data.email) {
-            return next(new errorHandler("Email can not be changed", 400));
-        }
+        
         const owner = await Owner.findOne({ _id: id});
         if (!!owner.isDelete) {
             return next(new errorHandler("This owner is deleted", 400));
