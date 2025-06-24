@@ -123,7 +123,7 @@ const changePassword = async (req, res, next) => {
         const { id } = req.admin;
         const admin = await Admin.findOne({ _id: id })
         const dbPassword = admin.password;
-        const isPasswordMatch = await bcrypt.compare(oldpassword, dbPassword);
+        const isPasswordMatch = bcrypt.compare(oldpassword, dbPassword);
         if (!isPasswordMatch) {
             return res.status(200).json({ success: false, message: "Your current password is wrong" })
         }
@@ -131,7 +131,7 @@ const changePassword = async (req, res, next) => {
             password: password
         });
         const changeFgtPwd = await admin.save();
-        return res.status(200).json({ success: true, message: "Password Reset Successfully", data: changeFgtPwd })
+        return res.status(200).json({ success: true, message: "Password Reset Successfully", data: changeFgtPwd });
     } catch (error) {
         return next(new errorHandler("Error during passsword reset", 500, error));
     }

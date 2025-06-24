@@ -35,7 +35,6 @@ const EditProfile = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                console.log("u",API_Owner_AUTH_URL)
                 const response = await axios.get(`${API_Owner_AUTH_URL}/getuser`, {
                     withCredentials: true
                 });

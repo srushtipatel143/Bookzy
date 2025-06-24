@@ -82,7 +82,6 @@ const AdminMovie = () => {
     };
 
     const addMovieCast = () => {
-        console.log("poo")
         if (castVal.actor.trim() === '' || castVal.role.trim() === '') return;
         setCast(prev => [...prev, { actor: castVal.actor, role: castVal.role,imageUrl:castVal?.imageUrl }]);
         setCastVal({ actor: '', role: '',imageUrl:'' });

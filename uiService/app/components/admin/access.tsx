@@ -3,7 +3,7 @@ import "../../css/cityadmin.css";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useEffect, useState } from "react";
-import { API_ADMIN_AUTH_URL } from "../../utils/config";
+import { API_ADMIN_AUTH_URL, API_Owner_AUTH_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
@@ -122,9 +122,17 @@ const AdminAccess = () => {
                     <div className="d-flex gap-2 justify-content-center">
                         <FaEdit onClick={async () => {
                             setUserAddFormShow(true);
-                            const editModeRes = await axios.get(`${API_ADMIN_AUTH_URL}/getsingleadmin/${rowData._id}`, {
-                                withCredentials: true
-                            });
+                            let editModeRes;
+                            if (rowData.role === 'admin') {
+                                editModeRes = await axios.get(`${API_ADMIN_AUTH_URL}/getsingleadmin/${rowData._id}`, {
+                                    withCredentials: true
+                                });
+                            }
+                            else {
+                                editModeRes = await axios.get(`${API_Owner_AUTH_URL}/getsingleowner/${rowData._id}`, {
+                                    withCredentials: true
+                                });
+                            }
                             setDisable(true)
                             setUserDataObj(editModeRes?.data?.data)
                         }} />
