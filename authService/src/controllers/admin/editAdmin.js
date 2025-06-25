@@ -5,7 +5,6 @@ const editAdmin = async (req, res, next) => {
     try {
         const id = req.body._id;
         const data = req.body;
-        
         const admin = await Admin.findOne({ _id: id });
         if (!!admin.isDelete) {
             return next(new errorHandler("This admin is deleted", 400));
@@ -19,7 +18,6 @@ const editAdmin = async (req, res, next) => {
             return res.status(404).json({ success: false, message: "Admin not found" });
         }
         return res.status(200).json({ success: true, message: "Admin updated successfully", data: data });
-
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }

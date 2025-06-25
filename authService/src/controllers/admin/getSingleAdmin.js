@@ -8,7 +8,6 @@ const getSingleAdmin = async (req, res, next) => {
             return next(new errorHandler("This admin is not Exist", 404))
         }
         return res.status(200).json({ success: true, message: "Admin get successfully", data: admin })
-
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }

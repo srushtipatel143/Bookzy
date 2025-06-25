@@ -27,7 +27,6 @@ const signIn = async (req, res, next) => {
             }
             otp = await user.generateAndSendOtp();
         }
-
         console.log(otp)
         const { EMAIL_USERNAME } = process.env;
         const emailPayload = {
@@ -36,7 +35,6 @@ const signIn = async (req, res, next) => {
             subject: "Your Otp is here",
             html: `Your OTP code is <h3>${otp}</h3>It is valid for 5 minutes.`,
         };
-
         const key = "1";
         const topic = "otp";
         //produceMessage(topic, numberOfPartion, key, emailPayload)
@@ -79,23 +77,19 @@ const resendOtp = async (req, res, next) => {
         const otp = await user.generateAndSendOtp();
         console.log(otp)
         const { EMAIL_USERNAME } = process.env;
-
         const emailPayload = {
             from: EMAIL_USERNAME,
             to: user.email,
             subject: "Your Otp is here",
             html: `Your OTP code is <h3>${otp}</h3>It is valid for 5 minutes.`,
         };
-
         const key = "1";
         const topic = "otp";
         //produceMessage(topic, numberOfPartion, key, emailPayload)
-
         return res.status(200).json({
             success: true,
             message: "OTP has been sent to the email."
         });
-
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
@@ -146,10 +140,8 @@ const adduserduringpayment = async (req, res, next) => {
     try {
         const data = req.body;
         const mobile = Number(data.mobile)
-
         let resVal, userId;
         const userData = await User.findOne({ email: data.email });
-
         if (userData) {
             resVal = await User.updateOne({ _id: data._id }, { $set: { mobile: mobile } });
             userId = userData._id;
@@ -158,7 +150,6 @@ const adduserduringpayment = async (req, res, next) => {
             resVal = await newUser.save();
             userId = resVal._id;
         }
-
         return res.status(200).json({
             statusCode: 200,
             success: true,

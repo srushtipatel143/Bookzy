@@ -6,7 +6,6 @@ const createAdmin = async (req, res, next) => {
     try {
         const data = req.body;
         let savedAdmin;
-
         if (data.password) {
             return next(new errorHandler("Password should not allow during admin creation", 400));
         }

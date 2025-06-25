@@ -34,7 +34,6 @@ const resetPassword = async (req, res, next) => {
         return next(new errorHandler("There is no owner with this email", 400, error));
     }
     const resetPasswordToken = await owner.getResetPasswordTokenFromOwner();
-
     const resetPasswordUrl = `${URL}/resetpassword?resetPasswordToken=${resetPasswordToken}`
     const emailTemplate = `
         <h3 style="color : red "> Reset Your Password </h3>

@@ -30,7 +30,6 @@ const resetPassword = async (req, res, next) => {
     const { URL, EMAIL_USERNAME } = process.env;
     const resetEmail = req.body.email;
     const admin = await Admin.findOne({ email: resetEmail });
-
     if (!admin) {
         return next(new errorHandler("There is no admin with this email", 400));
     }

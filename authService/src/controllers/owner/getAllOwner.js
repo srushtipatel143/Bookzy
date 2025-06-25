@@ -3,7 +3,6 @@ const Owner = require("../../models/ownerModel");
 
 const getAllOwner = async (req, res, next) => {
     const id=req.admin._id;
-
     try {
         const owner = await Owner.find({createdBy:id,isDelete: false});
         if(owner.length===0){
