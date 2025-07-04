@@ -58,3 +58,12 @@
     padding: 2px 4px;
     color: var(--primary-sub-color);
 }
+
+/* .table-responsive {
+  overflow-x: auto;
+  width: 100%;
+}
+
+.p-datatable-wrapper {
+  min-width: 900px; 
+} */
