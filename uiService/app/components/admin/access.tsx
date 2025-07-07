@@ -61,9 +61,18 @@ const AdminAccess = () => {
     const submitForm = async () => {
         try {
             if (userDataObj?._id) {
-                const editUserRes = await axios.put(`${API_ADMIN_AUTH_URL}/editadmin`, userDataObj, {
-                    withCredentials: true
-                });
+                let editUserRes;
+                if (userDataObj.role === 'admin') {
+                    editUserRes = await axios.put(`${API_ADMIN_AUTH_URL}/editadmin`, userDataObj, {
+                        withCredentials: true
+                    });
+                }
+                else {
+                    editUserRes = await axios.put(`${API_Owner_AUTH_URL}/editowner`, userDataObj, {
+                        withCredentials: true
+                    });
+                }
+
                 const data = editUserRes?.data?.data;
                 setUserData((prevUser) =>
                     prevUser.map((item) =>
@@ -76,9 +85,18 @@ const AdminAccess = () => {
                 return toast.success("User update successfully");
             }
             else {
-                const createUserRes = await axios.post(`${API_ADMIN_AUTH_URL}/createadmin`, userDataObj, {
-                    withCredentials: true
-                });
+                let createUserRes;
+                if (userDataObj.role === 'admin') {
+                    createUserRes = await axios.post(`${API_ADMIN_AUTH_URL}/createadmin`, userDataObj, {
+                        withCredentials: true
+                    });
+                }
+                else {
+                    createUserRes = await axios.post(`${API_Owner_AUTH_URL}/createowner`, userDataObj, {
+                        withCredentials: true
+                    });
+                }
+
                 const data = createUserRes?.data?.data;
                 setUserData((prevUser) => [...prevUser, data]);
                 setUserAddFormShow(false)
@@ -137,9 +155,17 @@ const AdminAccess = () => {
                             setUserDataObj(editModeRes?.data?.data)
                         }} />
                         <MdDelete onClick={async () => {
-                            await axios.put(`${API_ADMIN_AUTH_URL}/deleteadmin/${rowData._id}`, {}, {
-                                withCredentials: true
-                            });
+                            if (rowData.role==='admin') {
+                                await axios.put(`${API_ADMIN_AUTH_URL}/deleteadmin/${rowData._id}`, {}, {
+                                    withCredentials: true
+                                });
+                            }
+                            else {
+                                await axios.put(`${API_Owner_AUTH_URL}/deleteowner/${rowData._id}`, {}, {
+                                    withCredentials: true
+                                });
+                            }
+
                             setUserData((prevUser) =>
                                 prevUser.filter((item) => item._id !== rowData._id)
                             );
