@@ -14,7 +14,7 @@ router.get("/getallcity",getAccessToRouteBoth,getCityByUSer);
 router.put("/editcity",getAccessToRouteBoth,editCity)
 
 router.post("/addmovie",getAccessToRouteBoth,upload.single('imageUrl'),addMovie)
-router.put("/updatemovie",getAccessToRouteBoth,updateMovie)
+router.put("/updatemovie",getAccessToRouteBoth,upload.single('imageUrl'),updateMovie)
 router.get("/getallmovie",getAccessToRouteBoth,getAllMovie)
 router.get("/getsinglemovie/:id",getAccessToRouteBoth,getSingleMovie)
 

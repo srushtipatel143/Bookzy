@@ -11,8 +11,11 @@ import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
 import { IoMdCloseCircle } from "react-icons/io";
 import Image from 'next/image';
+import { v4 as uuidv4 } from 'uuid';
+
 
 interface MovieData {
+    _id: string;
     title: string,
     movieImageURl: string | File,
     releaseDate: string,
@@ -32,12 +35,15 @@ interface movieType {
 }
 
 interface cast {
+    id?: string,
+    _id?: string,
     actor: string,
     role: string;
     imageUrl: string | File
 }
 
 interface movieDataObject {
+    _id?: string;
     title?: string,
     movieImageURl?: string | File,
     releaseDate?: string,
@@ -59,6 +65,7 @@ const AdminMovie = () => {
     const [cast, setCast] = useState<cast[]>([]);
     const [movieDataObj, setMovieDataObj] = useState<movieDataObject>({});
     const [castVal, setCastVal] = useState<cast>({ actor: '', role: '', imageUrl: '' });
+
     useEffect(() => {
         const fetchDetails = async () => {
             try {
@@ -95,7 +102,8 @@ const AdminMovie = () => {
 
     const addMovieCast = () => {
         if (castVal.actor.trim() === '' || castVal.role.trim() === '') return;
-        setCast(prev => [...prev, { actor: castVal.actor, role: castVal.role, imageUrl: castVal?.imageUrl }]);
+        const uniqueId = uuidv4();
+        setCast(prev => [...prev, { id: uniqueId, actor: castVal.actor, role: castVal.role, imageUrl: castVal?.imageUrl }]);
         setCastVal({ actor: '', role: '', imageUrl: '' });
     };
 
@@ -103,31 +111,53 @@ const AdminMovie = () => {
         const formData = new FormData();
         Object.entries(movieDataObj).forEach(([key, value]) => {
             if (value instanceof File) {
-                formData.append(key, value);
+                formData.set(key, value); 
+            } else if (typeof value === 'object' && value !== null) {
+                formData.set(key, JSON.stringify(value));
             } else {
-                formData.append(key, value?.toString() || "");
+                formData.set(key, value?.toString() || "");
             }
         });
-        formData.append("movieType", JSON.stringify(movieType));
-        formData.append("movieLanguage", JSON.stringify(movieLanguage));
-        formData.append("cast", JSON.stringify(cast));
+        formData.set("movieType", JSON.stringify(movieType));
+        formData.set("movieLanguage", JSON.stringify(movieLanguage));
+        formData.set("cast", JSON.stringify(cast));
         return formData;
     };
 
     const submitform = async (e: any) => {
         e.preventDefault();
         const formData = buildFormData();
-        const createMovieRes = await axios.post(`${API_ADMIN_URL}/addMovie`, formData, {
-            withCredentials: true,
-            headers: {
-                "Content-Type": "multipart/form-data"
+        if (movieDataObj._id) {
+            const updateMovieRes = await axios.put(`${API_ADMIN_URL}/updatemovie`, formData, {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            if (updateMovieRes.data.success) {
+                toast.success(updateMovieRes.data.message)
+                resetForm();
+                const data = updateMovieRes?.data?.data;
+                setMovie((prevMovie) =>
+                    prevMovie.map((item) =>
+                        item._id === movieDataObj._id ? { ...item, ...data } : item
+                    )
+                );
             }
-        });
-        if (createMovieRes.data.success) {
-            toast.success(createMovieRes.data.message)
-            resetForm();
-            const data = createMovieRes?.data?.data;
-            setMovie((prevmovie) => [...prevmovie, data]);
+        }
+        else {
+            const createMovieRes = await axios.post(`${API_ADMIN_URL}/addMovie`, formData, {
+                withCredentials: true,
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            if (createMovieRes.data.success) {
+                toast.success(createMovieRes.data.message)
+                resetForm();
+                const data = createMovieRes?.data?.data;
+                setMovie((prevmovie) => [...prevmovie, data]);
+            }
         }
     }
 
@@ -165,7 +195,7 @@ const AdminMovie = () => {
                     rows={10}
                     sortOrder={-1}
                     style={{ minWidth: '1000px' }}>
-                    <Column header="No." body={(rowData, options) => options.rowIndex + 1} />
+                    <Column header="No." body={(_, options) => options.rowIndex + 1} />
                     <Column field="title" header="Title" sortable />
                     <Column field="releaseDate" header="releaseDate" sortable />
                     <Column field="duration" header="Movie Duration" sortable />
@@ -203,13 +233,11 @@ const AdminMovie = () => {
                             releaseDate: formattedDate
                         });
                         setMovieLanguage(movie.movieLanguage)
-
                         setMovieType(movie.movieType)
-                        setCast(movie.data?.cast)
+                        setCast(movie.cast)
                     }} style={{ cursor: "pointer" }} />)} />
                 </DataTable>
             </div>
-
 
             <Modal
                 show={movieAddFormShow}
@@ -273,15 +301,18 @@ const AdminMovie = () => {
                                                 <button type="button" onClick={addMovieType} className="btn btn-secondary">Add</button>
                                             </div>
                                         </div>
-
                                         {movieType.length > 0 && (
                                             <div className="mt-3 d-flex flex-wrap align-items-center gap-2">
                                                 {movieType.map((item, index) => (
-                                                    <div className="admin_val_Add" key={index}>{item.type} <IoMdCloseCircle /> </div>
+                                                    <div className="admin_val_Add" key={index}>{item.type} <IoMdCloseCircle onClick={() => {
+                                                        const updated = [...movieType];
+                                                        updated.splice(index, 1);
+                                                        setMovieType(updated);
+                                                    }}
+                                                        style={{ cursor: 'pointer' }} /> </div>
                                                 ))}
                                             </div>
                                         )}
-
                                     </div>
                                     <div className="col-md-6 mb-3 d-flex flex-column">
                                         <label className="form-label admin_form_label">Movie Language</label>
@@ -295,10 +326,16 @@ const AdminMovie = () => {
                                                 <button type="button" onClick={addMovieLanguage} className="btn btn-secondary">Add</button>
                                             </div>
                                         </div>
+
                                         {movieLanguage.length > 0 && (
                                             <div className="mt-3 d-flex flex-wrap align-items-center gap-2">
                                                 {movieLanguage.map((item, index) => (
-                                                    <div className="admin_val_Add" key={index}>{item.language} <IoMdCloseCircle /> </div>
+                                                    <div className="admin_val_Add" key={index}>{item.language} <IoMdCloseCircle onClick={() => {
+                                                        const updated = [...movieLanguage];
+                                                        updated.splice(index, 1);
+                                                        setMovieLanguage(updated);
+                                                    }}
+                                                        style={{ cursor: 'pointer' }} /> </div>
                                                 ))}
                                             </div>
                                         )}
@@ -334,14 +371,24 @@ const AdminMovie = () => {
                                     </div>
                                 </div>
                                 <div className="row">
-                                    {cast.length > 0 && (
+                                    {cast && cast.length > 0 && (
                                         <div className="mt-3">
                                             <div className="w-100">
                                                 <DataTable value={cast} rows={10}>
-                                                    <Column header="No." body={(rowData, options) => options.rowIndex + 1} />
+                                                    <Column header="No." body={(_, options) => options.rowIndex + 1} />
                                                     <Column field="actor" header="Actor/Actress Name" />
-                                                    <Column field="role" header="Role" />
-                                                    <Column header="Action" body={() => <IoMdCloseCircle />} />
+                                                    <Column field="role" header="Role" /><Column
+                                                        header="Action"
+                                                        body={(rowData) => (
+                                                            <IoMdCloseCircle
+                                                                onClick={() => {
+                                                                    const idVal = rowData.id || rowData._id;
+                                                                    setCast(prev => prev.filter(item => (item.id || item._id) !== idVal));
+                                                                }}
+                                                                style={{ cursor: 'pointer', fontSize: '1.5rem' }}
+                                                            />
+                                                        )}
+                                                    />
                                                 </DataTable>
                                             </div>
                                         </div>
@@ -365,6 +412,7 @@ const AdminMovie = () => {
                     </form>
                 </Modal.Body>
             </Modal>
+
             <ToastContainer />
         </div>
     )

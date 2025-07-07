@@ -59,6 +59,10 @@
   border-radius: 5px;
   padding: 2px 4px;
   color: var(--primary-sub-color);
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  gap:5px;
 }
 
 /* .table-responsive {
