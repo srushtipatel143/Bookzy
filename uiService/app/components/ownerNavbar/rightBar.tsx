@@ -61,15 +61,15 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
                         setCanvasShow(false)
                     }} className="side_menu_admin px-2 gap-3"><MdDashboardCustomize size={24} />Dashboard</div>
                     <div onClick={() => {
-                        router.push("/owner/ownerpasswordchange")
+                        router.push("/owner/cinema")
                         setCanvasShow(false)
                     }} className="side_menu_admin px-2 gap-3"> <TbBrandCinema4D size={24} />Cinema Management</div>
                     <div onClick={() => {
-                        router.push("/owner/ownerpasswordchange")
+                        router.push("/owner/screen")
                         setCanvasShow(false)
                     }} className="side_menu_admin px-2 gap-3"> <MdOutlineFitScreen size={24} />Screen Management</div>
                     <div onClick={() => {
-                        router.push("/owner/ownerpasswordchange")
+                        router.push("/owner/show")
                         setCanvasShow(false)
                     }} className="side_menu_admin px-2 gap-3"> <RiSlideshow3Line size={24} />Show Management</div>
                     <div onClick={() => {
