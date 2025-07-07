@@ -64,10 +64,11 @@ const getCinemaByUSer = async (req, res, next) => {
     try {
         const { id } = req.owner;
         const getCinemaQuery = `select cinema.id as cinemaId,cinema.userId as userId,cinemaName,cinemaLandmark,cinemastatusenum.status as cinemaStatus,
-        noOfScreen,facility,facilityStatus from cinema 
+        noOfScreen,facility,facilityStatus,city from cinema 
         inner join cinemainformation on cinemainformation.cinemaId=cinema.id
         join  cinemastatusenum on cinemastatusenum.id=cinema.status
         join facilitystatusenum on facilitystatusenum.id=cinemainformation.status
+        join city on city.id=cinema.cityId
         where cinema.userId=? and cinema.status=?`;
         const param=[id,'1'];
         const [getCinemaRes] = await pool.execute(getCinemaQuery, param);
@@ -82,6 +83,7 @@ const getCinemaByUSer = async (req, res, next) => {
                     landmark: item.cinemaLandmark,
                     status: item.cinemaStatus,
                     screens: item.noOfScreen,
+                    city:item.city,
                     facilities: [{ facilityName: item.facility, facilityStatus: item.facilityStatus }]
                 };
 
