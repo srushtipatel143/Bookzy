@@ -47,7 +47,6 @@ const addMovie = async (req, res, next) => {
             data: formattedResponse
         });
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
@@ -82,7 +81,6 @@ const updateMovie = async (req, res, next) => {
             data: movieDataVal
         });
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
