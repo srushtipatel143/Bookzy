@@ -7,12 +7,10 @@ const deleteAdmin = async (req, res, next) => {
         if (admin) {
             return next(new errorHandler("This admin is already deleted", 400));
         }
-
         const adminupdate = await Admin.updateOne(
             { _id: id },
             { $set: { isDelete: true, password: null } }
         );
-
         if (adminupdate.modifiedCount === 0) {
             return res.status(404).json({ success: false, message: "Admin not found" });
         }

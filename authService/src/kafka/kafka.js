@@ -1,4 +1,4 @@
-const Kafka  = require("./kafkaConfig");
+const Kafka = require("./kafkaConfig");
 
 async function createTopics(topic, numberOfPartion) {
   const admin = Kafka.admin();
@@ -30,13 +30,14 @@ async function connectProducer() {
 
 async function produceMessage(topic, numberOfPartion, key, message) {
   await createTopics(topic, numberOfPartion);
-  const producer = await connectProducer(); 
+  const producer = await connectProducer();
   await producer.send({
     topic,
-    messages: [{ 
+    messages: [{
       numberOfPartion,
-      key, 
-      value: JSON.stringify(message) }],
+      key,
+      value: JSON.stringify(message)
+    }],
   });
 
   await producer.disconnect();

@@ -46,9 +46,18 @@ const AdminAccess = () => {
                     const userVal = user ? JSON.parse(user) : null;
                     setLogUserRole(userVal?.role);
 
-                    const getuserdata = await axios.get(`${API_ADMIN_AUTH_URL}/getalladmin`, {
-                        withCredentials: true
-                    });
+                    let getuserdata;
+
+                    if (userVal?.role === 'masteradmin') {
+                        getuserdata = await axios.get(`${API_ADMIN_AUTH_URL}/getalladmin`, {
+                            withCredentials: true
+                        });
+                    }
+                    else {
+                        getuserdata = await axios.get(`${API_Owner_AUTH_URL}/getallowner`, {
+                            withCredentials: true
+                        });
+                    }
                     setUserData(getuserdata?.data?.data)
                 }
             } catch (error: any) {
@@ -72,7 +81,6 @@ const AdminAccess = () => {
                         withCredentials: true
                     });
                 }
-
                 const data = editUserRes?.data?.data;
                 setUserData((prevUser) =>
                     prevUser.map((item) =>
@@ -82,26 +90,17 @@ const AdminAccess = () => {
                 setUserAddFormShow(false)
                 setUserDataObj({});
                 setDisable(false);
-                return toast.success("User update successfully");
+                return toast.success(`${userDataObj.role === 'admin' ? 'Admin' : 'Owner'} update successfully`);
             }
             else {
-                let createUserRes;
-                if (userDataObj.role === 'admin') {
-                    createUserRes = await axios.post(`${API_ADMIN_AUTH_URL}/createadmin`, userDataObj, {
-                        withCredentials: true
-                    });
-                }
-                else {
-                    createUserRes = await axios.post(`${API_Owner_AUTH_URL}/createowner`, userDataObj, {
-                        withCredentials: true
-                    });
-                }
-
+                const createUserRes = await axios.post(`${API_ADMIN_AUTH_URL}/createadmin`, userDataObj, {
+                    withCredentials: true
+                });
                 const data = createUserRes?.data?.data;
                 setUserData((prevUser) => [...prevUser, data]);
                 setUserAddFormShow(false)
                 setUserDataObj({})
-                return toast.success("User add successfully");
+                return toast.success(`${userDataObj.role === 'admin' ? 'Admin' : 'Owner'} add successfully`);
             }
         } catch (error: any) {
             return toast.error(error.response.data.message);
@@ -155,17 +154,9 @@ const AdminAccess = () => {
                             setUserDataObj(editModeRes?.data?.data)
                         }} />
                         <MdDelete onClick={async () => {
-                            if (rowData.role==='admin') {
-                                await axios.put(`${API_ADMIN_AUTH_URL}/deleteadmin/${rowData._id}`, {}, {
-                                    withCredentials: true
-                                });
-                            }
-                            else {
-                                await axios.put(`${API_Owner_AUTH_URL}/deleteowner/${rowData._id}`, {}, {
-                                    withCredentials: true
-                                });
-                            }
-
+                            await axios.put(`${API_ADMIN_AUTH_URL}/deleteadmin/${rowData._id}`, {}, {
+                                withCredentials: true
+                            });
                             setUserData((prevUser) =>
                                 prevUser.filter((item) => item._id !== rowData._id)
                             );

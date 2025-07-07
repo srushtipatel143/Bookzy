@@ -8,7 +8,6 @@ const createOwner = async (req, res, next) => {
         const admin = req.admin;
         data.createdBy = admin._id;
         let savedOwner;
-
         if (data.password) {
             return next(new errorHandler("Password should not allow during owner creation", 400));
         }

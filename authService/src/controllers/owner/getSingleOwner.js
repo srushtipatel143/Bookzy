@@ -9,7 +9,6 @@ const getSingleOwner = async (req, res, next) => {
             return next(new errorHandler("This owner is not Exist", 404))
         }
         return res.status(200).json({ success: true, message: "Owner get successfully", data: owner })
-
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
