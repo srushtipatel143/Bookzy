@@ -3,7 +3,7 @@ import "../../css/cityadmin.css";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useEffect, useState } from "react";
-import { API_Owner_URL } from "../../utils/config";
+import { API_OWNER_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
@@ -33,7 +33,7 @@ const OwnerCinema = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const getcitydata = await axios.get(`${API_Owner_URL}/getallcinema`, {
+                const getcitydata = await axios.get(`${API_OWNER_URL}/getallcinema`, {
                     withCredentials: true
                 });
                 setCity(getcitydata?.data?.data)

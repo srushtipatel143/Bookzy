@@ -4,7 +4,7 @@ import "../../css/userlogin.css";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 import Image from "next/image";
-import { API_Owner_AUTH_URL } from "../../utils/config";
+import { API_OWNER_AUTH_URL } from "@/app/utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
 import axios from "axios";
@@ -27,7 +27,9 @@ const OwnerLogin = () => {
       if (password !== cpassword) {
         return toast.error("Password do not match");
       }
-      const response = await axios.post(`${API_Owner_AUTH_URL}/ownerlogin`, data, { withCredentials: true });
+
+      console.log(API_OWNER_AUTH_URL)
+      const response = await axios.post(`${API_OWNER_AUTH_URL}/ownerlogin`, data, { withCredentials: true });
       if (response.data.success) {
         const { imageURL, user, role } = response?.data;
         Cookies.set("logged_user", JSON.stringify({ imageURL, user, role }), {

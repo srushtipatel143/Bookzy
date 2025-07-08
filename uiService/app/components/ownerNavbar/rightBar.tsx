@@ -5,7 +5,7 @@ import { useUser } from "../context/userContext";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { API_Owner_AUTH_URL } from "@/app/utils/config";
+import { API_OWNER_AUTH_URL } from "@/app/utils/config";
 import { MdDashboardCustomize } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { TbBrandCinema4D } from "react-icons/tb";
@@ -21,7 +21,7 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
     const { selectUser, setSelectUser } = useUser();
     const signout = async () => {
         try {
-            await axios.get(`${API_Owner_AUTH_URL}/logout`, {
+            await axios.get(`${API_OWNER_AUTH_URL}/logout`, {
                 withCredentials: true
             })
             Cookies.remove("logged_user");
