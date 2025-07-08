@@ -86,7 +86,6 @@ const getCinemaByUSer = async (req, res, next) => {
                     city:item.city,
                     facilities: [{ facilityName: item.facility, facilityStatus: item.facilityStatus }]
                 };
-
                 cinemaMap.set(item.cinemaId, newCinema);
                 groupedCinemaRes.push(newCinema);
             } else {
@@ -112,17 +111,16 @@ const editCinema = async (req, res, next) => {
 
         const facilityString = JSON.stringify(facility);
         const editCityQuery = `CALL editCinema(?, ?, ?, ?, ?,?)`;
-        const param=[req.body.id,id, name, landmark, status, facilityString]
+        const param=[req.body.id,id, name, landmark, status, facilityString];
         await pool.query(editCityQuery,param);
 
         if(isMovieNameChanged[0].cinemaName!==name){
-            await Show.updateMany({cinemaId:req.body.id},{$set:{cinemaName: name}})
-        }
-        return res.status(200).json({ success: true, message: "cinema update successfully", data: req.body })
+            await Show.updateMany({cinemaId:req.body.id},{$set:{cinemaName: name}});
+        }  
+        return res.status(200).json({ success: true, message: "cinema update successfully", data: req.body });
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
-
 
 module.exports = { addCinema, getSingleCinema, getCinemaByUSer, editCinema };
