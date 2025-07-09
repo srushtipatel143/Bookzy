@@ -1,4 +1,4 @@
-const {pool} = require("../../config/dbConn");
+const { pool } = require("../../config/dbConn");
 const errorHandler = require("../../helpers/errors/errorHandler");
 const Show = require("../../models/showInformationModel");
 
@@ -11,12 +11,12 @@ const addCinema = async (req, res, next) => {
         }
         const callProcedure = `CALL addCinema(?, ?, ?, ?, ?, ?)`;
         const facilityString = JSON.stringify(facility);
-        const param=[id, cityId, cinemaName, cinemaLandmark, status, facilityString];
-        await pool.query(callProcedure,param);
+        const param = [id, cityId, cinemaName, cinemaLandmark, status, facilityString];
+        await pool.query(callProcedure, param);
         return res.status(200).json({ success: true, message: "cinema added successfully", data: req.body })
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
-    } 
+    }
 }
 
 const getSingleCinema = async (req, res, next) => {
@@ -29,9 +29,9 @@ const getSingleCinema = async (req, res, next) => {
         join  cinemastatusenum on cinemastatusenum.id=cinema.status
         join facilitystatusenum on facilitystatusenum.id=cinemainformation.status
         where cinema.id=? and cinema.status=? and cinema.userId=?`;
-        const param=[id,'1',userId]
-        const [getCinemaRes] = await pool.execute(getCinemaQuery,param)
-                
+        const param = [id, '1', userId]
+        const [getCinemaRes] = await pool.execute(getCinemaQuery, param)
+
         const groupedCinemaRes = [];
         const cinemaMap = new Map();
         for (const item of getCinemaRes) {
@@ -63,6 +63,16 @@ const getSingleCinema = async (req, res, next) => {
 const getCinemaByUSer = async (req, res, next) => {
     try {
         const { id } = req.owner;
+
+        const query = `SELECT id,city FROM city`;
+        const [cityResponse] = await pool.execute(query);
+
+        const querystatus = `SELECT id,status FROM cinemastatusenum`;
+        const [statusResponse] = await pool.execute(querystatus);
+
+        const queryfacility= `SELECT id,name FROM cinemaservice;`;
+        const [facilityResponse] = await pool.execute(queryfacility);
+
         const getCinemaQuery = `select cinema.id as cinemaId,cinema.userId as userId,cinemaName,cinemaLandmark,cinemastatusenum.status as cinemaStatus,
         noOfScreen,facility,facilityStatus,city from cinema 
         inner join cinemainformation on cinemainformation.cinemaId=cinema.id
@@ -70,7 +80,7 @@ const getCinemaByUSer = async (req, res, next) => {
         join facilitystatusenum on facilitystatusenum.id=cinemainformation.status
         join city on city.id=cinema.cityId
         where cinema.userId=? and cinema.status=?`;
-        const param=[id,'1'];
+        const param = [id, '1'];
         const [getCinemaRes] = await pool.execute(getCinemaQuery, param);
         const groupedCinemaRes = [];
         const cinemaMap = new Map();
@@ -83,7 +93,7 @@ const getCinemaByUSer = async (req, res, next) => {
                     landmark: item.cinemaLandmark,
                     status: item.cinemaStatus,
                     screens: item.noOfScreen,
-                    city:item.city,
+                    city: item.city,
                     facilities: [{ facilityName: item.facility, facilityStatus: item.facilityStatus }]
                 };
                 cinemaMap.set(item.cinemaId, newCinema);
@@ -95,7 +105,14 @@ const getCinemaByUSer = async (req, res, next) => {
                 }
             }
         }
-        return res.status(200).json({ success: true, message: "cinema get successfully", data: groupedCinemaRes })
+
+        const data={
+            groupedCinemaRes,
+            cityResponse,
+            statusResponse,
+            facilityResponse
+        }
+        return res.status(200).json({ success: true, message: "cinema get successfully", data: data })
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
@@ -103,20 +120,20 @@ const getCinemaByUSer = async (req, res, next) => {
 
 const editCinema = async (req, res, next) => {
     try {
-        const {name, landmark, status, facility } = req.body;
+        const { name, landmark, status, facility } = req.body;
         const { id } = req.owner;
 
-        const isMovieNameChangedQuery=`SELECT cinemaName FROM cinema where id=?`;
-        const [isMovieNameChanged]=await pool.execute(isMovieNameChangedQuery,[req.body.id]);
+        const isMovieNameChangedQuery = `SELECT cinemaName FROM cinema where id=?`;
+        const [isMovieNameChanged] = await pool.execute(isMovieNameChangedQuery, [req.body.id]);
 
         const facilityString = JSON.stringify(facility);
         const editCityQuery = `CALL editCinema(?, ?, ?, ?, ?,?)`;
-        const param=[req.body.id,id, name, landmark, status, facilityString];
-        await pool.query(editCityQuery,param);
+        const param = [req.body.id, id, name, landmark, status, facilityString];
+        await pool.query(editCityQuery, param);
 
-        if(isMovieNameChanged[0].cinemaName!==name){
-            await Show.updateMany({cinemaId:req.body.id},{$set:{cinemaName: name}});
-        }  
+        if (isMovieNameChanged[0].cinemaName !== name) {
+            await Show.updateMany({ cinemaId: req.body.id }, { $set: { cinemaName: name } });
+        }
         return res.status(200).json({ success: true, message: "cinema update successfully", data: req.body });
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));

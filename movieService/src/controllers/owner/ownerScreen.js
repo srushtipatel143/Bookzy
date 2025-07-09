@@ -58,10 +58,8 @@ const addScreen = async (req, res, next) => {
         const seatInfoArray = [];
         data.screens.forEach((item, index) => {
             const screenId = firstInsertId + index;
-
             item.rowsInfo.forEach((row, ind) => {
                 const rowId = firstRowInsertId + ind;
-
                 for (let i = row.seatStartFrom; i <= row.seatEndTo; i++) {
                     seatInfoArray.push({
                         rowId,

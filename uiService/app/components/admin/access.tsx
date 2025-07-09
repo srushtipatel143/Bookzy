@@ -3,7 +3,7 @@ import "../../css/cityadmin.css";
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useEffect, useState } from "react";
-import { API_ADMIN_AUTH_URL, API_Owner_AUTH_URL } from "../../utils/config";
+import { API_ADMIN_AUTH_URL, API_OWNER_AUTH_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
@@ -54,7 +54,7 @@ const AdminAccess = () => {
                         });
                     }
                     else {
-                        getuserdata = await axios.get(`${API_Owner_AUTH_URL}/getallowner`, {
+                        getuserdata = await axios.get(`${API_OWNER_AUTH_URL}/getallowner`, {
                             withCredentials: true
                         });
                     }
@@ -77,7 +77,7 @@ const AdminAccess = () => {
                     });
                 }
                 else {
-                    editUserRes = await axios.put(`${API_Owner_AUTH_URL}/editowner`, userDataObj, {
+                    editUserRes = await axios.put(`${API_OWNER_AUTH_URL}/editowner`, userDataObj, {
                         withCredentials: true
                     });
                 }
@@ -146,7 +146,7 @@ const AdminAccess = () => {
                                 });
                             }
                             else {
-                                editModeRes = await axios.get(`${API_Owner_AUTH_URL}/getsingleowner/${rowData._id}`, {
+                                editModeRes = await axios.get(`${API_OWNER_AUTH_URL}/getsingleowner/${rowData._id}`, {
                                     withCredentials: true
                                 });
                             }
