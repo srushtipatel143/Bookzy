@@ -10,7 +10,7 @@ import { FaEdit } from "react-icons/fa";
 import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
 import Select from 'react-select';
-import { set } from "lodash";
+import { SingleValue } from "react-select";
 
 interface CinemaData {
     id: number,
@@ -50,6 +50,11 @@ interface facilityVal {
     status?: number
 };
 
+interface FacilityOption {
+    value: string;
+    label: string;
+}
+
 const OwnerCinema = () => {
     const [cinema, setCinema] = useState<CinemaData[]>([]);
     const [facility, setFacility] = useState<facilityVal>({
@@ -61,6 +66,7 @@ const OwnerCinema = () => {
     const [facilityData, setFacilityData] = useState<facility[]>([])
     const [cityAddFormShow, setCityAddFormShow] = useState<boolean>(false);
     const [cinemaDataObj, setCinemaDataObj] = useState<CinemaDataObject>({});
+    const [selectedFacility, setSelectedFacility] = useState<FacilityOption | null>(null);
 
 
     useEffect(() => {
@@ -81,35 +87,34 @@ const OwnerCinema = () => {
     }, []);
 
     const submitForm = async () => {
-        console.log(cinemaDataObj)
-        // try {
-        //     if (cityDataObj?.id) {
-        //         const editCityRes = await axios.put(`${API_ADMIN_URL}/editcity`, cityDataObj, {
-        //             withCredentials: true
-        //         });
-        //         const data = editCityRes?.data?.data;
-        //         setCity((prevCity) =>
-        //             prevCity.map((item) =>
-        //                 item.id === cityDataObj.id ? { ...item, ...data } : item
-        //             )
-        //         );
-        //         setCityAddFormShow(false)
-        //         setCityDataObj({})
-        //         return toast.success("City update successfully");
-        //     }
-        //     else {
-        //         const createCityRes = await axios.post(`${API_ADMIN_URL}/addcity`, cityDataObj, {
-        //             withCredentials: true
-        //         });
-        //         const data = createCityRes?.data?.data;
-        //         setCity((prevCity) => [...prevCity, data]);
-        //         setCityAddFormShow(false)
-        //         setCityDataObj({})
-        //         return toast.success("City add successfully");
-        //     }
-        // } catch (error: any) {
-        //     return toast.error(error.response.data.message);
-        // }
+        try {
+            if (cinemaDataObj?.id) {
+                const editCinemaRes = await axios.put(`${API_OWNER_URL}/editcinema`, cinemaDataObj, {
+                    withCredentials: true
+                });
+                const data = editCinemaRes?.data?.data;
+                setCinema((prevCity) =>
+                    prevCity.map((item) =>
+                        item.id === cinemaDataObj.id ? { ...item, ...data } : item
+                    )
+                );
+                setCityAddFormShow(false)
+                setCinemaDataObj({})
+                return toast.success("Cinema update successfully");
+            }
+            else {
+                const createCinemaRes = await axios.post(`${API_OWNER_URL}/addcinema`, cinemaDataObj, {
+                    withCredentials: true
+                });
+                const data = createCinemaRes?.data?.data;
+                setCinema((prevCity) => [...prevCity, data]);
+                setCityAddFormShow(false)
+                setCinemaDataObj({})
+                return toast.success("Cinema add successfully");
+            }
+        } catch (error: any) {
+            return toast.error(error.response.data.message);
+        }
     }
 
     const handleChange = (e: any) => {
@@ -130,13 +135,18 @@ const OwnerCinema = () => {
         label: item.status
     }));
 
-    const facilityOptions = [
-        { value: '', label: '-- Select facility --' },
-        ...facilityData.map((item) => ({
-            value: item.name,
-            label: item.name
-        }))
+    const facilityStatus = [
+        { value: 1, label: "Available" },
+        { value: 2, label: "Not Available" }
     ];
+
+    const facilityOptions = facilityData.map((item) => ({
+        value: item.name,
+        label: item.name,
+        isDisabled: !!cinemaDataObj?.facility?.some(f => f.facilityName === item.name)
+    }));
+
+
 
     return (
         <div className="container-fluid m-3 admin_div">
@@ -195,7 +205,6 @@ const OwnerCinema = () => {
                             <div className="col-md-4 mb-3">
                                 <label className="form-label admin_form_label">City</label>
                                 <Select
-                                    name="role"
                                     options={cityOptions}
                                     value={cityOptions.find(option => option.value === cinemaDataObj?.cityId)}
                                     onChange={(selectedOption) => {
@@ -253,7 +262,9 @@ const OwnerCinema = () => {
                                         <Select
                                             name="role"
                                             options={facilityOptions}
-                                            onChange={(selectedOption) => {
+                                            value={selectedFacility}
+                                            onChange={(selectedOption: SingleValue<FacilityOption>) => {
+                                                setSelectedFacility(selectedOption);
                                                 setFacility({
                                                     facilityName: selectedOption?.value ?? '',
                                                     status: 1
@@ -261,28 +272,77 @@ const OwnerCinema = () => {
                                             }}
                                             placeholder="-- Select facility --"
                                             styles={{
+                                                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                                                 option: (provided, state) => ({
                                                     ...provided,
-                                                    color: 'black',
-                                                    backgroundColor: state.isFocused ? '#f0f0f0' : 'white'
+                                                    color: state.isDisabled ? '#999' : 'black',
+                                                    backgroundColor: state.isDisabled ? '#f9f9f9'
+                                                        : state.isFocused
+                                                            ? '#f0f0f0'
+                                                            : 'white',
+                                                    cursor: state.isDisabled ? 'not-allowed' : 'pointer'
                                                 })
                                             }}
                                         />
                                     </div>
                                     <div className="col-md-2 mb-3">
-                                        <button type="button" className="btn btn-secondary" onClick={() => {
-                                            setCinemaDataObj((prev): CinemaDataObject => ({
-                                                ...prev,
-                                                facility: [...(prev.facility || []), facility]
-                                            })); setFacility({
-                                                facilityName: '',
-                                                status: 1
-                                            });
-                                        }}> Add </button>
+                                        <button
+                                            type="button"
+                                            className="btn btn-secondary"
+                                            onClick={() => {
+                                                if (!facility.facilityName?.trim()) {
+                                                    toast.warn("Please select a facility before adding.");
+                                                    return;
+                                                }
+                                                setCinemaDataObj((prev) => ({
+                                                    ...prev,
+                                                    facility: [...(prev.facility || []), facility]
+                                                }));
+                                                setFacility({
+                                                    facilityName: '',
+                                                    status: 1
+                                                });
+                                                setSelectedFacility(null);
+                                            }}
+                                        >
+                                            Add
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <DataTable value={cinemaDataObj?.facility}>
+                            <Column header="No." body={(_, options) => options.rowIndex + 1}></Column>
+                            <Column field="facilityName" header="Facility"></Column>
+                            <Column body={(rawData,options) => (
+                                <Select
+                                    options={facilityStatus}
+                                    value={facilityStatus.find(option => option.value === rawData?.status)}
+                                    placeholder="-- Select city --"
+                                    onChange={(selectedOption) => {
+                                        const updatedFacilities = [...(cinemaDataObj.facility || [])];
+                                        updatedFacilities[options.rowIndex] = {
+                                            ...updatedFacilities[options.rowIndex],
+                                            status: Number(selectedOption?.value)
+                                        };
+                                        setCinemaDataObj((prev) => ({
+                                            ...prev,
+                                            facility: updatedFacilities
+                                        }));
+                                    }}
+                                    menuPortalTarget={document.body}
+                                    styles={{
+                                        option: (provided, state) => ({  
+                                            ...provided,
+                                            color: 'black',
+                                            backgroundColor: state.isFocused ? '#f0f0f0' : 'white',
+                                            zIndex: 9999
+                                        }),
+                                        menuPortal: (base) => ({ ...base, zIndex: 9999 })
+                                    }}
+                                />
+                            )} header="Action"></Column>
+                        </DataTable>
                         <div className="text-end mt-4">
                             <button type="button" className="admin_form_btn px-4 py-2" onClick={submitForm} >
                                 Submit
