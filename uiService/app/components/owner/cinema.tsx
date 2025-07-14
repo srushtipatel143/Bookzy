@@ -160,19 +160,19 @@ const OwnerCinema = () => {
             <DataTable value={cinema} rows={10} tableStyle={{ minWidth: '50rem' }} sortOrder={-1}>
                 <Column header="No." body={(_, options) => options.rowIndex + 1}></Column>
                 <Column field="city" header="City" sortable></Column>
-                <Column field="name" header="Ciname Name" sortable></Column>
+                <Column field="cinemaName" header="Ciname Name" sortable></Column>
                 <Column
                     header="Facility"
                     body={(rowData) => (
                         <div>
-                            {rowData.facilities?.map((item: any) => (
+                            {rowData.facility?.map((item: any) => (
                                 <div key={item.facilityName}>{item.facilityName}</div>
                             ))}
                         </div>
                     )}
                 ></Column>
-                <Column field="landmark" header="Landmark" sortable></Column>
-                <Column field="screens" header="No. of screens" sortable ></Column>
+                <Column field="cinemaLandmark" header="Landmark" sortable></Column>
+                <Column  body={(rawData)=>rawData.screens?rawData.screens:'0'} header="No. of screens" sortable ></Column>
                 <Column header="Action" body={() => (
                     <FaEdit />
                 )} ></Column>
@@ -210,7 +210,8 @@ const OwnerCinema = () => {
                                     onChange={(selectedOption) => {
                                         setCinemaDataObj(prev => ({
                                             ...prev,
-                                            cityId: selectedOption?.value || ''
+                                            cityId: selectedOption?.value || '',
+                                            city:selectedOption?.label || ''
                                         }));
                                     }}
                                     placeholder="-- Select city --"

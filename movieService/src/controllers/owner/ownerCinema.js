@@ -79,7 +79,7 @@ const getCinemaByUSer = async (req, res, next) => {
         join  cinemastatusenum on cinemastatusenum.id=cinema.status
         join facilitystatusenum on facilitystatusenum.id=cinemainformation.status
         join city on city.id=cinema.cityId
-        where cinema.userId=? and cinema.status=?`;
+        where cinema.userId=? and cinema.status=? order by cinemaId`;
         const param = [id, '1'];
         const [getCinemaRes] = await pool.execute(getCinemaQuery, param);
         const groupedCinemaRes = [];
@@ -89,19 +89,19 @@ const getCinemaByUSer = async (req, res, next) => {
                 const newCinema = {
                     userId: item.userId,
                     id: item.cinemaId,
-                    name: item.cinemaName,
-                    landmark: item.cinemaLandmark,
+                    cinemaName: item.cinemaName,
+                    cinemaLandmark: item.cinemaLandmark,
                     status: item.cinemaStatus,
                     screens: item.noOfScreen,
                     city: item.city,
-                    facilities: [{ facilityName: item.facility, facilityStatus: item.facilityStatus }]
+                    facility: [{ facilityName: item.facility, facilityStatus: item.facilityStatus }]
                 };
                 cinemaMap.set(item.cinemaId, newCinema);
                 groupedCinemaRes.push(newCinema);
             } else {
                 const existingCinema = cinemaMap.get(item.cinemaId);
-                if (!existingCinema.facilities.some(f => f.facilityName === item.facility)) {
-                    existingCinema.facilities.push({ facilityName: item.facility, facilityStatus: item.facilityStatus });
+                if (!existingCinema.facility.some(f => f.facilityName === item.facility)) {
+                    existingCinema.facility.push({ facilityName: item.facility, facilityStatus: item.facilityStatus });
                 }
             }
         }
@@ -114,6 +114,7 @@ const getCinemaByUSer = async (req, res, next) => {
         }
         return res.status(200).json({ success: true, message: "cinema get successfully", data: data })
     } catch (error) {
+        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
