@@ -9,7 +9,6 @@ import { API_OWNER_AUTH_URL } from "@/app/utils/config";
 import { MdDashboardCustomize } from "react-icons/md";
 import { RiLockPasswordFill } from "react-icons/ri";
 import { TbBrandCinema4D } from "react-icons/tb";
-import { MdOutlineFitScreen } from "react-icons/md";
 import { RiSlideshow3Line } from "react-icons/ri";
 
 interface RightBarprops {
@@ -64,10 +63,6 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
                         router.push("/owner/cinema")
                         setCanvasShow(false)
                     }} className="side_menu_admin px-2 gap-3"> <TbBrandCinema4D size={24} />Cinema Management</div>
-                    <div onClick={() => {
-                        router.push("/owner/screen")
-                        setCanvasShow(false)
-                    }} className="side_menu_admin px-2 gap-3"> <MdOutlineFitScreen size={24} />Screen Management</div>
                     <div onClick={() => {
                         router.push("/owner/show")
                         setCanvasShow(false)

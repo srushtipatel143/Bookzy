@@ -1,4 +1,4 @@
-import OwnerScreen from "../../components/owner/screen";
+import OwnerScreen from "../../../components/owner/screen";
 
 const OwnerScreenPage = () => {
     return (

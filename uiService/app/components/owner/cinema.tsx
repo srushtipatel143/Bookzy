@@ -11,6 +11,7 @@ import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
 import Select from 'react-select';
 import { SingleValue } from "react-select";
+import { useRouter } from 'next/navigation';
 
 interface CinemaData {
     id: number,
@@ -67,7 +68,7 @@ const OwnerCinema = () => {
     const [cinemaAddFormShow, setCinemaAddFormShow] = useState<boolean>(false);
     const [cinemaDataObj, setCinemaDataObj] = useState<CinemaDataObject>({});
     const [selectedFacility, setSelectedFacility] = useState<FacilityOption | null>(null);
-
+     const router = useRouter();
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -172,7 +173,14 @@ const OwnerCinema = () => {
                 ></Column>
                 <Column field="cinemaLandmark" header="Landmark" sortable></Column>
                 <Column body={(rawData) => rawData.screens ? rawData.screens : '0'} header="No. of screens" sortable ></Column>
-                <Column header="Action" body={(rowData) => (
+                <Column header="Add Screen" body={(rawData) => (
+                    <div>
+                        <button className="screen_add" onClick={()=>{
+                            router.push(`/owner/cinema/${rawData.id}`)
+                        }}>Add</button>
+                    </div>
+                )}></Column>
+                <Column header="Edit" body={(rowData) => (
                     <FaEdit onClick={async () => {
                         setCinemaAddFormShow(true);
                         const editModeRes = await axios.get(`${API_OWNER_URL}/getcinema/${rowData.id}`, {
