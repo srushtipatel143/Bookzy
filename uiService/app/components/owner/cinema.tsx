@@ -64,7 +64,7 @@ const OwnerCinema = () => {
     const [city, setCity] = useState<city[]>([])
     const [status, setStatus] = useState<status[]>([])
     const [facilityData, setFacilityData] = useState<facility[]>([])
-    const [cityAddFormShow, setCityAddFormShow] = useState<boolean>(false);
+    const [cinemaAddFormShow, setCinemaAddFormShow] = useState<boolean>(false);
     const [cinemaDataObj, setCinemaDataObj] = useState<CinemaDataObject>({});
     const [selectedFacility, setSelectedFacility] = useState<FacilityOption | null>(null);
 
@@ -98,7 +98,7 @@ const OwnerCinema = () => {
                         item.id === cinemaDataObj.id ? { ...item, ...data } : item
                     )
                 );
-                setCityAddFormShow(false)
+                setCinemaAddFormShow(false)
                 setCinemaDataObj({})
                 return toast.success("Cinema update successfully");
             }
@@ -108,7 +108,7 @@ const OwnerCinema = () => {
                 });
                 const data = createCinemaRes?.data?.data;
                 setCinema((prevCity) => [...prevCity, data]);
-                setCityAddFormShow(false)
+                setCinemaAddFormShow(false)
                 setCinemaDataObj({})
                 return toast.success("Cinema add successfully");
             }
@@ -146,14 +146,12 @@ const OwnerCinema = () => {
         isDisabled: !!cinemaDataObj?.facility?.some(f => f.facilityName === item.name)
     }));
 
-
-
     return (
         <div className="container-fluid m-3 admin_div">
             <div className="admin_div_mainsec m-3">
                 <div>Cinema Management</div>
                 <div>
-                    <button className="admin_city_add" onClick={() => setCityAddFormShow(true)}>Add Cinema</button>
+                    <button className="admin_city_add" onClick={() => setCinemaAddFormShow(true)}>Add Cinema</button>
                 </div>
             </div>
 
@@ -165,23 +163,30 @@ const OwnerCinema = () => {
                     header="Facility"
                     body={(rowData) => (
                         <div>
-                            {rowData.facility?.map((item: any) => (
-                                <div key={item.facilityName}>{item.facilityName}</div>
-                            ))}
+                            {rowData.facility?.filter((item: any) => item.status !== 2)
+                                .map((item: any) => (
+                                    <div key={item.facilityName}>{item.facilityName}</div>
+                                ))}
                         </div>
                     )}
                 ></Column>
                 <Column field="cinemaLandmark" header="Landmark" sortable></Column>
-                <Column  body={(rawData)=>rawData.screens?rawData.screens:'0'} header="No. of screens" sortable ></Column>
-                <Column header="Action" body={() => (
-                    <FaEdit />
+                <Column body={(rawData) => rawData.screens ? rawData.screens : '0'} header="No. of screens" sortable ></Column>
+                <Column header="Action" body={(rowData) => (
+                    <FaEdit onClick={async () => {
+                        setCinemaAddFormShow(true);
+                        const editModeRes = await axios.get(`${API_OWNER_URL}/getcinema/${rowData.id}`, {
+                            withCredentials: true
+                        });
+                        setCinemaDataObj(editModeRes?.data?.data[0])
+                    }} />
                 )} ></Column>
             </DataTable>
 
             <Modal
-                show={cityAddFormShow}
+                show={cinemaAddFormShow}
                 onHide={() => {
-                    setCityAddFormShow(false);
+                    setCinemaAddFormShow(false);
                     setCinemaDataObj({});
                 }}
                 contentClassName="admin_form"
@@ -193,7 +198,7 @@ const OwnerCinema = () => {
                 <Modal.Header className="border-0 d-flex justify-content-between align-items-center">
                     <h5 className="mb-0 admin_form_heading">Add Cinema</h5>
                     <CgClose size={24} onClick={() => {
-                        setCityAddFormShow(false);
+                        setCinemaAddFormShow(false);
                         setCinemaDataObj({});
                     }} style={{ cursor: "pointer" }} />
                 </Modal.Header>
@@ -211,7 +216,7 @@ const OwnerCinema = () => {
                                         setCinemaDataObj(prev => ({
                                             ...prev,
                                             cityId: selectedOption?.value || '',
-                                            city:selectedOption?.label || ''
+                                            city: selectedOption?.label || ''
                                         }));
                                     }}
                                     placeholder="-- Select city --"
@@ -231,7 +236,6 @@ const OwnerCinema = () => {
                             <div className="col-md-4 mb-3">
                                 <label className="form-label admin_form_label">Status</label>
                                 <Select
-                                    name="role"
                                     options={statusOptions}
                                     value={statusOptions.find(option => option.value === cinemaDataObj?.status)}
                                     onChange={(selectedOption) => {
@@ -315,7 +319,7 @@ const OwnerCinema = () => {
                         <DataTable value={cinemaDataObj?.facility}>
                             <Column header="No." body={(_, options) => options.rowIndex + 1}></Column>
                             <Column field="facilityName" header="Facility"></Column>
-                            <Column body={(rawData,options) => (
+                            <Column body={(rawData, options) => (
                                 <Select
                                     options={facilityStatus}
                                     value={facilityStatus.find(option => option.value === rawData?.status)}
@@ -333,7 +337,7 @@ const OwnerCinema = () => {
                                     }}
                                     menuPortalTarget={document.body}
                                     styles={{
-                                        option: (provided, state) => ({  
+                                        option: (provided, state) => ({
                                             ...provided,
                                             color: 'black',
                                             backgroundColor: state.isFocused ? '#f0f0f0' : 'white',

@@ -27,8 +27,6 @@ const OwnerLogin = () => {
       if (password !== cpassword) {
         return toast.error("Password do not match");
       }
-
-      console.log(API_OWNER_AUTH_URL)
       const response = await axios.post(`${API_OWNER_AUTH_URL}/ownerlogin`, data, { withCredentials: true });
       if (response.data.success) {
         const { imageURL, user, role } = response?.data;

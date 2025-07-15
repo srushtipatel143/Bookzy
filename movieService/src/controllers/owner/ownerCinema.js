@@ -12,8 +12,13 @@ const addCinema = async (req, res, next) => {
         const callProcedure = `CALL addCinema(?, ?, ?, ?, ?, ?)`;
         const facilityString = JSON.stringify(facility);
         const param = [id, cityId, cinemaName, cinemaLandmark, status, facilityString];
-        await pool.query(callProcedure, param);
-        return res.status(200).json({ success: true, message: "cinema added successfully", data: req.body })
+        const [rows]=await pool.query(callProcedure, param);
+        const insertedId = rows[0][0].insertedId;
+        const data={
+            ...req.body,
+            id:insertedId
+        }
+        return res.status(200).json({ success: true, message: "cinema added successfully", data:data })
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
@@ -23,8 +28,8 @@ const getSingleCinema = async (req, res, next) => {
     try {
         const { id } = req.params;
         const userId = req.owner.id;
-        const getCinemaQuery = `select cinema.id as cinemaId,cinema.userId as userId,cinemaName,cinemaLandmark,cinemastatusenum.status as cinemaStatus,
-        noOfScreen,facility,facilityStatus from cinema 
+        const getCinemaQuery = `select cinema.id as cinemaId,cinema.userId as userId,cinemaName,cityId,cinemaLandmark,cinema.status as cinemaStatus,
+        noOfScreen,facility,cinemainformation.id as faid,cinemainformation.status as facilityStatus from cinema 
         inner join cinemainformation on cinemainformation.cinemaId=cinema.id
         join  cinemastatusenum on cinemastatusenum.id=cinema.status
         join facilitystatusenum on facilitystatusenum.id=cinemainformation.status
@@ -38,19 +43,20 @@ const getSingleCinema = async (req, res, next) => {
             if (!cinemaMap.has(item.cinemaId)) {
                 const newCinema = {
                     id: item.cinemaId,
-                    name: item.cinemaName,
-                    landmark: item.cinemaLandmark,
+                    cityId: item.cityId,
+                    cinemaName: item.cinemaName,
+                    cinemaLandmark: item.cinemaLandmark,
                     status: item.cinemaStatus,
                     screens: item.noOfScreen,
-                    facilities: [{ facilityName: item.facility, facilityStatus: item.facilityStatus }]
+                    facility: [{id:item.faid,facilityName: item.facility, status: item.facilityStatus }]
                 }
                 cinemaMap.set(item.cinemaId, newCinema);
                 groupedCinemaRes.push(newCinema)
             }
             else {
                 const existingCinema = cinemaMap.get(item.cinemaId);
-                if (!existingCinema.facilities.some(f => f.facilityName === item.facility)) {
-                    existingCinema.facilities.push({ facilityName: item.facility, facilityStatus: item.facilityStatus });
+                if (!existingCinema.facility.some(f => f.facilityName === item.facility)) {
+                    existingCinema.facility.push({ id:item.faid,facilityName: item.facility, status: item.facilityStatus });
                 }
             }
         }
@@ -70,11 +76,11 @@ const getCinemaByUSer = async (req, res, next) => {
         const querystatus = `SELECT id,status FROM cinemastatusenum`;
         const [statusResponse] = await pool.execute(querystatus);
 
-        const queryfacility= `SELECT id,name FROM cinemaservice;`;
+        const queryfacility = `SELECT id,name FROM cinemaservice;`;
         const [facilityResponse] = await pool.execute(queryfacility);
 
         const getCinemaQuery = `select cinema.id as cinemaId,cinema.userId as userId,cinemaName,cinemaLandmark,cinemastatusenum.status as cinemaStatus,
-        noOfScreen,facility,facilityStatus,city from cinema 
+        noOfScreen,facility,cinemainformation.status as facilityStatus,city from cinema 
         inner join cinemainformation on cinemainformation.cinemaId=cinema.id
         join  cinemastatusenum on cinemastatusenum.id=cinema.status
         join facilitystatusenum on facilitystatusenum.id=cinemainformation.status
@@ -94,19 +100,19 @@ const getCinemaByUSer = async (req, res, next) => {
                     status: item.cinemaStatus,
                     screens: item.noOfScreen,
                     city: item.city,
-                    facility: [{ facilityName: item.facility, facilityStatus: item.facilityStatus }]
+                    facility: [{ facilityName: item.facility, status: item.facilityStatus }]
                 };
                 cinemaMap.set(item.cinemaId, newCinema);
                 groupedCinemaRes.push(newCinema);
             } else {
                 const existingCinema = cinemaMap.get(item.cinemaId);
                 if (!existingCinema.facility.some(f => f.facilityName === item.facility)) {
-                    existingCinema.facility.push({ facilityName: item.facility, facilityStatus: item.facilityStatus });
+                    existingCinema.facility.push({ facilityName: item.facility, status: item.facilityStatus });
                 }
             }
         }
 
-        const data={
+        const data = {
             groupedCinemaRes,
             cityResponse,
             statusResponse,
@@ -114,14 +120,13 @@ const getCinemaByUSer = async (req, res, next) => {
         }
         return res.status(200).json({ success: true, message: "cinema get successfully", data: data })
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
 const editCinema = async (req, res, next) => {
     try {
-        const { name, landmark, status, facility } = req.body;
+        const { cinemaName, cinemaLandmark, status, facility } = req.body;
         const { id } = req.owner;
 
         const isMovieNameChangedQuery = `SELECT cinemaName FROM cinema where id=?`;
@@ -129,11 +134,11 @@ const editCinema = async (req, res, next) => {
 
         const facilityString = JSON.stringify(facility);
         const editCityQuery = `CALL editCinema(?, ?, ?, ?, ?,?)`;
-        const param = [req.body.id, id, name, landmark, status, facilityString];
+        const param = [req.body.id, id, cinemaName, cinemaLandmark, status, facilityString];
         await pool.query(editCityQuery, param);
 
-        if (isMovieNameChanged[0].cinemaName !== name) {
-            await Show.updateMany({ cinemaId: req.body.id }, { $set: { cinemaName: name } });
+        if (isMovieNameChanged[0].cinemaName !== cinemaName) {
+            await Show.updateMany({ cinemaId: req.body.id }, { $set: { cinemaName: cinemaName } });
         }
         return res.status(200).json({ success: true, message: "cinema update successfully", data: req.body });
     } catch (error) {
