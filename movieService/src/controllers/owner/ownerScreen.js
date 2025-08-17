@@ -19,22 +19,19 @@ const addScreen = async (req, res, next) => {
         await conn.beginTransaction();
 
         const checkValidUserQuery=`select count(*) as validUser from  cinema where id=? and userId=?`;
+        console.log(data.cinemaId,userId)
         const [iSvalidUser]=await conn.execute(checkValidUserQuery,[data.cinemaId,userId]);
         if(iSvalidUser[0].validUser===0){
             await conn.rollback();
             return res.status(403).json({ message: `User is not authorized` });
         }
 
-        // Insert screens
         const screenParam = JSON.stringify(screenData);
         const [insertScreenQueryResponse] = await conn.execute(`CALL addScreen(?)`, [screenParam]);
 
-
-        // Safely access the first insert ID
         const firstInsertId = insertScreenQueryResponse[0][0].insertId;
         if (!firstInsertId) throw new Error('Failed to retrieve insert ID for screens');
 
-        // Prepare row data
         const rowsInfo = [];
         data.screens.forEach((item, index) => {
             const screenId = firstInsertId + index;
@@ -54,7 +51,6 @@ const addScreen = async (req, res, next) => {
         const firstRowInsertId = insertRowQueryResponse[0][0].insertId;
         if (!firstRowInsertId) throw new Error('Failed to retrieve insert ID for rows');
 
-        // Prepare seat data
         const seatInfoArray = [];
         data.screens.forEach((item, index) => {
             const screenId = firstInsertId + index;
@@ -79,7 +75,7 @@ const addScreen = async (req, res, next) => {
         await conn.execute(updateQuery, paramVal);
 
         await conn.commit();
-        return res.status(200).json({ message: `Screen, Row, and Seat added successfully` });
+        return res.status(200).json({ message: `Screen, Row, and Seat added successfully`,data:data });
 
     } catch (error) {
         if (conn) await conn.rollback();
@@ -112,8 +108,8 @@ const getScreenByCinemaId = async (req, res, next) => {
                 const newData = {
                     screenId: item.screenId,
                     screenName: item.screenName,
-                    screenRow: item.screenRow,
-                    screenSeat: item.screenSeat,
+                    noOfRows: item.screenRow,
+                    totalNoOFSeats: item.screenSeat,
                     rows: []
                 };
                 screenMap.set(item.screenId, newData);

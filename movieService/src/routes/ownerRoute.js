@@ -4,6 +4,7 @@ const {addCinema,getSingleCinema,getCinemaByUSer,editCinema}=require("../control
 const {addScreen,getScreenByCinemaId}=require("../controllers/owner/ownerScreen")
 const {getAccessToRoute}=require("../middlewares/authorization/authOwner");
 const {addShow,editShow,getShow,getShowByCinemaId}=require("../controllers/owner/ownerShow");
+const {getmovieaddoption}=require("../controllers/owner/ownermovie");
 
 router.post("/addcinema",getAccessToRoute,addCinema);
 router.get("/getcinema/:id",getAccessToRoute,getSingleCinema);
@@ -17,5 +18,7 @@ router.post("/addshow",getAccessToRoute,addShow);
 router.put("/editshow",getAccessToRoute,editShow);
 router.get("/getshow/:id",getAccessToRoute,getShow);
 router.get("/getshowbybinemaid",getAccessToRoute,getShowByCinemaId);
+
+router.get("/getmovieaddoption",getAccessToRoute,getmovieaddoption);
 
 module.exports=router;

@@ -6,41 +6,51 @@ import { useEffect, useState } from "react";
 import { API_OWNER_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-import { FaEdit } from "react-icons/fa";
 import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
-import Select from 'react-select';
-import { SingleValue } from "react-select";
-import { useRouter } from 'next/navigation';
+import { useParams } from "next/navigation";
 
 interface Row {
     rowName: string;
-    noOfRowSeat: number;
+    noOfRowSeat: string;
     rowType: string;
     statusId: number;
-    seatStartFrom: number;
-    seatEndTo: number;
+    seatStartFrom: string;
+    seatEndTo: string;
 }
 
 interface Screen {
     screenName: string;
-    noOfRows: number;
-    totalNoOFSeats: number;
+    noOfRows: string;
+    totalNoOFSeats: string;
     rowsInfo: Row[];
 }
 
-
 const OwnerScreen = () => {
-
-    const [screenData, setScreenData] = useState([]);
+    const [screenData, setScreenData] = useState<Screen[]>([]);
     const [screenAddFormShow, setscreenAddFormShow] = useState<boolean>(false)
     const [screens, setScreens] = useState<Screen[]>([{
         screenName: "",
-        noOfRows: 0,
-        totalNoOFSeats: 0,
+        noOfRows: '',
+        totalNoOFSeats: '',
         rowsInfo: [],
     }]);
+    const params = useParams();
+    const cinemaId = params.id;
 
+    useEffect(() => {
+        const fetchDetails = async () => {
+            try {
+                const getScreendata = await axios.get(`${API_OWNER_URL}/getScreenByCinemaId/${cinemaId}`, {
+                    withCredentials: true
+                });
+                setScreenData(getScreendata?.data?.data);
+            } catch (error: any) {
+                return toast.error(error.response.data.message);
+            }
+        }
+        fetchDetails()
+    }, []);
 
     const handleScreenChange = (index: number, field: keyof Screen, value: Screen[typeof field]) => {
         const updated = [...screens];
@@ -56,8 +66,8 @@ const OwnerScreen = () => {
             ...screens,
             {
                 screenName: "",
-                noOfRows: 0,
-                totalNoOFSeats: 0,
+                noOfRows: '',
+                totalNoOFSeats: '',
                 rowsInfo: [],
             },
         ]);
@@ -72,35 +82,65 @@ const OwnerScreen = () => {
         setScreens(updated);
     };
 
-    const handleAddRow = (screenIndex: any) => {
+    const handleAddRow = (screenIndex: number) => {
         const updated = [...screens];
         updated[screenIndex].rowsInfo.push({
             rowName: "",
-            noOfRowSeat: 0,
+            noOfRowSeat: "",
             rowType: "",
             statusId: 1,
-            seatStartFrom: 0,
-            seatEndTo: 0,
+            seatStartFrom: "",
+            seatEndTo: "",
         });
         setScreens(updated);
     };
 
-    const handleRemoveRow = (screenIndex: any, rowIndex: any) => {
+    const handleRemoveRow = (screenIndex: number, rowIndex: number) => {
         const updated = [...screens];
         updated[screenIndex].rowsInfo = updated[screenIndex].rowsInfo.filter((_, i) => i !== rowIndex);
         setScreens(updated);
     };
 
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-        const payload = {
-            cinemaId: 1,
-            screens,
-        };
-        console.log("Final Payload:", payload);
+    const handleSubmit = async () => {
+        const updatedScreens = screens.map((screen) => {
+            let totalSeats = 0;
+            const updatedRows = screen.rowsInfo.map((row) => {
+                const start = parseInt(row.seatStartFrom) || 0;
+                const end = parseInt(row.seatEndTo) || 0;
+                const seatCount = end >= start ? end - start + 1 : 0;
+                totalSeats += seatCount;
+
+                return {
+                    ...row,
+                    noOfRowSeat: seatCount.toString(),
+                };
+            });
+            return {
+                ...screen,
+                rowsInfo: updatedRows,
+                noOfRows: updatedRows.length.toString(),
+                totalNoOFSeats: totalSeats.toString(),
+            };
+        });
+        const payload = { cinemaId:cinemaId, screens: updatedScreens };
+        try {
+            const createCinemaRes = await axios.post(`${API_OWNER_URL}/addscreen`, payload, {
+                withCredentials: true
+            });
+            const resdata = createCinemaRes?.data?.data?.screens;
+            setScreenData((prev) => [...prev, ...resdata])
+            setScreens([{
+                screenName: "",
+                noOfRows: '',
+                totalNoOFSeats: '',
+                rowsInfo: [],
+            }]);
+            setscreenAddFormShow(false)
+            return toast.success("Scren add successfully");
+        } catch (error: any) {
+            return toast.error(error.response.data.message);
+        }
     };
-
-
 
     return (
         <div className="container-fluid m-3 admin_div">
@@ -113,32 +153,21 @@ const OwnerScreen = () => {
 
             <DataTable value={screenData} rows={10} tableStyle={{ minWidth: '50rem' }} sortOrder={-1}>
                 <Column header="No." body={(_, options) => options.rowIndex + 1}></Column>
-                <Column field="city" header="City" sortable></Column>
-                <Column field="cinemaName" header="Ciname Name" sortable></Column>
-                <Column
-                    header="Facility"
-                    body={(rowData) => (
-                        <div>
-                            {rowData.facility?.filter((item: any) => item.status !== 2)
-                                .map((item: any) => (
-                                    <div key={item.facilityName}>{item.facilityName}</div>
-                                ))}
-                        </div>
-                    )}
-                ></Column>
-                <Column field="cinemaLandmark" header="Landmark" sortable></Column>
-                <Column body={(rawData) => rawData.screens ? rawData.screens : '0'} header="No. of screens" sortable ></Column>
-                <Column header="Add Screen" body={(rawData) => (
-                    <div>
-                        <button className="screen_add">Add</button>
-                    </div>
-                )}></Column>
+                <Column field="screenName" header="Screen Name" sortable></Column>
+                <Column field="noOfRows" header="Total Rows" sortable></Column>
+                <Column field="totalNoOFSeats" header="Total Seats" sortable></Column>
             </DataTable>
 
             <Modal
                 show={screenAddFormShow}
                 onHide={() => {
                     setscreenAddFormShow(false);
+                    setScreens([{
+                        screenName: "",
+                        noOfRows: '',
+                        totalNoOFSeats: '',
+                        rowsInfo: [],
+                    }]);
                 }}
                 contentClassName="admin_form"
                 centered
@@ -149,7 +178,13 @@ const OwnerScreen = () => {
                 <Modal.Header className="border-0 d-flex justify-content-between align-items-center">
                     <h5 className="mb-0 admin_form_heading">Add Screen</h5>
                     <CgClose size={24} onClick={() => {
-                        setscreenAddFormShow(false)
+                        setscreenAddFormShow(false);
+                        setScreens([{
+                            screenName: "",
+                            noOfRows: '',
+                            totalNoOFSeats: '',
+                            rowsInfo: [],
+                        }]);
                     }} style={{ cursor: "pointer" }} />
                 </Modal.Header>
 
@@ -157,33 +192,28 @@ const OwnerScreen = () => {
                     <div className="admin_form_line w-100 mb-3"></div>
                     <form>
                         {screens.map((screen, screenIndex) => (
-                            <>
-                                <div className="row">
-                                    <div className="col-md-6 mb-3">
-                                        <label className="form-label admin_form_label">Screen Name</label>
-                                        <div className="d-flex gap-2">
-                                            <div className="col-md-8">
-                                                <input
-                                                    type="text"
-                                                    name={`screens[${screenIndex}].screenName`}
-                                                    value={screen.screenName}
-                                                    onChange={(e) => handleScreenChange(screenIndex, "screenName", e.target.value)}
-                                                    className="form-control" placeholder="Enter screen name"
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <button className="admin_form_btn px-4 py-2 bg-secondary text-light" type="button" onClick={() => handleAddRow(screenIndex)}>
-                                                    + Add Row
-                                                </button>
-                                            </div>
+                            <div key={screenIndex}>
+                                <div className="row" >
+                                    <label className="form-label admin_form_label">Screen Name</label>
+                                    <div className="d-flex gap-2">
+                                        <div className="col-md-4">
+                                            <input
+                                                type="text"
+                                                name={`screens[${screenIndex}].screenName`}
+                                                value={screen.screenName}
+                                                onChange={(e) => handleScreenChange(screenIndex, "screenName", e.target.value)}
+                                                className="form-control" placeholder="Enter screen name"
+                                            />
+                                        </div>
+                                        <div className="col-md-4">
+                                            <button className="admin_form_btn px-4 py-2 bg-secondary text-light" type="button" onClick={() => handleAddRow(screenIndex)}>
+                                                + Add Row
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
                                 {screen.rowsInfo.map((row, rowIndex) => (
-                                    <div
-                                        key={rowIndex}
-                                        style={{ display: "flex", gap: "0.5rem", marginBottom: "10px", alignItems: "center" }}
-                                    >
+                                    <div key={rowIndex} className="mt-2" style={{ display: "flex", gap: "0.5rem", marginBottom: "10px", alignItems: "center" }}>
                                         <input
                                             type="text"
                                             placeholder="Row Name"
@@ -192,27 +222,19 @@ const OwnerScreen = () => {
                                             onChange={(e) => handleRowChange(screenIndex, rowIndex, "rowName", e.target.value)}
                                             className="form-control"
                                         />
-                                        <input
-                                            type="number"
-                                            placeholder="Seats"
-                                            name={`screens[${screenIndex}].rowsInfo[${rowIndex}].noOfRowSeat`}
-                                            value={row.noOfRowSeat}
-                                            onChange={(e) => handleRowChange(screenIndex, rowIndex, "noOfRowSeat", e.target.value)}
-                                            className="form-control"
-                                        />
                                         <select
                                             name={`screens[${screenIndex}].rowsInfo[${rowIndex}].rowType`}
                                             value={row.rowType}
                                             onChange={(e) => handleRowChange(screenIndex, rowIndex, "rowType", e.target.value)}
                                             className="form-select"
                                         >
-                                            <option value="">Choose Type</option>
+                                            <option value="">Choose Row Type</option>
                                             <option value="Gold">Gold</option>
                                             <option value="Silver">Silver</option>
                                         </select>
                                         <input
-                                            type="number"
-                                            placeholder="Start"
+                                            type="text"
+                                            placeholder="Starting point"
                                             name={`screens[${screenIndex}].rowsInfo[${rowIndex}].seatStartFrom`}
                                             value={row.seatStartFrom}
                                             onChange={(e) =>
@@ -221,8 +243,8 @@ const OwnerScreen = () => {
                                             className="form-control"
                                         />
                                         <input
-                                            type="number"
-                                            placeholder="End"
+                                            type="text"
+                                            placeholder="Ending point"
                                             name={`screens[${screenIndex}].rowsInfo[${rowIndex}].seatEndTo`}
                                             value={row.seatEndTo}
                                             onChange={(e) =>
@@ -235,13 +257,13 @@ const OwnerScreen = () => {
                                         </button>
                                     </div>
                                 ))}
-                            </>
+                            </div>
                         ))}
                         <div className="d-flex justify-content-between text-end mt-4">
                             <button type="button" className="admin_form_btn px-4 py-2 " onClick={handleAddScreen}>
                                 + Add Screen
                             </button>
-                            <button type="button" className="admin_form_btn px-4 py-2" >
+                            <button type="button" onClick={handleSubmit} className="admin_form_btn px-4 py-2" >
                                 Submit
                             </button>
                         </div>
