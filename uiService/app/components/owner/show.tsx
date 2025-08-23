@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { API_OWNER_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
-import { FaEdit } from "react-icons/fa";
-import { Modal } from "react-bootstrap";
+import { FaEdit, FaTrash } from "react-icons/fa";
+import { CloseButton, Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
 import Select from 'react-select';
 import DatePicker from "react-datepicker";
@@ -33,7 +33,10 @@ interface showDataObject {
     screenName?: string,
     movieId?: string,
     movieName?: string,
-    movieLanguage?: string
+    movieLanguage?: string,
+    priceInfoForShow?: priceInfo[],
+    showDate?: string,
+    showStartTime?: string
 }
 interface movie {
     _id?: string,
@@ -44,9 +47,13 @@ interface movieLLan {
     language: string
 };
 interface priceInfo {
-    rowType: string;
-    price: string;
+    rowtype?: string;
+    price?: string;
 }[];
+interface priceValObject {
+    rowtype?: string;
+    price?: string;
+};
 
 const OwnerShow = () => {
     const [cinema, setCinema] = useState<CinemaData[]>([]);
@@ -55,7 +62,23 @@ const OwnerShow = () => {
     const [movieLan, setMovieLan] = useState<movieLLan[]>([])
     const [cinemaAddFormShow, setCinemaAddFormShow] = useState<boolean>(false);
     const [showDataObj, setShowDataObj] = useState<showDataObject>({});
-    const [priceInfo, setPriceInfo] = useState<priceInfo[]>([])
+    const [priceInfo, setPriceInfo] = useState<priceInfo[]>([]);
+    const [priceVal, setPriceVal] = useState<priceValObject>({});
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [selectedTime, setSelectedTime] = useState<string>("00:00");
+
+    const addRowAndPrice = () => {
+        setPriceInfo((prev) => [...prev, priceVal]);
+        setPriceVal({})
+    };
+
+    const handleChangeVal = (e: any) => {
+        const { name, value } = e.target;
+        setPriceVal((prev) => ({
+            ...(prev || {}),
+            [name]: value
+        }))
+    }
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -67,37 +90,66 @@ const OwnerShow = () => {
         fetchDetails()
     }, []);
 
+    const getLocalMidnightInUTC = (dateStr: string): string => {
+        const [day, month, year] = dateStr.split("-").map(Number);
+        const localDate = new Date(year, month - 1, day, 0, 0, 0);
+        return localDate.toISOString();
+    };
+
+    const getUTCDateTime = (date: Date, time: string): string => {
+        const [hours, minutes] = time.split(":").map(Number);
+        const localDateTime = new Date(date);
+        localDateTime.setHours(hours, minutes, 0, 0);
+        return localDateTime.toISOString();
+    };
+
+    // 🔹 Submit Form
     const submitForm = async () => {
         try {
-            console.log(showDataObj)
+            showDataObj.priceInfoForShow = priceInfo || [];
+            if (selectedDate !== null) {
+                const day = selectedDate.getDate().toString().padStart(2, "0");
+                const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
+                const year = selectedDate.getFullYear();
+                const formattedDate = `${day}-${month}-${year}`;
+                const dateOnlyUTC = getLocalMidnightInUTC(formattedDate);
+                const dateTimeUTC = getUTCDateTime(selectedDate, selectedTime);
+
+                showDataObj.showDate = dateOnlyUTC;
+                showDataObj.showStartTime = dateTimeUTC;
+            }
+            else {
+                return toast.error("Please select the date")
+            }
+
             if (showDataObj?._id) {
                 // const editCinemaRes = await axios.put(`${API_OWNER_URL}/editcinema`, showDataObj, {
-                //     withCredentials: true
+                //   withCredentials: true
                 // });
                 // const data = editCinemaRes?.data?.data;
                 // setCinema((prevCity) =>
-                //     prevCity.map((item) =>
-                //         item.id === showDataObj.id ? { ...item, ...data } : item
-                //     )
+                //   prevCity.map((item) =>
+                //     item.id === showDataObj.id ? { ...item, ...data } : item
+                //   )
                 // );
-                // setCinemaAddFormShow(false)
-                // setShowDataObj({})
-                // return toast.success("Cinema update successfully");
-            }
-            else {
+                // setCinemaAddFormShow(false);
+                // setShowDataObj({});
+                // return toast.success("Cinema updated successfully");
+            } else {
                 // const createCinemaRes = await axios.post(`${API_OWNER_URL}/addcinema`, showDataObj, {
-                //     withCredentials: true
+                //   withCredentials: true
                 // });
                 // const data = createCinemaRes?.data?.data;
                 // setCinema((prevCity) => [...prevCity, data]);
-                // setCinemaAddFormShow(false)
-                // setShowDataObj({})
-                // return toast.success("Cinema add successfully");
+                // setCinemaAddFormShow(false);
+                // setShowDataObj({});
+                // return toast.success("Cinema added successfully");
             }
         } catch (error: any) {
-            return toast.error(error.response.data.message);
+            return toast.error(error?.response?.data?.message || "Something went wrong");
         }
-    }
+    };
+
 
     const handleChange = async (e: any) => {
         const { name, value } = e.target;
@@ -125,7 +177,7 @@ const OwnerShow = () => {
     const movieLanguageOption = movieLan.map((item) => ({
         value: item.language,
         label: item.language
-    }))
+    }));
 
     return (
         <div className="container-fluid m-3 admin_div">
@@ -259,9 +311,7 @@ const OwnerShow = () => {
                                     options={movieOptions}
                                     value={movieOptions.find(option => option.value === showDataObj?.movieId)}
                                     onChange={async (selectedOption) => {
-
                                         const movieLanguage = movieData.find((option) => option._id === selectedOption?.value)
-                                        console.log(movieLanguage?.movieLanguage)
                                         setMovieLan(movieLanguage?.movieLanguage || []);
                                         setShowDataObj(prev => ({
                                             ...prev,
@@ -302,7 +352,7 @@ const OwnerShow = () => {
                             </div>
                             <div className="col-md-4 mb-3">
                                 <label className="form-label admin_form_label">Screen Type</label>
-                                <input type="text" name="cinemaName" onChange={handleChange} value={showDataObj?.screenType || ''} className="form-control" placeholder="Enter screen type" />
+                                <input type="text" name="screenType" onChange={handleChange} value={showDataObj?.screenType || ''} className="form-control" placeholder="Enter screen type" />
                             </div>
                             <div className="col-md-4 mb-3">
                                 <div className="d-flex flex-column">
@@ -311,8 +361,10 @@ const OwnerShow = () => {
                                     </label>
                                     <DatePicker
                                         className="form-control"
-                                        placeholderText="Choose date"
+                                        placeholderText="dd/mm/yyyy"
                                         dateFormat="dd/MM/yyyy"
+                                        selected={selectedDate}
+                                        onChange={(date: Date | null) => setSelectedDate(date)}
                                     />
                                 </div>
                             </div>
@@ -322,62 +374,40 @@ const OwnerShow = () => {
                                         Movie Time
                                     </label>
                                     <TimePicker
-                                        disableClock={true}   // hides analog clock
-                                        format="HH:mm"        // 24 hr format
-                                        clearIcon={null}      // hides clear button
+                                        disableClock={true}
+                                        format="HH:mm"
+                                        value={selectedTime}
+                                        onChange={(time) => setSelectedTime(time || "00:00")}
+                                        clearIcon={null}
                                         className="form-control"
                                     />
                                 </div>
                             </div>
-
-
                             <div className="row mb-3 align-items-end">
                                 <div className="col-md-4">
                                     <label className="form-label admin_form_label">Row Type</label>
-                                    <input type="text" name="rowType" onChange={handleChange} className="form-control" placeholder="Enter rowtype"
+                                    <input type="text" name="rowtype" value={priceVal.rowtype || ''} onChange={handleChangeVal} className="form-control" placeholder="Enter rowtype"
                                     />
                                 </div>
                                 <div className="col-md-4">
                                     <label className="form-label admin_form_label">Price</label>
-                                    <input type="text" name="price" onChange={handleChange} className="form-control" placeholder="Enter price"
+                                    <input type="text" name="price" value={priceVal.price || ''} onChange={handleChangeVal} className="form-control" placeholder="Enter price"
                                     />
                                 </div>
                                 <div className="col-md-4 d-flex">
-                                    <button type="button" className="btn btn-secondary mt-auto">Add</button>
+                                    <button type="button" className="btn btn-secondary mt-auto" onClick={addRowAndPrice} >Add</button>
                                 </div>
                             </div>
                             <DataTable value={priceInfo}>
                                 <Column header="No." body={(_, options) => options.rowIndex + 1}></Column>
                                 <Column field="rowtype" header="Row Type"></Column>
                                 <Column field="price" header="Price"></Column>
-                                {/* <Column body={(rawData, options) => (
-                                    <Select
-                                        options={facilityStatus}
-                                        value={facilityStatus.find(option => option.value === rawData?.status)}
-                                        placeholder="-- Select city --"
-                                        onChange={(selectedOption) => {
-                                            const updatedFacilities = [...(cinemaDataObj.facility || [])];
-                                            updatedFacilities[options.rowIndex] = {
-                                                ...updatedFacilities[options.rowIndex],
-                                                status: Number(selectedOption?.value)
-                                            };
-                                            setCinemaDataObj((prev) => ({
-                                                ...prev,
-                                                facility: updatedFacilities
-                                            }));
-                                        }}
-                                        menuPortalTarget={document.body}
-                                        styles={{
-                                            option: (provided, state) => ({
-                                                ...provided,
-                                                color: 'black',
-                                                backgroundColor: state.isFocused ? '#f0f0f0' : 'white',
-                                                zIndex: 9999
-                                            }),
-                                            menuPortal: (base) => ({ ...base, zIndex: 9999 })
-                                        }}
+                                <Column body={(rawData, options) => (
+                                    <FaTrash
+                                        style={{ cursor: "pointer" }}
+                                        onClick={() => { setPriceInfo((prev) => prev.filter((_, i) => i !== options.rowIndex)) }}
                                     />
-                                )} header="Action"></Column> */}
+                                )} header="Action"></Column>
                             </DataTable>
                         </div>
                         <div className="text-end mt-4">
