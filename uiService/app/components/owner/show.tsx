@@ -7,7 +7,7 @@ import { API_OWNER_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { CloseButton, Modal } from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
 import Select from 'react-select';
 import DatePicker from "react-datepicker";
@@ -15,6 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
+import { useParams } from "next/navigation";
 
 interface CinemaData {
     id: number,
@@ -25,7 +26,7 @@ interface screen {
     screenName: string;
 }
 interface showDataObject {
-    _id?: number;
+    _id?: string;
     cinemaId?: number | string,
     cinemaName?: string;
     screenType?: string;
@@ -47,25 +48,35 @@ interface movieLLan {
     language: string
 };
 interface priceInfo {
-    rowtype?: string;
+    rowType?: string;
     price?: string;
 }[];
 interface priceValObject {
-    rowtype?: string;
+    rowType?: string;
     price?: string;
 };
+interface ShowData {
+    _id: string,
+    screenType: string,
+    movieName: string,
+    movieLanguage: string,
+    showStartTime: string
+}
 
 const OwnerShow = () => {
+    const [show, setShow] = useState<ShowData[]>([])
     const [cinema, setCinema] = useState<CinemaData[]>([]);
     const [screenData, setScreenData] = useState<screen[]>([]);
     const [movieData, setMovieData] = useState<movie[]>([])
     const [movieLan, setMovieLan] = useState<movieLLan[]>([])
-    const [cinemaAddFormShow, setCinemaAddFormShow] = useState<boolean>(false);
+    const [showAddFormShow, setShowAddFormShow] = useState<boolean>(false);
     const [showDataObj, setShowDataObj] = useState<showDataObject>({});
     const [priceInfo, setPriceInfo] = useState<priceInfo[]>([]);
     const [priceVal, setPriceVal] = useState<priceValObject>({});
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string>("00:00");
+    const params = useParams();
+    const { cinemaId, screenId } = params;
 
     const addRowAndPrice = () => {
         setPriceInfo((prev) => [...prev, priceVal]);
@@ -83,6 +94,14 @@ const OwnerShow = () => {
     useEffect(() => {
         const fetchDetails = async () => {
             try {
+                const obj = {
+                    cinemaId: Number(cinemaId),
+                    screenId: Number(screenId)
+                }
+                const fetchAllShow = await axios.post(`${API_OWNER_URL}/getshowbybinemaid`, obj, {
+                    withCredentials: true
+                });
+                setShow(fetchAllShow?.data?.data)
             } catch (error: any) {
                 return toast.error(error.response.data.message);
             }
@@ -91,19 +110,27 @@ const OwnerShow = () => {
     }, []);
 
     const getLocalMidnightInUTC = (dateStr: string): string => {
-        const [day, month, year] = dateStr.split("-").map(Number);
-        const localDate = new Date(year, month - 1, day, 0, 0, 0);
-        return localDate.toISOString();
+        if (dateStr.includes("-")) {
+            console.log("1")
+            const [day, month, year] = dateStr.split("-").map(Number);
+            const localDate = new Date(year, month - 1, day, 0, 0, 0);
+            return localDate.toISOString();
+        }
+        else{
+            console.log("2")
+            return dateStr;
+        }
+
     };
 
     const getUTCDateTime = (date: Date, time: string): string => {
+        console.log(date,time)
         const [hours, minutes] = time.split(":").map(Number);
         const localDateTime = new Date(date);
         localDateTime.setHours(hours, minutes, 0, 0);
         return localDateTime.toISOString();
     };
 
-    // 🔹 Submit Form
     const submitForm = async () => {
         try {
             showDataObj.priceInfoForShow = priceInfo || [];
@@ -114,42 +141,40 @@ const OwnerShow = () => {
                 const formattedDate = `${day}-${month}-${year}`;
                 const dateOnlyUTC = getLocalMidnightInUTC(formattedDate);
                 const dateTimeUTC = getUTCDateTime(selectedDate, selectedTime);
-
                 showDataObj.showDate = dateOnlyUTC;
                 showDataObj.showStartTime = dateTimeUTC;
             }
             else {
                 return toast.error("Please select the date")
             }
-
             if (showDataObj?._id) {
-                // const editCinemaRes = await axios.put(`${API_OWNER_URL}/editcinema`, showDataObj, {
-                //   withCredentials: true
-                // });
-                // const data = editCinemaRes?.data?.data;
-                // setCinema((prevCity) =>
-                //   prevCity.map((item) =>
-                //     item.id === showDataObj.id ? { ...item, ...data } : item
-                //   )
-                // );
-                // setCinemaAddFormShow(false);
-                // setShowDataObj({});
-                // return toast.success("Cinema updated successfully");
+                const editCinemaRes = await axios.put(`${API_OWNER_URL}/editshow`, showDataObj, {
+                    withCredentials: true
+                });
+                const data = editCinemaRes?.data?.data;
+                setShow((prevShow) =>
+                    prevShow.map((item) =>
+                        item._id === showDataObj._id ? { ...item, ...data } : item
+                    )
+                );
+                setShowAddFormShow(false);
+                setShowDataObj({});
+                return toast.success("Show updated successfully");
             } else {
-                // const createCinemaRes = await axios.post(`${API_OWNER_URL}/addcinema`, showDataObj, {
-                //   withCredentials: true
-                // });
-                // const data = createCinemaRes?.data?.data;
-                // setCinema((prevCity) => [...prevCity, data]);
-                // setCinemaAddFormShow(false);
-                // setShowDataObj({});
-                // return toast.success("Cinema added successfully");
+                const createShowRes = await axios.post(`${API_OWNER_URL}/addshow`, showDataObj, {
+                    withCredentials: true
+                });
+                const data = createShowRes?.data?.data;
+                setShow((prevShow) => [...prevShow, data]);
+                setShowAddFormShow(false);
+                setShowDataObj({});
+                return toast.success("Show added successfully");
             }
         } catch (error: any) {
+            console.log(error)
             return toast.error(error?.response?.data?.message || "Something went wrong");
         }
     };
-
 
     const handleChange = async (e: any) => {
         const { name, value } = e.target;
@@ -185,7 +210,7 @@ const OwnerShow = () => {
                 <div>Show Management</div>
                 <div>
                     <button className="admin_city_add" onClick={async () => {
-                        setCinemaAddFormShow(true)
+                        setShowAddFormShow(true)
                         const getcitydata = await axios.get(`${API_OWNER_URL}/getallcinema`, {
                             withCredentials: true
                         });
@@ -198,45 +223,72 @@ const OwnerShow = () => {
                 </div>
             </div>
 
-            {/* <DataTable value={cinema} rows={10} tableStyle={{ minWidth: '50rem' }} sortOrder={-1}>
+            <DataTable value={show} rows={10} tableStyle={{ minWidth: '50rem' }} sortOrder={-1}>
                 <Column header="No." body={(_, options) => options.rowIndex + 1}></Column>
-                <Column field="city" header="City" sortable></Column>
-                <Column field="cinemaName" header="Ciname Name" sortable></Column>
+                <Column field="movieName" header="Movie Name" sortable></Column>
                 <Column
-                    header="Facility"
-                    body={(rowData) => (
-                        <div>
-                            {rowData.facility?.filter((item: any) => item.status !== 2)
-                                .map((item: any) => (
-                                    <div key={item.facilityName}>{item.facilityName}</div>
-                                ))}
-                        </div>
-                    )}
-                ></Column>
-                <Column field="cinemaLandmark" header="Landmark" sortable></Column>
-                <Column body={(rawData) => rawData.screens ? rawData.screens : '0'} header="No. of screens" sortable ></Column>
-                <Column header="Add Screen" body={(rawData) => (
-                    <div>
-                        <button className="screen_add" onClick={() => {
-                            router.push(`/owner/cinema/${rawData.id}`)
-                        }}>Add</button>
-                    </div>
-                )}></Column>
-                <Column header="Edit" body={(rowData) => (
-                    <FaEdit onClick={async () => {
-                        setCinemaAddFormShow(true);
-                        const editModeRes = await axios.get(`${API_OWNER_URL}/getcinema/${rowData.id}`, {
-                            withCredentials: true
+                    field="showStartTime"
+                    header="Show Time"
+                    sortable
+                    body={(rowData) => {
+                        const date = new Date(rowData.showStartTime);
+                        return date.toLocaleString("en-IN", {
+                            timeZone: "Asia/Kolkata",
+                            day: "2-digit",
+                            month: "short",
+                            year: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true
                         });
-                        setCinemaDataObj(editModeRes?.data?.data[0])
-                    }} />
+                    }}
+                ></Column>
+                <Column field="screenType" header="Screen Type" sortable></Column>
+                <Column header="Edit" body={(rowData) => (
+                    <FaEdit
+                        onClick={async () => {
+                            setShowAddFormShow(true);
+                            const editModeRes = await axios.get(`${API_OWNER_URL}/getShow/${rowData._id}`, {
+                                withCredentials: true
+                            });
+                            const dataval = editModeRes?.data?.data;
+                            setShowDataObj(dataval)
+                            setPriceInfo(dataval?.priceInfoForShow)
+                            const getcitydata = await axios.get(`${API_OWNER_URL}/getallcinema`, {
+                                withCredentials: true
+                            });
+                            setCinema(getcitydata?.data?.data.groupedCinemaRes);
+                            const getMovieDataRes = await axios.get(`${API_OWNER_URL}/getmovieaddoption`, {
+                                withCredentials: true
+                            });
+                            const getScreendata = await axios.get(`${API_OWNER_URL}/getScreenByCinemaId/${dataval?.cinemaId}`, {
+                                withCredentials: true
+                            });
+                            setScreenData(getScreendata?.data?.data);
+                            setMovieData(getMovieDataRes?.data?.data)
+
+                            const movieLanguage = getMovieDataRes?.data?.data.find((option: any) => option._id === dataval?.movieId)
+                            setMovieLan(movieLanguage?.movieLanguage || []);
+
+                            setSelectedDate(dataval.showDate)
+                            const utcDate = new Date(dataval.showStartTime);
+                            const istTime = utcDate.toLocaleTimeString("en-IN", {
+                                timeZone: "Asia/Kolkata",
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: false
+                            });
+                            setSelectedTime(istTime);
+
+                        }}
+                    />
                 )} ></Column>
-            </DataTable> */}
+            </DataTable>
 
             <Modal
-                show={cinemaAddFormShow}
+                show={showAddFormShow}
                 onHide={() => {
-                    setCinemaAddFormShow(false);
+                    setShowAddFormShow(false);
                     setShowDataObj({});
                 }}
                 contentClassName="admin_form"
@@ -248,7 +300,7 @@ const OwnerShow = () => {
                 <Modal.Header className="border-0 d-flex justify-content-between align-items-center">
                     <h5 className="mb-0 admin_form_heading">Add Show</h5>
                     <CgClose size={24} onClick={() => {
-                        setCinemaAddFormShow(false);
+                        setShowAddFormShow(false);
                         setShowDataObj({});
                     }} style={{ cursor: "pointer" }} />
                 </Modal.Header>
@@ -357,7 +409,7 @@ const OwnerShow = () => {
                             <div className="col-md-4 mb-3">
                                 <div className="d-flex flex-column">
                                     <label className="form-label admin_form_label me-2" style={{ whiteSpace: "nowrap" }}>
-                                        Movie Date
+                                        Show Date
                                     </label>
                                     <DatePicker
                                         className="form-control"
@@ -371,9 +423,10 @@ const OwnerShow = () => {
                             <div className="col-md-4 mb-3">
                                 <div className="d-flex flex-column">
                                     <label className="form-label admin_form_label me-2" style={{ whiteSpace: "nowrap" }}>
-                                        Movie Time
+                                        Show Time
                                     </label>
                                     <TimePicker
+
                                         disableClock={true}
                                         format="HH:mm"
                                         value={selectedTime}
@@ -386,7 +439,7 @@ const OwnerShow = () => {
                             <div className="row mb-3 align-items-end">
                                 <div className="col-md-4">
                                     <label className="form-label admin_form_label">Row Type</label>
-                                    <input type="text" name="rowtype" value={priceVal.rowtype || ''} onChange={handleChangeVal} className="form-control" placeholder="Enter rowtype"
+                                    <input type="text" name="rowType" value={priceVal.rowType || ''} onChange={handleChangeVal} className="form-control" placeholder="Enter rowtype"
                                     />
                                 </div>
                                 <div className="col-md-4">
@@ -400,7 +453,7 @@ const OwnerShow = () => {
                             </div>
                             <DataTable value={priceInfo}>
                                 <Column header="No." body={(_, options) => options.rowIndex + 1}></Column>
-                                <Column field="rowtype" header="Row Type"></Column>
+                                <Column field="rowType" header="Row Type"></Column>
                                 <Column field="price" header="Price"></Column>
                                 <Column body={(rawData, options) => (
                                     <FaTrash

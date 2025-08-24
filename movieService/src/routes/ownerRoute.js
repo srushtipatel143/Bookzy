@@ -17,7 +17,7 @@ router.get("/getscreenbycinemaid/:id",getAccessToRoute,getScreenByCinemaId);
 router.post("/addshow",getAccessToRoute,addShow);
 router.put("/editshow",getAccessToRoute,editShow);
 router.get("/getshow/:id",getAccessToRoute,getShow);
-router.get("/getshowbybinemaid",getAccessToRoute,getShowByCinemaId);
+router.post("/getshowbybinemaid",getAccessToRoute,getShowByCinemaId);
 
 router.get("/getmovieaddoption",getAccessToRoute,getmovieaddoption);
 

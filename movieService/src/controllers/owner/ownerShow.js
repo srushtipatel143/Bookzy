@@ -165,17 +165,16 @@ const editShow = async (req, res, next) => {
     try {
         const data = req.body;
         const { id } = req.owner;
-        const { showId, movieLanguage, showStartTime, priceInfoForShow, cinemaId, screenType } = data;
+        const { showId, movieLanguage,showDate, showStartTime, priceInfoForShow, cinemaId, screenType } = data;
         const isValidUserQuery = `select count(*) as isValidUser from cinema where id=? and userId=?`;
         const [isValidUserRes] = await pool.execute(isValidUserQuery, [cinemaId, id]);
-
         if (isValidUserRes[0].isValidUser === 0) {
             return next(new errorHandler("User is not authorized", 401));
         }
-
         const updateObject = {
             movieLanguage,
             showStartTime,
+            showDate,
             priceInfoForShow,
             screenType
         };
@@ -185,8 +184,8 @@ const editShow = async (req, res, next) => {
             message: "Show update successfully",
             data: data
         });
-
     } catch (error) {
+        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }

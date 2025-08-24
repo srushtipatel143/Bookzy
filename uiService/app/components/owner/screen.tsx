@@ -9,6 +9,7 @@ import axios from "axios";
 import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
 import { useParams } from "next/navigation";
+import { useRouter } from 'next/navigation';
 
 interface Row {
     rowName: string;
@@ -36,7 +37,8 @@ const OwnerScreen = () => {
         rowsInfo: [],
     }]);
     const params = useParams();
-    const cinemaId = params.id;
+    const cinemaId = params.cinemaId;
+    const router = useRouter();
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -122,7 +124,7 @@ const OwnerScreen = () => {
                 totalNoOFSeats: totalSeats.toString(),
             };
         });
-        const payload = { cinemaId:cinemaId, screens: updatedScreens };
+        const payload = { cinemaId: cinemaId, screens: updatedScreens };
         try {
             const createCinemaRes = await axios.post(`${API_OWNER_URL}/addscreen`, payload, {
                 withCredentials: true
@@ -156,6 +158,16 @@ const OwnerScreen = () => {
                 <Column field="screenName" header="Screen Name" sortable></Column>
                 <Column field="noOfRows" header="Total Rows" sortable></Column>
                 <Column field="totalNoOFSeats" header="Total Seats" sortable></Column>
+                <Column header="Add Show" body={(rawData) => (
+                    <div>
+                        <button className="screen_add"
+                            onClick={() => {
+                                router.push(`/owner/cinema/${cinemaId}/${rawData.screenId}`);
+                            }}
+                        >Add</button>
+                    </div>
+                )}></Column>
+
             </DataTable>
 
             <Modal

@@ -68,7 +68,7 @@ const OwnerCinema = () => {
     const [cinemaAddFormShow, setCinemaAddFormShow] = useState<boolean>(false);
     const [cinemaDataObj, setCinemaDataObj] = useState<CinemaDataObject>({});
     const [selectedFacility, setSelectedFacility] = useState<FacilityOption | null>(null);
-     const router = useRouter();
+    const router = useRouter();
 
     useEffect(() => {
         const fetchDetails = async () => {
