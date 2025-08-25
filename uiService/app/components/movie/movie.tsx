@@ -12,7 +12,7 @@ interface MovieScreenProps {
     movie: {
         _id: string;
         title: string;
-        imageURl: string;
+        movieImageURl: string;
         duration: number;
         releaseDate: string;
         movieLanguage: { language: string; status: boolean; _id: string }[];
@@ -44,7 +44,7 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                 <BackButton />
                 <div className="d-flex align-items-center ">
                     <div className="movie_left my-5 ms-5 me-3">
-                        <Image width={250} height={300} alt="movie_image" src={movie.imageURl} style={{ borderRadius: "10px", objectFit: "cover" }} />
+                        <Image width={250} height={300} alt="movie_image" src={movie.movieImageURl} style={{ borderRadius: "10px", objectFit: "cover" }} />
                     </div>
                     <div className="movie_right mx-3">
                         <p className="display-6">{movie.title}</p>

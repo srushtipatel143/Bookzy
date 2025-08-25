@@ -7,7 +7,7 @@ interface MovieScreenProps {
     movie: {
         _id: string;
         title: string;
-        imageURl: string;
+        movieImageURl: string;
         duration: number;
         releaseDate: string;
         movieLanguage: { language: string; status: boolean; _id: string }[];

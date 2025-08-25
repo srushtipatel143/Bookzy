@@ -57,7 +57,7 @@ const UpcomingMovieScreen = () => {
               <div style={{ height: "350px" }}>
                 <div className="latestMovie_wrapper">
                   <Image
-                    src={item.imageURl}
+                    src={item.movieImageURl}
                     alt="movie"
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

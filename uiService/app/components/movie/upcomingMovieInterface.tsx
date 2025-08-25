@@ -1,6 +1,6 @@
 export interface UpcomingMovie {
     _id: string;
-    imageURl: string;
+    movieImageURl: string;
     title: string;
     movieType: {
       _id: string;

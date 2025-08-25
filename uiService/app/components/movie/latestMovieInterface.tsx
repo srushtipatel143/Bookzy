@@ -5,7 +5,7 @@ export interface ratingData {
   
   export interface LatestMovie {
     _id: string;
-    imageURl: string;
+    movieImageURl: string;
     ratingData: ratingData;
     title: string;
     movieType: {
