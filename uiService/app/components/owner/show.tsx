@@ -76,6 +76,7 @@ const OwnerShow = () => {
     const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     const [selectedTime, setSelectedTime] = useState<string>("00:00");
     const params = useParams();
+    const [disableField, setDisableField] = useState(false)
     const { cinemaId, screenId } = params;
 
     const addRowAndPrice = () => {
@@ -111,41 +112,41 @@ const OwnerShow = () => {
 
     const getLocalMidnightInUTC = (dateStr: string): string => {
         if (dateStr.includes("-")) {
-            console.log("1")
             const [day, month, year] = dateStr.split("-").map(Number);
             const localDate = new Date(year, month - 1, day, 0, 0, 0);
             return localDate.toISOString();
         }
-        else{
-            console.log("2")
+        else {
             return dateStr;
         }
 
     };
 
     const getUTCDateTime = (date: Date, time: string): string => {
-        console.log(date,time)
         const [hours, minutes] = time.split(":").map(Number);
         const localDateTime = new Date(date);
         localDateTime.setHours(hours, minutes, 0, 0);
         return localDateTime.toISOString();
     };
 
+    const resetForm = () => {
+        setShowDataObj({});
+        setSelectedDate(null);
+        setSelectedTime("00:00");
+        setPriceInfo([]);
+        setMovieLan([]);
+        setScreenData([]);
+        setDisableField(false);
+
+    }
+
     const submitForm = async () => {
         try {
             showDataObj.priceInfoForShow = priceInfo || [];
-            if (selectedDate !== null) {
-                const day = selectedDate.getDate().toString().padStart(2, "0");
-                const month = (selectedDate.getMonth() + 1).toString().padStart(2, "0");
-                const year = selectedDate.getFullYear();
-                const formattedDate = `${day}-${month}-${year}`;
-                const dateOnlyUTC = getLocalMidnightInUTC(formattedDate);
-                const dateTimeUTC = getUTCDateTime(selectedDate, selectedTime);
-                showDataObj.showDate = dateOnlyUTC;
-                showDataObj.showStartTime = dateTimeUTC;
-            }
-            else {
-                return toast.error("Please select the date")
+            if(selectedTime==="00:00" && selectedDate!==null)
+            {
+                const dateTimeUTC = getUTCDateTime(selectedDate,"00:00");
+                showDataObj.showStartTime=dateTimeUTC;
             }
             if (showDataObj?._id) {
                 const editCinemaRes = await axios.put(`${API_OWNER_URL}/editshow`, showDataObj, {
@@ -171,7 +172,6 @@ const OwnerShow = () => {
                 return toast.success("Show added successfully");
             }
         } catch (error: any) {
-            console.log(error)
             return toast.error(error?.response?.data?.message || "Something went wrong");
         }
     };
@@ -247,6 +247,7 @@ const OwnerShow = () => {
                 <Column header="Edit" body={(rowData) => (
                     <FaEdit
                         onClick={async () => {
+                            setDisableField(true);
                             setShowAddFormShow(true);
                             const editModeRes = await axios.get(`${API_OWNER_URL}/getShow/${rowData._id}`, {
                                 withCredentials: true
@@ -301,7 +302,7 @@ const OwnerShow = () => {
                     <h5 className="mb-0 admin_form_heading">Add Show</h5>
                     <CgClose size={24} onClick={() => {
                         setShowAddFormShow(false);
-                        setShowDataObj({});
+                        resetForm();
                     }} style={{ cursor: "pointer" }} />
                 </Modal.Header>
 
@@ -326,6 +327,7 @@ const OwnerShow = () => {
                                         setScreenData(getScreendata?.data?.data);
                                     }}
                                     placeholder="-- Select cinema --"
+                                    isDisabled={disableField}
                                     styles={{
                                         option: (provided, state) => ({
                                             ...provided,
@@ -348,6 +350,7 @@ const OwnerShow = () => {
                                         }));
                                     }}
                                     placeholder="-- Select screen --"
+                                    isDisabled={disableField}
                                     styles={{
                                         option: (provided, state) => ({
                                             ...provided,
@@ -372,6 +375,7 @@ const OwnerShow = () => {
                                         }));
                                     }}
                                     placeholder="-- Select movie --"
+                                    isDisabled={disableField}
                                     styles={{
                                         option: (provided, state) => ({
                                             ...provided,
@@ -416,7 +420,20 @@ const OwnerShow = () => {
                                         placeholderText="dd/mm/yyyy"
                                         dateFormat="dd/MM/yyyy"
                                         selected={selectedDate}
-                                        onChange={(date: Date | null) => setSelectedDate(date)}
+                                        onChange={(date: Date | null) => {
+                                            setSelectedDate(date)
+                                            if (date !== null) {
+                                                const day = date.getDate().toString().padStart(2, "0");
+                                                const month = (date.getMonth() + 1).toString().padStart(2, "0");
+                                                const year = date.getFullYear();
+                                                const formattedDate = `${day}-${month}-${year}`;
+                                                const dateOnlyUTC = getLocalMidnightInUTC(formattedDate);
+                                                setShowDataObj((prev) => ({
+                                                    ...prev,
+                                                    showDate: dateOnlyUTC
+                                                }))
+                                            }
+                                        }}
                                     />
                                 </div>
                             </div>
@@ -426,11 +443,20 @@ const OwnerShow = () => {
                                         Show Time
                                     </label>
                                     <TimePicker
-
                                         disableClock={true}
                                         format="HH:mm"
                                         value={selectedTime}
-                                        onChange={(time) => setSelectedTime(time || "00:00")}
+                                        onChange={(time) => {
+                                            setSelectedTime(time || "00:00")
+                                            if (selectedDate !== null) {
+                                                const newTime = time ?? "00:00";
+                                                const dateTimeUTC = getUTCDateTime(selectedDate, newTime);
+                                                setShowDataObj((prev) => ({
+                                                    ...prev,
+                                                    showStartTime: dateTimeUTC
+                                                }))
+                                            }
+                                        }}
                                         clearIcon={null}
                                         className="form-control"
                                     />

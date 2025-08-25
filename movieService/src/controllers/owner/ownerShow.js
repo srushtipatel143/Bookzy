@@ -185,7 +185,6 @@ const editShow = async (req, res, next) => {
             data: data
         });
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }

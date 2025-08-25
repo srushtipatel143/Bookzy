@@ -19,7 +19,6 @@ const addScreen = async (req, res, next) => {
         await conn.beginTransaction();
 
         const checkValidUserQuery=`select count(*) as validUser from  cinema where id=? and userId=?`;
-        console.log(data.cinemaId,userId)
         const [iSvalidUser]=await conn.execute(checkValidUserQuery,[data.cinemaId,userId]);
         if(iSvalidUser[0].validUser===0){
             await conn.rollback();
