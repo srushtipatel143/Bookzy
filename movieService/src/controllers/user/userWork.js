@@ -110,7 +110,6 @@ const getAllCinemaByFilter = async (req, res, next) => {
             const month = formatDay.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC", }).toUpperCase();
             const formattedDate = `${weekday} ${day} ${month}`;
 
-
             allDates.push({
                 formattedDate,
                 rawDate: new Date(previousDay),
@@ -179,7 +178,6 @@ const getAllCinemaByFilter = async (req, res, next) => {
                 showData: finalData
             }
         });
-
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
@@ -188,19 +186,15 @@ const getAllCinemaByFilter = async (req, res, next) => {
 const getShow = async (req, res, next) => {
     try {
         const showId = req.params.id;
-
         const showData = await Show.findOne({ _id: showId });
-
         const { JWT_SECRET_KEY } = process.env;
         let decoded = null;
         let userId = null;
-
         if (isTokenIncluded(req)) {
             const accessToken = getAccessTokenFromHeader(req);
             decoded = jwt.verify(accessToken, JWT_SECRET_KEY);
             userId = decoded.id;
         }
-
 
         // const query = `SELECT seatinfo.screenId as screenId,screenName,screen.noOfRows as screenRow,screen.noOfSeats as screenSeat,seatinfo.RowId as rowId,
         // rowName,rowType,rowsinfo.noOfRowSeat as rowSeat,seatinfo.id as seatId,seatName FROM seatinfo
@@ -372,9 +366,7 @@ const getMoviesInCinema = async (req, res, next) => {
         where cinema.id=? and cinema.status=?`;
         const param = [cinemaId, 1];
         const [CinemaResponse] = await pool.execute(query, param);
-
         let cinema = null;
-
         CinemaResponse.forEach((item) => {
             if (!cinema) {
                 cinema = {
@@ -392,7 +384,6 @@ const getMoviesInCinema = async (req, res, next) => {
                 });
             }
         });
-
         if (CinemaResponse.length === 0) {
             return res.status(404).json({ success: false, message: "Cinema not found" });
         }
@@ -400,11 +391,8 @@ const getMoviesInCinema = async (req, res, next) => {
         const istOffset = 5.5 * 60 * 60 * 1000;
         const inputUTC = new Date(todayTime);
         const nowUTC = new Date();
-
         const nowIST = new Date(nowUTC.getTime() + istOffset);
-
         const istDayStart = new Date(inputUTC);
-
         const istDayEnd = new Date(istDayStart);
         istDayEnd.setHours(18, 29, 59, 999);
         const utcDayEnd = new Date(istDayEnd.getTime() + istOffset);
@@ -448,7 +436,6 @@ const getMoviesInCinema = async (req, res, next) => {
         endDate.setUTCHours(18, 30, 0, 0);
         const allDates = [];
         let current = new Date(startDate);
-
 
         while (current <= endDate) {
             const utcDateStr = current.toISOString().split("T")[0];
@@ -508,18 +495,15 @@ const getMoviesInCinema = async (req, res, next) => {
                 formattedTimeFull: formattedTimeFull,
             });
         });
-
         const finalData = {
             ...cinema,
             allDates: allDates,
             movieData: Array.from(movieShowMap.values()),
         };
-
         return res.status(200).json({
             success: true,
             data: finalData,
         });
-
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
@@ -566,7 +550,6 @@ const getLatestMovie = async (req, res, next) => {
                 return movieData;
             })
         );
-
         return res.status(200).json({
             success: true,
             data: getMovie,
@@ -585,7 +568,6 @@ const getUpCommingMovie = async (req, res, next) => {
             cityId: id,
             movieReleaseDate: { $gt: today },
         });
-
         const getMovie = await Promise.all(
             getdata.map(async (item) => {
                 const movieDetail = await Movie.findById({ _id: item.movieId });
@@ -605,12 +587,10 @@ const getUpCommingMovie = async (req, res, next) => {
                 return movieData;
             })
         );
-
         return res.status(200).json({
             success: true,
             data: getMovie,
         });
-
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
@@ -620,11 +600,9 @@ const getMoviesInCity = async (req, res, next) => {
     try {
         const { id } = req.params;
         const today = new Date();
-
         const query = `SELECT id,cinemaName,cinemaLandmark FROM cinema where cityId=? and status=?`;
         const param = [id, 1];
         const [CinemaResponse] = await pool.execute(query, param);
-
         const allMovies = [];
 
         for (const cinema of CinemaResponse) {
@@ -636,7 +614,6 @@ const getMoviesInCity = async (req, res, next) => {
         }
 
         const resultMap = new Map();
-
         for (const show of allMovies) {
             {
                 const language = show.movieLanguage;
@@ -671,7 +648,6 @@ const getMoviesInCity = async (req, res, next) => {
                 })),
             })
         );
-
         return res.status(200).json({
             success: true,
             data: finalResult,
@@ -685,12 +661,9 @@ const getSingleMovie = async (req, res, next) => {
     try {
         const id = req.params.id;
         const today = new Date();
-
         const movieData = await Movie.findById({ _id: id });
         if (!movieData) return next(new errorHandler("Movie not found", 401));
-
         const userRating = await Rating.findOne({ movieId: id });
-
         const getMovie = await Show.find({
             movieId: id,
             showStartTime: { $gte: today },
@@ -747,15 +720,4 @@ const getSingleMovie = async (req, res, next) => {
     }
 };
 
-module.exports = {
-    getAllCity,
-    getAllCinemaByCity,
-    getSingleMovie,
-    getShow,
-    getAllCinemaByFilter,
-    getMovieforcinema,
-    getMoviesInCity,
-    getMoviesInCinema,
-    getLatestMovie,
-    getUpCommingMovie,
-};
+module.exports = {getAllCity,getAllCinemaByCity,getSingleMovie,getShow,getAllCinemaByFilter,getMovieforcinema,getMoviesInCity,getMoviesInCinema,getLatestMovie,getUpCommingMovie};
