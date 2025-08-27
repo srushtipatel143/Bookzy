@@ -196,7 +196,6 @@ const bookingData = async (req, res, next) => {
             success: true,
             message: "data insert successfully"
         })
-
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
