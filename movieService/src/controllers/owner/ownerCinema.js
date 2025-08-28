@@ -13,6 +13,7 @@ const addCinema = async (req, res, next) => {
         const facilityString = JSON.stringify(facility);
         const param = [id, cityId, cinemaName, cinemaLandmark, status, facilityString];
         const [rows]=await pool.query(callProcedure, param);
+
         const insertedId = rows[0][0].insertedId;
         const data={
             ...req.body,

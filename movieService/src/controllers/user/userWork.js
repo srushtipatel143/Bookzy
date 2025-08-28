@@ -45,7 +45,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
         const istDayStart = new Date(inputUTC);
 
         const istDayEnd = new Date(istDayStart);
-        istDayEnd.setHours(18, 29, 59, 999);
+        istDayEnd.setHours(18, 30, 0, 0);
         const utcDayEnd = new Date(istDayEnd.getTime() + istOffset);
         const isTodayIST = istDayStart.toDateString() === nowIST.toDateString();
 
@@ -394,7 +394,7 @@ const getMoviesInCinema = async (req, res, next) => {
         const nowIST = new Date(nowUTC.getTime() + istOffset);
         const istDayStart = new Date(inputUTC);
         const istDayEnd = new Date(istDayStart);
-        istDayEnd.setHours(18, 29, 59, 999);
+        istDayEnd.setHours(18, 30, 0, 0);
         const utcDayEnd = new Date(istDayEnd.getTime() + istOffset);
         const isTodayIST = istDayStart.toDateString() === nowIST.toDateString();
 
