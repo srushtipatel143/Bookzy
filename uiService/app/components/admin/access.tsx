@@ -93,9 +93,17 @@ const AdminAccess = () => {
                 return toast.success(`${userDataObj.role === 'admin' ? 'Admin' : 'Owner'} update successfully`);
             }
             else {
-                const createUserRes = await axios.post(`${API_ADMIN_AUTH_URL}/createadmin`, userDataObj, {
-                    withCredentials: true
-                });
+                let createUserRes;
+                if (userDataObj.role === 'admin') {
+                    createUserRes = await axios.post(`${API_ADMIN_AUTH_URL}/createadmin`, userDataObj, {
+                        withCredentials: true
+                    });
+                }
+                else {
+                    createUserRes = await axios.post(`${API_OWNER_AUTH_URL}/createowner`, userDataObj, {
+                        withCredentials: true
+                    });
+                }
                 const data = createUserRes?.data?.data;
                 setUserData((prevUser) => [...prevUser, data]);
                 setUserAddFormShow(false)

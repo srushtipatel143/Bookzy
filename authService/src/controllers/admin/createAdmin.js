@@ -5,6 +5,7 @@ const sendEmail = require("../../helpers/libraries/sendEmail");
 const createAdmin = async (req, res, next) => {
     try {
         const data = req.body;
+        data.createdBy = req.admin._id;
         let savedAdmin;
         if (data.password) {
             return next(new errorHandler("Password should not allow during admin creation", 400));
@@ -33,8 +34,9 @@ const createAdmin = async (req, res, next) => {
         });
         return res.status(200).json({ success: true, message: "Admin registered successfully", data: savedAdmin })
     } catch (error) {
+        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }
 
-module.exports={createAdmin};
+module.exports = { createAdmin };
