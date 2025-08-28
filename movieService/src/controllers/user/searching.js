@@ -39,5 +39,4 @@ const searchMovieCinema = async (req, res, next) => {
     }
 };
 
-
 module.exports = { searchCity, searchMovieCinema }

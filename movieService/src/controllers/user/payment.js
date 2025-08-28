@@ -189,7 +189,6 @@ const bookingData = async (req, res, next) => {
             currency: data.currency,
             paymentMethod: data.method
         }
-
         await new Payment(paymentData).save();
 
         return res.status(200).json({
