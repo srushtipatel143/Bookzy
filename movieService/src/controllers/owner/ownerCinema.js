@@ -137,7 +137,6 @@ const editCinema = async (req, res, next) => {
         const editCityQuery = `CALL editCinema(?, ?, ?, ?, ?,?)`;
         const param = [req.body.id, id, cinemaName, cinemaLandmark, status, facilityString];
         await pool.query(editCityQuery, param);
-
         if (isMovieNameChanged[0].cinemaName !== cinemaName) {
             await Show.updateMany({ cinemaId: req.body.id }, { $set: { cinemaName: cinemaName } });
         }
