@@ -26,13 +26,11 @@ const UserOtp = () => {
             inputRef.current[index + 1]?.focus();
         }
     };
-
     const handleKeyDown = (e: any, index: number) => {
         if (e.key === "Backspace" && !otp[index] && index > 0) {
             inputRef.current[index - 1]?.focus();
         }
     };
-
     const verifyCode = async (val: string) => {
         try {
             const data = {
@@ -51,7 +49,6 @@ const UserOtp = () => {
             toast.error(error.response.data.message);
         }
     }
-
     const resendOTP = async () => {
         try {
             await axios.post(`${API_AUTH_URL}/resendotp/${slug}`);
