@@ -33,6 +33,10 @@ const getAllCinemaByCity = async (req, res, next) => {
     }
 };
 
+const getUTCDateOnly = (date) => {
+    return date.toISOString().split("T")[0];
+};
+
 const getAllCinemaByFilter = async (req, res, next) => {
     try {
         const data = req.query;
@@ -93,21 +97,32 @@ const getAllCinemaByFilter = async (req, res, next) => {
         endDate.setUTCDate(endDate.getUTCDate());
         endDate.setUTCHours(18, 30, 0, 0);
         const allDates = [];
-        let current = new Date(startDate);
-
         const getCinemaId = getdata.map((item) => item.cinemaId);
         const uniqueCinemaId = [...new Set(getCinemaId)];
 
-        while (current <= endDate) {
-            const utcDateStr = current.toISOString().split("T")[0];
+        let current = new Date(startDate);
+
+        while (getUTCDateOnly(current) <= getUTCDateOnly(endDate)) {
+
+            const utcDateStr = getUTCDateOnly(current);
+
             const previousDay = new Date(current.getTime());
-            previousDay.setUTCDate(previousDay.getUTCDate() - 1);
             previousDay.setUTCHours(18, 30, 0, 0);
 
             const formatDay = new Date(current.getTime());
-            const weekday = formatDay.toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" }).toUpperCase();
+
+            const weekday = formatDay.toLocaleDateString("en-GB", {
+                weekday: "short",
+                timeZone: "UTC"
+            }).toUpperCase();
+
             const day = formatDay.getUTCDate().toString().padStart(2, "0");
-            const month = formatDay.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC", }).toUpperCase();
+
+            const month = formatDay.toLocaleDateString("en-GB", {
+                month: "short",
+                timeZone: "UTC",
+            }).toUpperCase();
+
             const formattedDate = `${weekday} ${day} ${month}`;
 
             allDates.push({
@@ -118,6 +133,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
                 month,
                 hasShow: existingDateStrings.includes(utcDateStr),
             });
+
             current.setUTCDate(current.getUTCDate() + 1);
         }
 
@@ -563,34 +579,47 @@ const getUpCommingMovie = async (req, res, next) => {
     try {
         const { id } = req.params;
         const today = new Date();
-
-        const getdata = await cityMovieMapping.find({
+        const mappings = await cityMovieMapping.find({
             cityId: id,
             movieReleaseDate: { $gt: today },
         });
-        const getMovie = await Promise.all(
-            getdata.map(async (item) => {
-                const movieDetail = await Movie.findById({ _id: item.movieId });
-                const getMoviescreentype = await Show.find({
-                    movieId: item.movieId,
+
+        const mappedMovieIds = mappings.map(item => item.movieId);
+        const mappedMovies = await Promise.all(
+            mappedMovieIds.map(async (movieId) => {
+                const movieDetail = await Movie.findById(movieId);
+
+                const shows = await Show.find({
+                    movieId: movieId,
                     showStartTime: { $gte: today },
                 });
-
-                const screenType = getMoviescreentype.map((item) => {
-                    return item.screenType;
-                });
-                const screenTypes = [...new Set(screenType)];
-                const movieData = {
+                const screenTypes = [
+                    ...new Set(shows.map(show => show.screenType))
+                ];
+                return {
                     ...movieDetail.toObject(),
                     screenTypes,
+                    isScheduled: true
                 };
-                return movieData;
             })
         );
+        const unmappedMovies = await Movie.find({
+            _id: { $nin: mappedMovieIds },
+            releaseDate: { $gt: today }
+        });
+
+        const upcomingWithoutShows = unmappedMovies.map(movie => ({
+            ...movie.toObject(),
+            screenTypes: [],
+        }));
+
+        const finalMovies = [...mappedMovies, ...upcomingWithoutShows];
+
         return res.status(200).json({
             success: true,
-            data: getMovie,
+            data: finalMovies,
         });
+
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));
     }
@@ -720,4 +749,4 @@ const getSingleMovie = async (req, res, next) => {
     }
 };
 
-module.exports = {getAllCity,getAllCinemaByCity,getSingleMovie,getShow,getAllCinemaByFilter,getMovieforcinema,getMoviesInCity,getMoviesInCinema,getLatestMovie,getUpCommingMovie};
+module.exports = { getAllCity, getAllCinemaByCity, getSingleMovie, getShow, getAllCinemaByFilter, getMovieforcinema, getMoviesInCity, getMoviesInCinema, getLatestMovie, getUpCommingMovie };

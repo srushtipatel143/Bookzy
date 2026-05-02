@@ -18,10 +18,10 @@ interface MovieScreenProps {
             totalRating: number;
             votes: number;
         };
-        availableScreen:{
-            language:string;
-            screenType:[];
-        } [];
+        availableScreen: {
+            language: string;
+            screenType: [];
+        }[];
     };
 }
 
@@ -33,24 +33,28 @@ const SelectModal = ({ movie }: MovieScreenProps) => {
         setSelectFormat(true);
     };
 
-    const selectValue = (data:any) => {
+    const selectValue = (data: any) => {
 
         const value = {
             movieId: movie._id,
             movieName: movie.title,
             type: movie.movieType,
-            selectLanguage:data.language,
-            selectScreen:data.screenType
+            selectLanguage: data.language,
+            selectScreen: data.screenType
         }
-        localStorage.setItem("select-movie",JSON.stringify(value));
+        localStorage.setItem("select-movie", JSON.stringify(value));
         router.push("/explore/cinema")
     }
 
+    console.log(movie)
+
     return (
         <div>
-            <button className="movie_book_btn" onClick={handleButtonClick}>
-                Book tickets
-            </button>
+            {movie.availableScreen.length > 0 && (
+                <button className="movie_book_btn" onClick={handleButtonClick}>
+                    Book tickets
+                </button>
+            )}
             <Modal centered show={selectFormat} onHide={() => setSelectFormat(false)}>
                 <Modal.Header className="border-0" closeButton>
                     <span className="fw-lighter fs-5"> Select language and format</span>

@@ -171,7 +171,7 @@ const RecommendedAll = () => {
                                 <div style={{ height: "400px" }} className="mb-3">
                                     <div className="recommendedAllMovie_wrapper" style={{ position: 'relative', height: "80%", width: "100%" }}>
                                         <Image
-                                            src={item.imageURl}
+                                            src={item?.movieImageURl}
                                             alt="movie"
                                             fill
                                             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

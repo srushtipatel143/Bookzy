@@ -4,7 +4,7 @@ import "../../css/userlogin.css";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 import Image from "next/image";
-import { API_Owner_AUTH_URL } from "../../utils/config";
+import { API_OWNER_AUTH_URL } from "../../utils/config";
 import { toast, ToastContainer } from "react-toastify";
 import { useState } from "react";
 import axios from "axios";
@@ -24,7 +24,7 @@ const ChangePasswordOwner = () => {
             if (password !== cpassword) {
                 return toast.error("Password do not match");
             }
-            const response = await axios.put(`${API_Owner_AUTH_URL}/changepassword`, data, { withCredentials: true });
+            const response = await axios.put(`${API_OWNER_AUTH_URL}/changepassword`, data, { withCredentials: true });
             if (response.data.success) {
                 router.push(`/owner/dashboard`);
             }

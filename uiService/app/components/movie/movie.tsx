@@ -21,13 +21,13 @@ interface MovieScreenProps {
         about: string;
         ratingData: {
             totalRating: number;
-            votes:number;
+            votes: number;
         };
-        screenTypes:[];
-        availableScreen:{
-            language:string;
-            screenType:[];
-        } [];
+        screenTypes: [];
+        availableScreen: {
+            language: string;
+            screenType: [];
+        }[];
     };
 }
 
@@ -53,17 +53,17 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                                 <FaStar size={20} color="red" />
                                 {Object.keys(movie.ratingData).length > 0 ? `${movie.ratingData.totalRating}/10 (${movie.ratingData.votes} Votes)` : 'N / A'}
                             </p>
-                           <AddRating movie={movie}/>
+                            <AddRating movie={movie} />
                         </div>
                         <div className="movie_type_lan">
-                            <div className="movie_type_sec">
-                                {movie.screenTypes?.map((item,index)=>(
+                            {movie.screenTypes.length > 0 && (<div className="movie_type_sec">
+                                {movie.screenTypes?.map((item, index) => (
                                     <span key={index}>
                                         {item}
                                         {index !== movie.screenTypes?.length - 1 && ','}
                                     </span>
                                 ))}
-                            </div>
+                            </div>)}
                             <div className="movie_lan_sec">
                                 {movie.movieLanguage?.map((item, index) => (
                                     <span key={item._id}>
@@ -85,7 +85,7 @@ const Moviescreen = ({ movie }: MovieScreenProps) => {
                                 <li>{formattedDate}</li>
                             </ul>
                         </div>
-                       <SelectModal movie={movie}/>
+                        <SelectModal movie={movie} />
                     </div>
                 </div>
             </div>
