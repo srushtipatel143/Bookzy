@@ -33,13 +33,34 @@ const getAllCinemaByCity = async (req, res, next) => {
     }
 };
 
-const getUTCDateOnly = (date) => {
-    return date.toISOString().split("T")[0];
+const getISTDateISO = (date) => {
+    return new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).format(date);
+};
+
+const getISTMidnight = (date) => {
+    const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).formatToParts(date);
+
+    const year = parts.find(p => p.type === "year").value;
+    const month = parts.find(p => p.type === "month").value;
+    const day = parts.find(p => p.type === "day").value;
+    return new Date(`${year}-${month}-${day}T00:00:00+05:30`);
 };
 
 const getAllCinemaByFilter = async (req, res, next) => {
     try {
         const data = req.query;
+
+        console.log(data)
         const istOffset = 5.5 * 60 * 60 * 1000;
         const inputUTC = new Date(data.todayTime);
         const nowUTC = new Date();
@@ -88,7 +109,7 @@ const getAllCinemaByFilter = async (req, res, next) => {
             }
         );
 
-        const existingDateStrings = shows.map(s => s.showDate.toISOString().split("T")[0]);
+        const existingDateStrings = shows.map(s => getISTDateISO(s.showDate));
         const sortedDates = [...existingDateStrings].sort();
 
         const startDate = new Date();
@@ -102,38 +123,36 @@ const getAllCinemaByFilter = async (req, res, next) => {
 
         let current = new Date(startDate);
 
-        while (getUTCDateOnly(current) <= getUTCDateOnly(endDate)) {
+        while (getISTDateISO(current) <= getISTDateISO(endDate)) {
 
-            const utcDateStr = getUTCDateOnly(current);
+            const istDateStr = getISTDateISO(current);
+            const istMidnight = getISTMidnight(current);
 
-            const previousDay = new Date(current.getTime());
-            previousDay.setUTCHours(18, 30, 0, 0);
-
-            const formatDay = new Date(current.getTime());
-
-            const weekday = formatDay.toLocaleDateString("en-GB", {
+            const weekday = istMidnight.toLocaleDateString("en-IN", {
                 weekday: "short",
-                timeZone: "UTC"
+                timeZone: "Asia/Kolkata"
             }).toUpperCase();
 
-            const day = formatDay.getUTCDate().toString().padStart(2, "0");
+            const day = istMidnight.toLocaleDateString("en-IN", {
+                day: "2-digit",
+                timeZone: "Asia/Kolkata"
+            });
 
-            const month = formatDay.toLocaleDateString("en-GB", {
+            const month = istMidnight.toLocaleDateString("en-IN", {
                 month: "short",
-                timeZone: "UTC",
+                timeZone: "Asia/Kolkata"
             }).toUpperCase();
 
             const formattedDate = `${weekday} ${day} ${month}`;
 
             allDates.push({
                 formattedDate,
-                rawDate: new Date(previousDay),
+                rawDate: istMidnight,
                 weekday,
                 day,
                 month,
-                hasShow: existingDateStrings.includes(utcDateStr),
+                hasShow: existingDateStrings.includes(istDateStr),
             });
-
             current.setUTCDate(current.getUTCDate() + 1);
         }
 
@@ -444,7 +463,7 @@ const getMoviesInCinema = async (req, res, next) => {
             }
         );
 
-        const existingDateStrings = shows.map(s => s.showDate.toISOString().split("T")[0]);
+        const existingDateStrings = shows.map(s => getISTDateISO(s.showDate));
         const sortedDates = [...existingDateStrings].sort();
         const startDate = new Date();
         const endDate = new Date(sortedDates[sortedDates.length - 1]);
@@ -453,27 +472,39 @@ const getMoviesInCinema = async (req, res, next) => {
         const allDates = [];
         let current = new Date(startDate);
 
-        while (current <= endDate) {
-            const utcDateStr = current.toISOString().split("T")[0];
-            const previousDay = new Date(current.getTime());
-            previousDay.setUTCDate(previousDay.getUTCDate() - 1);
-            previousDay.setUTCHours(18, 30, 0, 0);
-            const formatDay = new Date(current.getTime());
-            const weekday = formatDay.toLocaleDateString("en-GB", { weekday: "short", timeZone: "UTC" }).toUpperCase();
-            const day = formatDay.getUTCDate().toString().padStart(2, "0");
-            const month = formatDay.toLocaleDateString("en-GB", { month: "short", timeZone: "UTC", }).toUpperCase();
+       while (getISTDateISO(current) <= getISTDateISO(endDate)) {
+
+            const istDateStr = getISTDateISO(current);
+            const istMidnight = getISTMidnight(current);
+
+            const weekday = istMidnight.toLocaleDateString("en-IN", {
+                weekday: "short",
+                timeZone: "Asia/Kolkata"
+            }).toUpperCase();
+
+            const day = istMidnight.toLocaleDateString("en-IN", {
+                day: "2-digit",
+                timeZone: "Asia/Kolkata"
+            });
+
+            const month = istMidnight.toLocaleDateString("en-IN", {
+                month: "short",
+                timeZone: "Asia/Kolkata"
+            }).toUpperCase();
+
             const formattedDate = `${weekday} ${day} ${month}`;
 
             allDates.push({
                 formattedDate,
-                rawDate: new Date(previousDay),
+                rawDate: istMidnight,
                 weekday,
                 day,
                 month,
-                hasShow: existingDateStrings.includes(utcDateStr),
+                hasShow: existingDateStrings.includes(istDateStr),
             });
             current.setUTCDate(current.getUTCDate() + 1);
         }
+
 
         const movieShowMap = new Map();
         getdata.forEach((show) => {
