@@ -55,7 +55,7 @@ const nextConfig: NextConfig = {
         hostname: 'assets-in.bmscdn.com',
         port: '',
         pathname: '/**',
-      }
+      },
     ],
   },
 };

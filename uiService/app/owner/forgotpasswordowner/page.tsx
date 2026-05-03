@@ -1,6 +1,6 @@
 'use client';
 
-import ForgotPasswordOwner from "../../components/ownerauth/forgotpwdowner";
+import ForgotPasswordOwner from "@/components/ownerauth/forgotpwdowner";
 
 const Success=()=>{
     return(

@@ -1,7 +1,7 @@
 "use client";
-import Navbar from "../components/navbar/navbar";
-import Searchfield from "../components/navbar/search";
-import { useSearch } from "../components/context/searchContext";
+import Navbar from "@/components/navbar/navbar";
+import Searchfield from "@/components/navbar/search";
+import { useSearch } from "@/components/context/searchContext";
 
 export default function ExploreLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   const { showSearch } = useSearch();

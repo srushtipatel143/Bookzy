@@ -1,6 +1,6 @@
 'use client';
 
-import Showlist from "../../components/show";
+import Showlist from "@/components/show";
 const Show =()=>{
     return(
        <Showlist/>

@@ -1,4 +1,4 @@
-import UserOtp from "../../../components/userauth/otpscreen";
+import UserOtp from "@/components/userauth/otpscreen";
 
 const Otp=()=>{
     return(

@@ -1,4 +1,4 @@
-import OwnerDashboard from "../../components/owner/dashboard";
+import OwnerDashboard from "@/components/owner/dashboard";
 
 const OwnerDashboardPage=()=>{
     return(

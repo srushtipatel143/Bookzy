@@ -1,12 +1,12 @@
 'use client'
 import "./globals.css";
 import "primereact/resources/themes/lara-light-cyan/theme.css";
-import { SearchProvider } from "./components/context/searchContext";
+import { SearchProvider } from "@/components/context/searchContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
-import { store } from "@/app/store";
-import { CityProvider } from "./components/context/cityContext";
-import { UserProvider } from "./components/context/userContext";
+import { store } from "@/store";
+import { CityProvider } from "@/components/context/cityContext";
+import { UserProvider } from "@/components/context/userContext";
 
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

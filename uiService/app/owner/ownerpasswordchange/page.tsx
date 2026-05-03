@@ -1,4 +1,4 @@
-import ChangePasswordOwner from "../../components/ownerauth/changepwdowner";
+import ChangePasswordOwner from "@/components/ownerauth/changepwdowner";
 
 const OwnerPasswordChangePage=()=>{
     return(

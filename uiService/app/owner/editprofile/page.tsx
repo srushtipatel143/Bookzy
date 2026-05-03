@@ -1,4 +1,4 @@
-import EditProfile from "../../components/ownerauth/editProfile";
+import EditProfile from "@/components/ownerauth/editProfile";
 
 const Profile=()=>{
     return(

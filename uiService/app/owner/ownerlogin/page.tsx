@@ -1,4 +1,4 @@
-import OwnerLogin from "../../components/ownerauth/ownerlogin";
+import OwnerLogin from "@/components/ownerauth/ownerlogin";
 
 const Login=()=>{
     return(

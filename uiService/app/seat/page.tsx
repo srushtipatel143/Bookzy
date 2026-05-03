@@ -1,6 +1,6 @@
 'use client';
 
-import Seatscreen from "../components/seat/seat";
+import Seatscreen from "@/components/seat/seat";
 const Seat =()=>{
     return(
        <Seatscreen/>

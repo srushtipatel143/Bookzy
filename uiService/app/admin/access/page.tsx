@@ -1,4 +1,4 @@
-import AdminAccess from "../../components/admin/access";
+import AdminAccess from "@/components/admin/access";
 
 const AdminAccessPage=()=>{
     return(

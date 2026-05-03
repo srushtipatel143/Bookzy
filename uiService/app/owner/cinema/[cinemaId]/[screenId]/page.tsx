@@ -1,4 +1,4 @@
-import OwnerShow from "../../../../components/owner/show";
+import OwnerShow from "@/components/owner/show";
 
 const OwnerShowPage = () => {
     return (

@@ -1,4 +1,4 @@
-import AdminMovie from "../../components/admin/movie";
+import AdminMovie from "@/components/admin/movie";
 
 const AdminMoviePage=()=>{
     return(

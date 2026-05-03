@@ -1,6 +1,6 @@
 'use client';
 
-import ForgotPasswordAdmin from "../../components/adminauth/forgotpwdadmin";
+import ForgotPasswordAdmin from "@/components/adminauth/forgotpwdadmin";
 
 const Success=()=>{
     return(

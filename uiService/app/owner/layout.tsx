@@ -1,5 +1,5 @@
 "use client";
-import OwnerNavbar from '../components/ownerNavbar/navbar';
+import OwnerNavbar from '@/components/ownerNavbar/navbar';
 
 export default function UserLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (

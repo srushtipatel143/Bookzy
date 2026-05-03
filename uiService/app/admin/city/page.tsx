@@ -1,4 +1,4 @@
-import AdminCity from "../../components/admin/city";
+import AdminCity from "@/components/admin/city";
 
 const AdminCityPage=()=>{
     return(

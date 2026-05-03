@@ -1,4 +1,4 @@
-import OwnerCinema from "../../components/owner/cinema";
+import OwnerCinema from "@/components/owner/cinema";
 
 const OwnerCinemaPage = () => {
     return (

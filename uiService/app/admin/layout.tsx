@@ -1,5 +1,5 @@
 "use client";
-import AdminNavbar from '../components/adminNavbar/navbar';
+import AdminNavbar from '@/components/adminNavbar/navbar';
 
 export default function UserLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
