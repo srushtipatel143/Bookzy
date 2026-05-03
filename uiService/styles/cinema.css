@@ -47,3 +47,16 @@
     text-decoration: underline;
     cursor: pointer;
 }
+
+.show_Date_sec {
+  display: flex;
+  overflow-x: auto;  
+  overflow-y: hidden;
+  gap: 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: none;
+}
+
+.show_Date_sec::-webkit-scrollbar {
+  display: none;
+}

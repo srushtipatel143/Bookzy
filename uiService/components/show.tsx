@@ -87,28 +87,35 @@ const Showlist = () => {
     return (
         <div className="container-fluid p-0 show_detail">
             <div className="container-fluid p-0 mt-3 show_inner_detail">
-                <div className="d-flex flex-column mt-1 show_detail_title show_detail_title_ext">
+                <div className="d-flex align-items-center gap-1">
                     <div
-                        className="position-absolute start-0 mt-2 ms-2"
+                        className="mt-2 ms-2"
                         style={{ cursor: "pointer" }}
                         onClick={() => router.back()} >
                         <FiArrowLeft size={20} color="black" />
                     </div>
-                    <div className="mt-2 d-flex justify-content-between">
-                        <div className="d-flex">
-                            <div className="d-flex">
-                                <CiHeart size={30} style={{ marginRight: "10px", marginTop: "2px" }} />
+                    <div className="d-flex flex-column mt-1 show_detail_title show_detail_title_ext">
+                        <div className="mt-2 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                            <div className="d-flex justify-content-center  align-items-center gap-2">
+                                <CiHeart size={26} />
+                                <div className="text-wrap text-break w-100">
+                                    <p className="show_detail_title_text m-0">
+                                        {showData?.cinemaName}: {showData?.cinemaLandmark}, {selectedCity}
+                                    </p>
+                                    <span style={{ fontSize: "13px" }}>
+                                        {showData?.address}
+                                    </span>
+                                </div>
                             </div>
-                            <div>
-                                <p className="show_detail_title_text m-0">{showData?.cinemaName}: {showData?.cinemaLandmark}, {selectedCity}</p>
-                                <span style={{ fontSize: "13px" }}>{showData?.address}</span>
-                            </div>
-                        </div>
-                        <div onClick={() => { setShowFacility(!showFacility) }} className="d-flex" style={{ fontSize: "15px", marginTop: "auto", color: "#d71921", cursor: "pointer" }}>
-                            <div> Details</div>
-                            <div>
+                            <div
+                                onClick={() => setShowFacility(!showFacility)}
+                                className="d-flex align-items-center gap-1 mt-2 mt-md-0 ms-md-auto"
+                                style={{ fontSize: "15px", color: "#d71921", cursor: "pointer" }}
+                            >
+                                <span>Details</span>
                                 {showFacility ? <IoIosArrowUp size={18} /> : <IoIosArrowDown size={18} />}
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -136,68 +143,83 @@ const Showlist = () => {
                 )}
                 <div className="d-flex show_detail_title show_detail_title_ext">
                     <div className="show_detail_sec2 w-100">
-                        <div className="d-flex show_Date_sec">
+
+                        <div className="show_Date_sec scroll_x">
                             {showData?.allDates.map((item, index) => (
-                                <div key={index} onClick={async () => {
-                                    if (item.hasShow) {
-                                        setSelectDate(item.formattedDate)
-                                        const cinemaId = localStorage.getItem("selected-cinema");
-                                        let todayTime;
-                                        if (index === 0) {
-                                            todayTime = new Date();
-                                        }
-                                        else {
-                                            todayTime = new Date(item.rawDate);
-                                        }
-                                        const response = await axios.get(`${API_USER_URL}/getmoviesincinema`, {
-                                            params: {
-                                                cinemaId,
-                                                todayTime
+                                <div
+                                    key={index}
+                                    onClick={async () => {
+                                        if (item.hasShow) {
+                                            setSelectDate(item.formattedDate);
+
+                                            const cinemaId = localStorage.getItem("selected-cinema");
+                                            let todayTime;
+
+                                            if (index === 0) {
+                                                todayTime = new Date();
+                                            } else {
+                                                todayTime = new Date(item.rawDate);
                                             }
-                                        });
-                                        setshowData(response?.data?.data);
-                                    }
-                                }} className={`${item.hasShow ? 'show_detail_date' : 'show_detail_date1'
-                                    } ${item.formattedDate === selectDate ? 'selectdate_cinema' : ''}`}>
+
+                                            const response = await axios.get(`${API_USER_URL}/getmoviesincinema`, {
+                                                params: { cinemaId, todayTime }
+                                            });
+
+                                            setshowData(response?.data?.data);
+                                        }
+                                    }}
+                                    className={`date_card ${item.hasShow ? 'show_detail_date' : 'show_detail_date1'}  ${item.formattedDate === selectDate ? 'selectdate_cinema' : ''}`}
+                                >
                                     <div className="date-day">{item.weekday}</div>
-                                    <div className='date-date'>{item.day}</div>
-                                    <div className={`${item.formattedDate === selectDate ? 'date-month1' : 'date-month'}`}>{item.month}</div>
+                                    <div className="date-date">{item.day}</div>
+                                    <div className={`${item.formattedDate === selectDate ? 'date-month1' : 'date-month'}`}>
+                                        {item.month}
+                                    </div>
                                 </div>
                             ))}
                         </div>
-                        {/* <div className="show_filter_sec">
-                            <div className="show_detail_ext ms-auto">Hindi-2D</div>
-                            <div className="show_detail_ext">Price Range</div>
-                            <div className="show_detail_ext"> <IoSearch size={18} /></div>
-                        </div> */}
                     </div>
                 </div>
                 <div className="hrLine1"></div>
             </div>
 
-            <div className="p-0 mt-3 show_detail_title show_data">
-                <div className="d-flex flex-column">
+            <div className="container-fluid p-0 mt-3 show_detail_title show_data">
+                <div className="container">
                     {showData?.movieData.map((item) => (
                         <div key={item.movieId} className="show_movie_name">
-                            <div className="d-flex show_movie_name_small   m-3">
-                                <div className="show_movie_name_left"><p className="fs-6">{item.movieName}</p></div>
-                                <div className="show_movie_name_right">
-                                    {item?.shows?.map((val) => (
-                                        <div key={val._id} className="show_time_container">
-                                            <div className="show_movie_time" onClick={() => selectShow({ ...val, selectshow: val._id })} >{val.formattedShowTime}</div>
-                                            <div className="price_info_hover">
-                                                <div className="d-flex">
-                                                    {val.priceInfoForShow.map((dt) => (
-                                                        <div className="show_extdata" key={dt._id}>
-                                                            <div className="show_extdata_rs">RS. {dt.price}</div>
-                                                            <div className="show_extdata_type">{dt.rowType}</div>
-                                                        </div>
-                                                    ))}
+
+                            <div className="row align-items-start m-2 py-3">
+                                <div className="col-12 col-md-4 mb-2 mb-md-0">
+                                    <p className="fs-6 mb-0">
+                                        {item.movieName}
+                                    </p>
+                                </div>
+                                <div className="col-12 col-md-8">
+                                    <div className="d-flex flex-wrap gap-2">
+
+                                        {item?.shows?.map((val) => (
+                                            <div key={val._id} className="show_time_container">
+
+                                                <div
+                                                    className="show_movie_time"
+                                                    onClick={() => selectShow({ ...val, selectshow: val._id })}
+                                                >
+                                                    {val.formattedShowTime}
                                                 </div>
 
+                                                <div className="price_info_hover">
+                                                    <div className="d-flex flex-wrap">
+                                                        {val.priceInfoForShow.map((dt) => (
+                                                            <div className="show_extdata" key={dt._id}>
+                                                                <div className="show_extdata_rs">RS. {dt.price}</div>
+                                                                <div className="show_extdata_type">{dt.rowType}</div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                             <div className="hrLine1"></div>

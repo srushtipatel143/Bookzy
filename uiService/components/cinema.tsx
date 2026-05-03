@@ -103,20 +103,22 @@ const Cinemascreen = () => {
     return (
         <div className="container-fluid p-0 show_detail">
             <div className="container-fluid p-0 mt-3 show_inner_detail">
-                <div className="d-flex flex-column mt-1 show_detail_title show_detail_title_ext">
+                <div className="d-flex gap-1">
                     <div
-                        className="position-absolute start-0 mt-2 px-2"
+                        className="mt-2 px-2"
                         style={{ cursor: "pointer" }}
                         onClick={() => router.back()} >
                         <FiArrowLeft size={20} color="black" />
                     </div>
-                    <div className="mt-1">
-                        <p className="show_detail_title_text">{selectMovie?.movieName} - ({selectMovie?.selectLanguage})</p>
-                    </div>
-                    <div className="d-flex gap-2">
-                        {selectMovie?.type?.map((item) => (
-                            <div className="show_detail_type" key={item._id}><span>{item.type}</span></div>
-                        ))}
+                    <div className="d-flex flex-column mt-1 show_detail_title show_detail_title_ext">
+                        <div className="mt-1">
+                            <p className="show_detail_title_text">{selectMovie?.movieName} - ({selectMovie?.selectLanguage})</p>
+                        </div>
+                        <div className="d-flex gap-2">
+                            {selectMovie?.type?.map((item) => (
+                                <div className="show_detail_type" key={item._id}><span>{item.type}</span></div>
+                            ))}
+                        </div>
                     </div>
                 </div>
                 {allDates?.length > 0 && (
@@ -124,7 +126,7 @@ const Cinemascreen = () => {
                 )}
                 <div className="d-flex show_detail_title show_detail_title_ext">
                     <div className="show_detail_sec2 w-100">
-                        <div className="d-flex show_Date_sec">
+                        <div className="d-flex show_Date_sec ">
                             {allDates?.map((item, index) => (
                                 <div key={index} onClick={async () => {
                                     if (item.hasShow) {
@@ -182,30 +184,43 @@ const Cinemascreen = () => {
                 <div className="d-flex flex-column">
                     {cinema?.map((item) => (
                         <div key={item.id} className="show_movie_name">
-                            <div className="d-flex show_movie_name_small my-3 mx-3">
-                                <div className="show_movie_name_left">
+                            <div className="row show_movie_name_small my-3 mx-1 align-items-start">
+                                <div className="col-12 col-md-4 d-flex align-items-center gap-2 mb-2 mb-md-0">
                                     <CiHeart size={20} />
-                                    <span onClick={() => {
-                                        localStorage.setItem("selected-cinema", String(item.id));
-                                        router.push("/explore/show");
-                                    }} className="cinema_text">{item.cinemaName} : {item.cinemaLandmark}</span>
+                                    <span
+                                        onClick={() => {
+                                            localStorage.setItem("selected-cinema", String(item.id));
+                                            router.push("/explore/show");
+                                        }}
+                                        className="cinema_text"
+                                    >
+                                        {item.cinemaName} : {item.cinemaLandmark}
+                                    </span>
                                 </div>
-                                <div className="show_movie_name_right">
-                                    {item?.show?.map((val) => (
-                                        <div key={val._id} className="show_time_container">
-                                            <div className="show_movie_time" onClick={() => selectShow({ ...item, selectshow: val._id })} >{val.formattedShowTime}</div>
-                                            <div className="price_info_hover">
-                                                <div className="d-flex">
-                                                    {val.priceInfoForShow.map((dt) => (
-                                                        <div className="show_extdata" key={dt._id}>
-                                                            <div className="show_extdata_rs">RS. {dt.price}</div>
-                                                            <div className="show_extdata_type">{dt.rowType}</div>
-                                                        </div>
-                                                    ))}
+                                <div className="col-12 col-md-8">
+                                    <div className="d-flex flex-wrap gap-2">
+                                        {item?.show?.map((val) => (
+                                            <div key={val._id} className="show_time_container">
+                                                <div
+                                                    className="show_movie_time"
+                                                    onClick={() => selectShow({ ...item, selectshow: val._id })}
+                                                >
+                                                    {val.formattedShowTime}
+                                                </div>
+
+                                                <div className="price_info_hover">
+                                                    <div className="d-flex justify-content-center align-items-center gap-2">
+                                                        {val.priceInfoForShow.map((dt) => (
+                                                            <div className="show_extdata" key={dt._id}>
+                                                                <div className="show_extdata_rs">RS. {dt.price}</div>
+                                                                <div className="show_extdata_type">{dt.rowType}</div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                    ))}
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
                             <div className="hrLine1"></div>

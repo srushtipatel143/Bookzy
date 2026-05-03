@@ -255,66 +255,86 @@ const Seatscreen = () => {
                     <div className="hrLine1"></div>
                     <div className="show_seat">
                         <div className="seat_main_sec p-3">
+
                             {seatLayout?.types?.map((section) => (
                                 <div key={section.rowType} className="seat_category">
-                                    <div className="seatCategory my-1">Rs.{section?.price} {section?.rowType} </div>
+
+                                    <div className="seatCategory my-1">
+                                        Rs.{section?.price} {section?.rowType}
+                                    </div>
+
                                     <div className="hrLineSeat my-1"></div>
+
                                     {section?.rows?.map((row) => (
-                                        <div key={row.rowId} className="d-flex seat_row">
+                                        <div key={row.rowId} className="seat_row_wrapper d-flex gap-2 my-2">
+
                                             <div className="row_label">{row.rowName}</div>
-                                            <div className="d-flex row_seat">
-                                                {row.seats.map((seat, seatIndex) => {
-                                                    const seatName = seat.seatName;
-                                                    const id = seat.id;
-                                                    const status = seat.status;
-                                                    const isSelected = selectSeats.some(
-                                                        s => s.rowName === row.rowName && s.seatName === seatName
-                                                    );
-                                                    const isBooked = status === 'Booked';
-                                                    const handleClick = () => {
-                                                        if (isBooked) return;
-                                                        const data: selectSeat = {
-                                                            cinemaId: selectShow?.cinemaId!,
-                                                            movieId: selectShow?.movieId!,
-                                                            screenId: selectShow?.screenId!,
-                                                            showId: selectShowChart?.selectshow!,
-                                                            screenName: selectShow?.screenName!,
-                                                            rowName: row.rowName,
-                                                            seatName: seatName,
-                                                            price: section.price,
-                                                            rowType: section.rowType,
-                                                            id: id
+
+                                            {/* 👇 Important wrapper for responsiveness */}
+                                            <div className="row_seat_scroll">
+                                                <div className="row_seat d-flex">
+                                                    {row.seats.map((seat, seatIndex) => {
+                                                        const seatName = seat.seatName;
+                                                        const id = seat.id;
+                                                        const status = seat.status;
+
+                                                        const isSelected = selectSeats.some(
+                                                            s => s.rowName === row.rowName && s.seatName === seatName
+                                                        );
+
+                                                        const isBooked = status === 'Booked';
+
+                                                        const handleClick = () => {
+                                                            if (isBooked) return;
+
+                                                            const data = {
+                                                                cinemaId: selectShow?.cinemaId!,
+                                                                movieId: selectShow?.movieId!,
+                                                                screenId: selectShow?.screenId!,
+                                                                showId: selectShowChart?.selectshow!,
+                                                                screenName: selectShow?.screenName!,
+                                                                rowName: row.rowName,
+                                                                seatName: seatName,
+                                                                price: section.price,
+                                                                rowType: section.rowType,
+                                                                id: id
+                                                            };
+
+                                                            setSelectSeats(prev => {
+                                                                const updatedSeats = [...prev];
+                                                                if (updatedSeats.length === selectNoOfSeat) {
+                                                                    updatedSeats.shift();
+                                                                }
+                                                                updatedSeats.push(data);
+                                                                return updatedSeats;
+                                                            });
                                                         };
-                                                        setSelectSeats(prev => {
-                                                            const updatedSeats = [...prev];
-                                                            if (updatedSeats.length === selectNoOfSeat) {
-                                                                updatedSeats.shift();
-                                                            }
-                                                            updatedSeats.push(data);
-                                                            return updatedSeats;
-                                                        });
-                                                    };
 
-                                                    return (
-                                                        <div
-                                                            key={seatIndex}
-                                                            onClick={handleClick}
-                                                            className={`seat ${isBooked ? 'booked-seat' : ''} ${isSelected ? 'selected-seat' : ''}`}
-                                                        >
-                                                            {seatIndex + 1}
-                                                        </div>
-                                                    );
-                                                })}
-
+                                                        return (
+                                                            <div
+                                                                key={seatIndex}
+                                                                onClick={handleClick}
+                                                                className={`seat ${isBooked ? 'booked-seat' : ''} ${isSelected ? 'selected-seat' : ''}`}
+                                                            >
+                                                                {seatIndex + 1}
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
+
                                         </div>
                                     ))}
                                 </div>
                             ))}
+
                         </div>
+
                         {selectSeats.length === selectNoOfSeat && (
-                            <div className='pay_btn_click '>
-                                <button className='pay_count_btn mb-4' onClick={payBtnFunction}>Pay Rs.{selectSeats.reduce((total, item) => total + item.price, 0)}</button>
+                            <div className="pay_btn_click">
+                                <button className="pay_count_btn mb-4" onClick={payBtnFunction}>
+                                    Pay Rs.{selectSeats.reduce((total, item) => total + item.price, 0)}
+                                </button>
                             </div>
                         )}
                     </div>
