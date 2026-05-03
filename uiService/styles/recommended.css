@@ -37,6 +37,7 @@
   bottom: 0;
   background-color: var(--primary-sub-color);
   border-radius: 0 0 10px 10px;
+  /* opacity: 0.8; */
   color: var(--secondary-sub-color) !important;
   width: 95%;
   padding: 3px;
@@ -45,10 +46,9 @@
 .add_box {
   background: radial-gradient(circle at center, rgb(215, 25, 33), rgb(1, 1, 1));
   border-radius: 10px;
-  width: 90%;
+  width: 80%;
   margin: auto;
   height: 100px;
-  text-align: center;
 }
 
 .ad_text {
