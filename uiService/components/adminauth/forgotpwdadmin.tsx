@@ -24,7 +24,7 @@ const ForgotPasswordAdmin = () => {
         router.push(`/user/userotp/${id}`)
       }
     } catch (error: any) {
-      return toast.error(error.response.data?.message)
+      return toast.error(error?.response?.data?.message);
     }
   }
   return (

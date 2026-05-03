@@ -36,7 +36,7 @@ const AddRating = ({ movie }: MovieScreenProps) => {
                 }
             }
         } catch (error: any) {
-            toast.error(error.response.data.message)
+            return toast.error(error?.response?.data?.message);
         }
     };
 

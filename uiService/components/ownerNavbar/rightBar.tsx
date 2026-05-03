@@ -28,7 +28,7 @@ const RightBar: React.FC<RightBarprops> = ({ canvasshow, setCanvasShow }) => {
             setSelectUser(null);
             setCanvasShow(false)
         } catch (error: any) {
-            toast.error(error.response.data.message);
+            return toast.error(error?.response?.data?.message);
         }
     }
     return (

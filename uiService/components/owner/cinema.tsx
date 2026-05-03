@@ -81,7 +81,7 @@ const OwnerCinema = () => {
                 setStatus(getcitydata?.data?.data.statusResponse)
                 setFacilityData(getcitydata?.data?.data.facilityResponse)
             } catch (error: any) {
-                return toast.error(error.response.data.message);
+                return toast.error(error?.response?.data?.message);
             }
         }
         fetchDetails()
@@ -175,7 +175,7 @@ const OwnerCinema = () => {
                 <Column body={(rawData) => rawData.screens ? rawData.screens : '0'} header="No. of screens" sortable ></Column>
                 <Column header="Add Screen" body={(rawData) => (
                     <div>
-                        <button className="screen_add" onClick={()=>{
+                        <button className="screen_add" onClick={() => {
                             router.push(`/owner/cinema/${rawData.id}`)
                         }}>Add</button>
                     </div>

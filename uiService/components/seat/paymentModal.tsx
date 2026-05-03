@@ -59,10 +59,13 @@ interface PaymentmodalProps {
 }
 
 declare global {
-    interface window {
-        Razorpay: any;
+    interface Window {
+        Razorpay: new (options: any) => {
+            open: () => void;
+        };
     }
 }
+
 const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
 
     const [selectShow, setSelectshow] = useState<showDetails | undefined>(undefined);
@@ -85,7 +88,7 @@ const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
                     }
                 }
             } catch (error: any) {
-                toast.error(error.response.data.message)
+                return toast.error(error?.response?.data?.message);
             }
         }
         fetchDetails();
@@ -164,7 +167,7 @@ const Paymentmodal = ({ selectSeatData }: PaymentmodalProps) => {
                 setBackModal(true)
             }
             else {
-                toast.error(error.response.data.message)
+                return toast.error(error?.response?.data?.message);
             }
         }
     }

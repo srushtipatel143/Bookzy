@@ -61,7 +61,7 @@ const AdminAccess = () => {
                     setUserData(getuserdata?.data?.data)
                 }
             } catch (error: any) {
-                return toast.error(error.response.data.message);
+                return toast.error(error?.response?.data?.message);
             }
         }
         fetchDetails()

@@ -61,7 +61,7 @@ const Searchfield = () => {
                 setMovie(movieDetails);
 
             } catch (error: any) {
-                toast.error(error.response.data.message);
+                return toast.error(error?.response?.data?.message);
             }
         }
         fetchDetails();
@@ -109,7 +109,7 @@ const Searchfield = () => {
             } catch (error: any) {
                 if (axios.isCancel(error) || error.name === 'CanceledError') {
                 } else {
-                    toast.error(error?.response?.data?.message || "Something went wrong");
+                    return toast.error(error?.response?.data?.message);
                 }
             }
         }, 300);

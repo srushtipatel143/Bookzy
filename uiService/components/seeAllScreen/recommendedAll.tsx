@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Footer from "@/components/homeScreen/footer";
 import { useSelector } from "react-redux";
-import { RootState } from "@/app/store";
+import { RootState } from "@/store";
 import { useCity } from "@/components/context/cityContext";
 import Cookies from "js-cookie";
 import { API_USER_URL } from "@/utils/config";
@@ -75,7 +75,7 @@ const RecommendedAll = () => {
                     await cache.put(cacheKey, responseToCache);
                 }
             } catch (error: any) {
-                toast.error(error.response.data.message);
+                return toast.error(error?.response?.data?.message);
             }
         };
         fetchDetails();

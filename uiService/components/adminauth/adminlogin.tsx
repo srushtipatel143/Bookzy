@@ -37,7 +37,7 @@ const AdminLogin = () => {
         router.push(`/admin/dashboard`);
       }
     } catch (error: any) {
-      return toast.error(error.response.data?.message);
+      return toast.error(error?.response?.data?.message);
     }
   };
   return (

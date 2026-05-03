@@ -37,7 +37,7 @@ const OwnerLogin = () => {
         router.push(`/owner/dashboard`);
       }
     } catch (error: any) {
-      return toast.error(error.response.data.message);
+      return toast.error(error?.response?.data?.message);
     }
   };
   return (

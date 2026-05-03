@@ -34,7 +34,7 @@ const UpcomingMovieScreen = () => {
           await cache.put(cacheKey, responseToCache);
         }
       } catch (error: any) {
-        toast.error(error.response.data.message);
+        return toast.error(error?.response?.data?.message);
       }
     }
     fetchDetails();

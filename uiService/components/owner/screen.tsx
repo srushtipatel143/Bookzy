@@ -48,7 +48,7 @@ const OwnerScreen = () => {
                 });
                 setScreenData(getScreendata?.data?.data);
             } catch (error: any) {
-                return toast.error(error.response.data.message);
+                return toast.error(error?.response?.data?.message);
             }
         }
         fetchDetails()
@@ -140,7 +140,7 @@ const OwnerScreen = () => {
             setscreenAddFormShow(false)
             return toast.success("Scren add successfully");
         } catch (error: any) {
-            return toast.error(error.response.data.message);
+            return toast.error(error?.response?.data?.message);
         }
     };
 

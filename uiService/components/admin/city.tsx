@@ -38,7 +38,7 @@ const AdminCity = () => {
                 });
                 setCity(getcitydata?.data?.data)
             } catch (error: any) {
-                return toast.error(error.response.data.message);
+                return toast.error(error?.response?.data?.message);
             }
         }
         fetchDetails()
@@ -71,7 +71,7 @@ const AdminCity = () => {
                 return toast.success("City add successfully");
             }
         } catch (error: any) {
-            return toast.error(error.response.data.message);
+            return toast.error(error?.response?.data?.message);
         }
     }
 

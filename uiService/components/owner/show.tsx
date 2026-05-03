@@ -104,7 +104,7 @@ const OwnerShow = () => {
                 });
                 setShow(fetchAllShow?.data?.data)
             } catch (error: any) {
-                return toast.error(error.response.data.message);
+                return toast.error(error?.response?.data?.message);
             }
         }
         fetchDetails()
@@ -143,10 +143,9 @@ const OwnerShow = () => {
     const submitForm = async () => {
         try {
             showDataObj.priceInfoForShow = priceInfo || [];
-            if(selectedTime==="00:00" && selectedDate!==null)
-            {
-                const dateTimeUTC = getUTCDateTime(selectedDate,"00:00");
-                showDataObj.showStartTime=dateTimeUTC;
+            if (selectedTime === "00:00" && selectedDate !== null) {
+                const dateTimeUTC = getUTCDateTime(selectedDate, "00:00");
+                showDataObj.showStartTime = dateTimeUTC;
             }
             if (showDataObj?._id) {
                 const editCinemaRes = await axios.put(`${API_OWNER_URL}/editshow`, showDataObj, {
@@ -172,7 +171,7 @@ const OwnerShow = () => {
                 return toast.success("Show added successfully");
             }
         } catch (error: any) {
-            return toast.error(error?.response?.data?.message || "Something went wrong");
+            return toast.error(error?.response?.data?.message);
         }
     };
 

@@ -81,7 +81,7 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
       } catch (error: any) {
         if (axios.isCancel(error) || error.name === 'CanceledError') {
         } else {
-          toast.error(error?.response?.data?.message || "Something went wrong");
+          return toast.error(error?.response?.data?.message);
         }
       }
     }, 300)

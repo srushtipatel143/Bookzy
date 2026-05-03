@@ -69,7 +69,7 @@ const EditProfile = () => {
                 }
             }
         } catch (error: any) {
-            toast.error(error.response.data.message)
+            return toast.error(error?.response?.data?.message);
         }
     }
 

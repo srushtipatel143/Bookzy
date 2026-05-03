@@ -32,7 +32,7 @@ const ChangePasswordAdmin = () => {
                 return toast.error(response.data.message);
             }
         } catch (error: any) {
-            return toast.error(error.response.data.message);
+           return toast.error(error?.response?.data?.message);
         }
     };
     return (

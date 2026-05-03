@@ -133,8 +133,14 @@ const Seatscreen = () => {
                         const city = selectedCity ? JSON.parse(selectedCity) : null;
                         const selectShowDetail = JSON.parse(selectShowdata);
                         setSelectshowChart(selectShowDetail)
-                        const selectShowInfo = selectShowDetail.show.find((item: showDetails) => item._id === selectShowDetail.selectshow);
+                        let selectShowInfo;
+                        if (selectShowDetail?.show) {
+                            selectShowInfo = selectShowDetail?.show.find((item: showDetails) => item._id === selectShowDetail.selectshow);
+                        }
+                        else {
+                            selectShowInfo = selectShowDetail;
 
+                        }
                         const data = { ...selectShowInfo, city: city.city, cinemaLandmark: selectShowDetail.cinemaLandmark };
                         setSelectshow(data);
 
@@ -152,7 +158,7 @@ const Seatscreen = () => {
                     }
                 }
             } catch (error: any) {
-                toast.error(error.response.data.message)
+                return toast.error(error?.response?.data?.message);
             }
         }
         fetchDetails();
@@ -195,7 +201,7 @@ const Seatscreen = () => {
                 setUserDetailConfirmModal(true)
             }
         } catch (error: any) {
-            toast.error(error.response.data.message)
+            return toast.error(error?.response?.data?.message);
         }
     }
 
@@ -213,7 +219,7 @@ const Seatscreen = () => {
             setUserDetailConfirmModal(false)
             setShowPayment(true)
         } catch (error: any) {
-            toast.error(error.response.data.message)
+            return toast.error(error?.response?.data?.message);
         }
     }
 
