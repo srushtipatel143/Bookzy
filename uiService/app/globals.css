@@ -44,7 +44,6 @@ body {
   background-color: #f9f9f9;
 }
 
-/* For even rows */
 .p-datatable .p-datatable-tbody > tr:nth-child(even) > td {
   background-color: rgb(242, 242, 242);
 }

@@ -269,8 +269,6 @@ const Seatscreen = () => {
                                         <div key={row.rowId} className="seat_row_wrapper d-flex gap-2 my-2">
 
                                             <div className="row_label">{row.rowName}</div>
-
-                                            {/* 👇 Important wrapper for responsiveness */}
                                             <div className="row_seat_scroll">
                                                 <div className="row_seat d-flex">
                                                     {row.seats.map((seat, seatIndex) => {

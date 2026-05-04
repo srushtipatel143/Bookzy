@@ -20,7 +20,6 @@ const Homescreen = () => {
                 <Navbar />
                 <Carousal />
                 <LatestMovieScreen />
-                {/* <RecommendedMovie /> */}
                 <UpcomingMovieScreen />
                 <Ad />
                 <Footer />

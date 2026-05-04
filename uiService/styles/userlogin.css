@@ -14,15 +14,15 @@
 }
 
 .resendOtp_font {
-  color:darkgray;
+  color: darkgray;
   font-size: 14px;
   font-weight: bold;
 }
 
-.resendOtp_font:hover{
-   color: var(--secondary-main-color);
-   text-decoration: underline;
-   cursor: pointer;
+.resendOtp_font:hover {
+  color: var(--secondary-main-color);
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .success_font {
@@ -61,25 +61,32 @@
 }
 
 .search-input {
-  width: 450px !important;
-  transition: width 0.3s ease-in-out;
+  width: 100% !important;
+  min-width: 120px;
 }
 
-@media (max-width: 1024px) {
-  .search-input {
-    width: 230px !important;
+.user_img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.navbar-wrapper {
+  width: 90%;
+}
+
+@media (max-width: 992px) {
+  .navbar-wrapper {
+    width: 100%;
+    padding: 0 10px;
   }
 }
 
-@media (max-width: 768px) {
-  .search-input {
-    width: 180px !important;
-  }
-
-  .offcanvas.offcanvas-end {
-    width: 300px !important;
-  }
+.offcanvas.offcanvas-end {
+  width: 300px !important;
 }
+
 
 .search_top {
   background-color: rgba(243, 243, 243);
@@ -118,34 +125,34 @@
   border: 1px solid var(--primary-main-color);
 }
 
-.sign_outBtn{
+.sign_outBtn {
   cursor: pointer;
-  background-color:var(--secondary-sub-color);
+  background-color: var(--secondary-sub-color);
   color: var(--primary-main-color);
   border: 1px solid var(--primary-main-color);
   border-radius: 5px;
   font-size: 1.3rem;
   position: absolute;
-  bottom:1rem;
+  bottom: 1rem;
   right: 1rem;
   width: 92%;
 }
 
-.css-1wy0on6{
+.css-1wy0on6 {
   display: none !important;
 }
 
-.forgot_password_admin{
+.forgot_password_admin {
   font-size: 12px;
   color: grey;
 }
 
-.forgot_password_admin:hover{
-  color:var(--secondary-main-color);
+.forgot_password_admin:hover {
+  color: var(--secondary-main-color);
   cursor: pointer;
 }
 
-.side_menu_admin{
+.side_menu_admin {
   background-color: rgb(248, 248, 248);
   border-radius: 5px;
   padding: 12px 0;
@@ -153,7 +160,7 @@
   align-items: center;
 }
 
-.side_menu_admin:hover{
+.side_menu_admin:hover {
   background-color: var(--primary-main-color);
   color: var(--secondary-sub-color);
   cursor: pointer;

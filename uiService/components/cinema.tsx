@@ -171,11 +171,6 @@ const Cinemascreen = () => {
                                 </div>
                             ))}
                         </div>
-                        {/* <div className="show_filter_sec">
-                            <div className="show_detail_ext ms-auto">Hindi-2D</div>
-                            <div className="show_detail_ext">Price Range</div>
-                            <div className="show_detail_ext"> <IoSearch size={18} /></div>
-                        </div> */}
                     </div>
                 </div>
                 <div className="hrLine1"></div>
