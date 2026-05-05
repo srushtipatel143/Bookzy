@@ -231,7 +231,6 @@ const OwnerShow = () => {
                     sortable
                     body={(rowData) => {
                         const date = new Date(rowData.showStartTime);
-                        console.log(rowData.showStartTime)
                         return date.toLocaleString("en-IN", {
                             timeZone: "Asia/Kolkata",
                             day: "2-digit",

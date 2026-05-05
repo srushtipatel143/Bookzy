@@ -34,7 +34,6 @@ const createAdmin = async (req, res, next) => {
         });
         return res.status(200).json({ success: true, message: "Admin registered successfully", data: savedAdmin })
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 }

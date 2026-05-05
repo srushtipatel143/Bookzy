@@ -105,7 +105,6 @@ const selectSeatBeforePayment = async (req, res, next) => {
         }
 
         const baseQuery = 'UPDATE seatbooking SET selectTime=?, userId = ?, status = ? WHERE id IN (?)';
-        console.log(time)
         const finalQuery = prepareInClause(baseQuery, seatVal);
         await conn.execute(finalQuery, [time, data.userId, 'Processing', ...seatVal]);
 
@@ -147,7 +146,6 @@ const selectSeatBeforePayment = async (req, res, next) => {
         });
 
     } catch (error) {
-        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 };

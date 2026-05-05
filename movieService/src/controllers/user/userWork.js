@@ -59,8 +59,6 @@ const getISTMidnight = (date) => {
 const getAllCinemaByFilter = async (req, res, next) => {
     try {
         const data = req.query;
-
-        console.log(data)
         const istOffset = 5.5 * 60 * 60 * 1000;
         const inputUTC = new Date(data.todayTime);
         const nowUTC = new Date();

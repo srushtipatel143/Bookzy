@@ -46,8 +46,6 @@ const SelectModal = ({ movie }: MovieScreenProps) => {
         router.push("/explore/cinema")
     }
 
-    console.log(movie)
-
     return (
         <div>
             {movie.availableScreen.length > 0 && (
