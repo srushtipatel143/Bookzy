@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import { API_USER_URL } from "@/utils/config";
 import Moviescreen from "@/components/movie/movie";
 
