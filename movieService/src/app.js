@@ -8,7 +8,7 @@ const ownerRouter=require("./routes/ownerRoute");
 const userRouter=require("./routes/userRoute");
 
 app.use(express.json());
-const allowedOrigins = ['http://localhost:3000','https://bookzy-movieservice.onrender.com'];
+const allowedOrigins = ['http://localhost:3000','https://bookzy-bvjo.vercel.app'];
 app.use(cors({
     
     origin:function(origin,callback){

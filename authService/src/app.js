@@ -4,7 +4,7 @@ const errorHandler = require("./helpers/errors/errorHandler");
 const cors = require("cors");
 const cookieparser=require("cookie-parser");
 app.use(express.json());
-const allowedOrigins = ['http://localhost:3000','https://bookzy-authservice.onrender.com'];
+const allowedOrigins = ['http://localhost:3000','https://bookzy-bvjo.vercel.app'];
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
