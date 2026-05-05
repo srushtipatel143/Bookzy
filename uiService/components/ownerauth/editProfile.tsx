@@ -5,7 +5,7 @@ import "@/styles/editprofile.css";
 import Footer from "@/components/homeScreen/footer";
 import Image from 'next/image';
 import { API_OWNER_AUTH_URL } from "@/utils/config";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { useUser } from "@/components/context/userContext";
@@ -92,7 +92,6 @@ const EditProfile = () => {
 
     return (
         <div className="container-fluid edit_profile pt-3">
-            <ToastContainer />
             <div className="edit_detail">
                 <form>
                     <section className="acc_detail my-3">

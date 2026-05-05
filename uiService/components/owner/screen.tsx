@@ -4,7 +4,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useEffect, useState } from "react";
 import { API_OWNER_URL } from "@/utils/config";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
 import { CgClose } from "react-icons/cg";
@@ -282,7 +282,6 @@ const OwnerScreen = () => {
                     </form>
                 </Modal.Body>
             </Modal>
-            <ToastContainer />
         </div >
     )
 }

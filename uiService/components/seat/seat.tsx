@@ -6,7 +6,7 @@ import { RxCross2 } from "react-icons/rx";
 import "@/styles/seat.css";
 import { useEffect, useState } from 'react';
 import { API_USER_URL, API_AUTH_URL } from "@/utils/config";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Cookies from 'js-cookie';
 import axios from 'axios';
 import SeatNomodal from './noOfSeat';
@@ -362,7 +362,6 @@ const Seatscreen = () => {
                     </div>
                 </Modal.Body>
             </Modal>
-            <ToastContainer />
         </div>
     );
 };

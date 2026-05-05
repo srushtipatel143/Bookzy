@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useRef } from "react";
 import Cookies from "js-cookie";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { API_USER_URL } from "@/utils/config";
 import { LatestMovie } from "@/components/movie/latestMovieInterface";
@@ -82,7 +82,6 @@ const LatestMovieScreen = () => {
           ))}
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

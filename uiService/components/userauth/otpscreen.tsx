@@ -8,7 +8,7 @@ import { API_AUTH_URL } from "@/utils/config";
 import axios from "axios";
 import { useRef, useState } from "react";
 import Cookies from "js-cookie";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const UserOtp = () => {
     const router = useRouter();
@@ -98,7 +98,6 @@ const UserOtp = () => {
                     <p className="resendOtp_font" onClick={resendOTP}>Resend verification code</p>
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 import { useSearch } from "@/components/context/searchContext";
 import Cookies from "js-cookie";
 import { API_USER_URL } from "@/utils/config";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import Select from "react-select";
 import Image from 'next/image';
@@ -271,7 +271,6 @@ const Searchfield = () => {
                     </div>
                 )}
             </div>
-            <ToastContainer />
         </div>
     );
 };

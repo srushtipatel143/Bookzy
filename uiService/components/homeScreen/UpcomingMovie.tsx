@@ -3,9 +3,9 @@
 import "@/styles/recommended.css";
 import { IoIosArrowForward } from "react-icons/io";
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';import { useDispatch } from "react-redux";
+import { useRouter } from 'next/navigation'; import { useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import axios from "axios";
 import { API_USER_URL } from "@/utils/config";
@@ -70,7 +70,6 @@ const UpcomingMovieScreen = () => {
           ))}
         </div>
       </div>
-      <ToastContainer/>
     </div>
   );
 };

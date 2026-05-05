@@ -7,7 +7,7 @@ import { CiHeart } from "react-icons/ci";
 import { FiArrowLeft } from "react-icons/fi";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { API_USER_URL } from "@/utils/config";
 import { IoSearch } from "react-icons/io5";
@@ -223,7 +223,6 @@ const Cinemascreen = () => {
                     ))}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     )
 }

@@ -4,7 +4,7 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useEffect, useState } from "react";
 import { API_ADMIN_URL } from "@/utils/config";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { FaEdit } from "react-icons/fa";
 import { Modal } from "react-bootstrap";
@@ -153,7 +153,6 @@ const AdminCity = () => {
                     </form>
                 </Modal.Body>
             </Modal>
-            <ToastContainer />
         </div>
     )
 }

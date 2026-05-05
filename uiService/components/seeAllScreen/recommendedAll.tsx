@@ -15,7 +15,7 @@ import { API_USER_URL } from "@/utils/config";
 import axios from "axios";
 import { LatestMovie } from "@/components/movie/latestMovieInterface";
 import { UpcomingMovie } from "@/components/movie/upcomingMovieInterface";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useParams } from 'next/navigation';
 
 const RecommendedAll = () => {
@@ -193,7 +193,6 @@ const RecommendedAll = () => {
                 </div>
             </div>
             <Footer />
-            <ToastContainer />
         </div>
     );
 };

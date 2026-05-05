@@ -27,7 +27,6 @@ const signIn = async (req, res, next) => {
             }
             otp = await user.generateAndSendOtp();
         }
-        console.log(otp)
         const { EMAIL_USERNAME } = process.env;
         const emailPayload = {
             from: EMAIL_USERNAME,
@@ -35,9 +34,10 @@ const signIn = async (req, res, next) => {
             subject: "Your Otp is here",
             html: `Your OTP code is <h3>${otp}</h3>It is valid for 5 minutes.`,
         };
-        const key = "1";
-        const topic = "otp";
+        // const key = "1";
+        // const topic = "otp";
         //produceMessage(topic, numberOfPartion, key, emailPayload)
+        await sendMail(emailPayload);
         return res.status(200).json({
             statusCode: 200,
             success: true,
@@ -53,8 +53,6 @@ const validateOtp = async (req, res, next) => {
     try {
         const { userId, otp } = req.body;
         const getOtpForVerification = await OTP.findOne({ userId: userId }).sort({ createdAt: -1 });
-        console.log(getOtpForVerification)
-
         if (!getOtpForVerification) {
             return res.status(404).json({ message: "OTP record not found" });
         }
@@ -75,7 +73,6 @@ const resendOtp = async (req, res, next) => {
         const { id } = req.params;
         const user = await User.findById({ _id: id });
         const otp = await user.generateAndSendOtp();
-        console.log(otp)
         const { EMAIL_USERNAME } = process.env;
         const emailPayload = {
             from: EMAIL_USERNAME,
@@ -83,8 +80,9 @@ const resendOtp = async (req, res, next) => {
             subject: "Your Otp is here",
             html: `Your OTP code is <h3>${otp}</h3>It is valid for 5 minutes.`,
         };
-        const key = "1";
-        const topic = "otp";
+        await sendMail(emailPayload);
+        // const key = "1";
+        // const topic = "otp";
         //produceMessage(topic, numberOfPartion, key, emailPayload)
         return res.status(200).json({
             success: true,
@@ -153,11 +151,11 @@ const adduserduringpayment = async (req, res, next) => {
         return res.status(200).json({
             statusCode: 200,
             success: true,
-            data: { 
+            data: {
                 userId: userId,
-                email:data.email,
+                email: data.email,
                 mobile: mobile
-             },
+            },
         });
     } catch (error) {
         return next(new errorHandler("Something went wrong", 500, error));

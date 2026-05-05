@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { FiArrowLeft } from "react-icons/fi";
 import Image from "next/image";
 import { API_ADMIN_AUTH_URL } from "@/utils/config";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useState } from "react";
 import axios from "axios";
 
@@ -84,7 +84,6 @@ const ChangePasswordAdmin = () => {
                     </button>
                 </div>
             </div>
-            <ToastContainer />
         </div>
     );
 };

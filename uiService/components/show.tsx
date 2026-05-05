@@ -5,7 +5,7 @@ import axios from "axios";
 import { FiArrowLeft } from "react-icons/fi";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";
 import { useEffect, useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { API_USER_URL } from "@/utils/config";
 import { CiHeart } from "react-icons/ci";
 import Cookies from "js-cookie";
@@ -227,7 +227,6 @@ const Showlist = () => {
                     ))}
                 </div>
             </div>
-            <ToastContainer />
         </div>
     )
 }

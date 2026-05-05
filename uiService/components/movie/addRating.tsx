@@ -1,7 +1,7 @@
 'use client';
 import { Modal } from "react-bootstrap";
 import { useState } from "react";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 import { API_USER_URL } from "@/utils/config";
 import axios from "axios";
@@ -42,7 +42,6 @@ const AddRating = ({ movie }: MovieScreenProps) => {
 
     return (
         <div className="ms-auto">
-            <ToastContainer />
             <button className="movie_rate_btn" onClick={() => {
                 if (!user) {
                     router.push("/user/userlogin")

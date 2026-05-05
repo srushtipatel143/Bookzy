@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { FiArrowLeft } from "react-icons/fi";
 import Image from 'next/image';
 import { API_AUTH_URL } from "@/utils/config";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useState } from "react";
 import axios from "axios";
 
@@ -49,7 +49,6 @@ const UserLogin = () => {
           <button className="button-primary w-100" onClick={submitForm}>Send Verification Code</button>
         </div>
       </div>
-      <ToastContainer />
     </div>
   );
 };

@@ -3,7 +3,7 @@ import { API_USER_URL } from "@/utils/config";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { useCity } from "@/components/context/cityContext";
 import Select from "react-select";
 import { debounce } from "lodash";
@@ -147,7 +147,6 @@ const Citymodal: React.FC<citymodalprops> = ({ topCanvas, setTopCanvas }) => {
           </div>
         </Modal.Body>
       </Modal>
-      <ToastContainer />
     </div>
   )
 }
