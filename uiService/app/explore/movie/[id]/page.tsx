@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import { API_USER_URL } from "@/utils/config";
 import Moviescreen from "@/components/movie/movie";
 
@@ -12,7 +10,14 @@ const getMovieDetails = async (id: string) => {
   return json.data;
 };
 
-export default async function Movie({ params }: any) {
-  const movie = await getMovieDetails(params.id);
+export default async function Movie({
+  params,
+}: {
+  params: Promise<{ id: string }>; // ✅ MATCH what Next expects
+}) {
+  const { id } = await params; // ✅ await it
+
+  const movie = await getMovieDetails(id);
+
   return <Moviescreen movie={movie} />;
 }
