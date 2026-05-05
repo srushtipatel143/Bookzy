@@ -13,9 +13,9 @@ const getMovieDetails = async (id: string) => {
 export default async function Movie({
     params,
 }: {
-    params: Promise<{ id: string }>;  
+    params: { id: string };   // ✅ FIXED
 }) {
-    const { id } = await params;    
+    const { id } = params;    // ✅ FIXED (no await)
 
     const movie = await getMovieDetails(id);
 
