@@ -27,9 +27,9 @@ const signIn = async (req, res, next) => {
             }
             otp = await user.generateAndSendOtp();
         }
-        const { EMAIL_USERNAME } = process.env;
+        const { FROM_USER } = process.env;
         const emailPayload = {
-            from: EMAIL_USERNAME,
+            from: FROM_USER,
             to: data.email,
             subject: "Your Otp is here",
             html: `Your OTP code is <h3>${otp}</h3>It is valid for 5 minutes.`,
@@ -73,9 +73,9 @@ const resendOtp = async (req, res, next) => {
         const { id } = req.params;
         const user = await User.findById({ _id: id });
         const otp = await user.generateAndSendOtp();
-        const { EMAIL_USERNAME } = process.env;
+        const { FROM_USER } = process.env;
         const emailPayload = {
-            from: EMAIL_USERNAME,
+            from: FROM_USER,
             to: user.email,
             subject: "Your Otp is here",
             html: `Your OTP code is <h3>${otp}</h3>It is valid for 5 minutes.`,

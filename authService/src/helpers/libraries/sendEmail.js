@@ -13,13 +13,8 @@ const sendEmail = async (mailOptions) => {
             },
             connectionTimeout: 10000,
         });
-
-        const info = await transporter.sendMail(mailOptions);
-
-        console.log("Email sent:", info.response);
-
+        await transporter.sendMail(mailOptions);
     } catch (error) {
-        console.error("MAIL ERROR:", error);
         throw error;
     }
 };
