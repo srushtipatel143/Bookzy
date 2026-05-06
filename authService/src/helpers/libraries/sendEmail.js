@@ -1,5 +1,6 @@
 const nodemailer = require('nodemailer');
 require("dotenv").config();
+
 const sendEmail = async (mailOptions) => {
     const { SMTP_HOST, SMTP_PORT, EMAIL_USERNAME, EMAIL_PASS } = process.env;
     let transporter = nodemailer.createTransport({
@@ -14,7 +15,8 @@ const sendEmail = async (mailOptions) => {
     try {
         await transporter.sendMail(mailOptions);
     } catch (error) {
-        return next(new errorHandler("Something went wrong", 500, error));
+        console.log(error)
+        throw error;
     }
 
 }
