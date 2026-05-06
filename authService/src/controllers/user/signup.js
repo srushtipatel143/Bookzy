@@ -45,6 +45,7 @@ const signIn = async (req, res, next) => {
             data: !user ? savedUser : user,
         });
     } catch (error) {
+        console.log(error)
         return next(new errorHandler("Something went wrong", 500, error));
     }
 };
