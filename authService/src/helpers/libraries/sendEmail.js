@@ -1,40 +1,34 @@
 const nodemailer = require("nodemailer");
-require("dotenv").config();
 
-const sendEmail = async (mailOptions) => {
-    try {
-        console.log({
-            host: process.env.SMTP_HOST,
-            port: process.env.SMTP_PORT,
-            user: process.env.EMAIL_USERNAME,
-            pass: process.env.EMAIL_PASS,
-        });
-        const transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: Number(process.env.SMTP_PORT),
-            secure: false,
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS,
-            },
+const transporter = nodemailer.createTransport({
+    host: "smtp-relay.brevo.com",
+    port: 2525,
 
-            connectionTimeout: 60000,
-            greetingTimeout: 30000,
-            socketTimeout: 60000,
+    secure: false,
 
-            tls: {
-                rejectUnauthorized: false,
-            },
-        });
+    auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASS,
+    },
 
-        await transporter.verify();
-        console.log("SMTP Connected");
-        await transporter.sendMail(mailOptions);
-    } catch (error) {
-        console.error("MAIL ERROR:", error);
-        throw error;
-    }
-};
+    connectionTimeout: 120000,
+    greetingTimeout: 60000,
+    socketTimeout: 120000,
 
-module.exports = sendEmail;
+    requireTLS: true,
 
+    tls: {
+        rejectUnauthorized: false,
+        minVersion: "TLSv1.2",
+    },
+
+    debug: true,
+    logger: true,
+});
+
+try {
+    await transporter.verify();
+    console.log("SMTP Connected");
+} catch (err) {
+    console.log("MAIL ERROR:", err);
+}
