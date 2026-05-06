@@ -2,9 +2,9 @@ const sendToken = async (user, statusCode, res) => {
     const token = user.generateJWTFromUser();
     res.cookie('token', token, {
         httpOnly: true,
-        secure: false,
+        secure: true,
         maxAge: 10 * 24 * 60 * 60 * 1000,
-        sameSite: 'lax'
+        sameSite: 'none'
     });
     return res.status(statusCode).json({
         success: true,
