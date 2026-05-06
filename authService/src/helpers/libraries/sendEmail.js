@@ -3,10 +3,7 @@ require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
     host: "smtp-relay.brevo.com",
-
-    // CHANGE THIS
     port: 2525,
-
     secure: false,
 
     auth: {
@@ -29,12 +26,27 @@ const transporter = nodemailer.createTransport({
     logger: true,
 });
 
-try {
-    await transporter.verify();
-    console.log("SMTP Connected");
-} catch (err) {
-    console.log("MAIL ERROR:", err);
-}
+const sendEmail = async (mailOptions) => {
+    try {
+
+        // verify smtp connection
+        await transporter.verify();
+
+        console.log("SMTP Connected");
+
+        // send mail
+        const info = await transporter.sendMail(mailOptions);
+
+        console.log("Mail Sent:", info.messageId);
+
+        return info;
+
+    } catch (err) {
+
+        console.log("MAIL ERROR:", err);
+
+        throw err;
+    }
+};
 
 module.exports = sendEmail;
-
