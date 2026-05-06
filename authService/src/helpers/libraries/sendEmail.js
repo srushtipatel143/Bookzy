@@ -1,7 +1,10 @@
 const nodemailer = require("nodemailer");
+require("dotenv").config();
 
 const transporter = nodemailer.createTransport({
     host: "smtp-relay.brevo.com",
+
+    // CHANGE THIS
     port: 2525,
 
     secure: false,
@@ -32,3 +35,6 @@ try {
 } catch (err) {
     console.log("MAIL ERROR:", err);
 }
+
+module.exports = sendEmail;
+
