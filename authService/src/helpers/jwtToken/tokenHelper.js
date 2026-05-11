@@ -20,6 +20,7 @@ const getAccessTokenFromHeader = (req) => {
     return token;
 }
 
+
 const isTokenIncluded = (req) => {
     return (
        req.cookies && req.cookies.token
